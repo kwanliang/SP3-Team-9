@@ -14,36 +14,37 @@ class SeaCreature : public GameObject
 {
 protected:
     int m_health;
-	float m_DebounceTimer;
+    float m_DebounceTimer;
+    bool m_canVacuum;
 
 public:
     enum SEACREATURE_TYPE
     {
         MINNOW = 0,
-		PUFFER,
-		FCRAB,
-		CHIMERA,
-		CUTTLE,
+        PUFFER,
+        FCRAB,
+        CHIMERA,
+        CUTTLE,
         TYPE_TOTAL,
     };
     SEACREATURE_TYPE seaType;
 
     SeaCreature();
-    SeaCreature(int m_health, SEACREATURE_TYPE seaType, OBJECT_TYPE objectType, Vector3 pos, Vector3 vel, Vector3 scale, bool active);
     ~SeaCreature();
 
-	Vector3 cohesion(Vector3 playerpos, Vector3 playertarget);
-	Vector3 seperation(Vector3 repelVector);
-	Vector3 alignment(Vector3 forceVector);
+    Vector3 cohesion(Vector3 playerpos, Vector3 playertarget);
+    Vector3 seperation(Vector3 repelVector);
+    Vector3 alignment(Vector3 forceVector);
 
     int getHealth();
-	float getDebounceTimer();
+    float getDebounceTimer();
+    bool getCanVacuum();
 
-    //void setPos(Vector3 pos);
-	void setHealth(int m_health);
-	void setDebounceTimer(float timer);
+    void setHealth(int m_health);
+    void setDebounceTimer(float timer);
+    void setCanVacuum(bool m_canVacuum);
 
-	hitbox	aabb;
+    hitbox	aabb;
     hitbox2 collision;
 };
 

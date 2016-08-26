@@ -4,63 +4,62 @@
 #include "SceneSP3.h"
 #include <vector>
 #include "Mtx44.h"
-#include "Pufferfish.h"
 #include "CollisionManager.h"
+#include "GiantSquid.h"
+#include "Pufferfish.h"
+
+static int g_PufferfishCount = 0;
+
 class SceneCalmPlateu : public SceneSP3
 {
 public:
-	SceneCalmPlateu();
-	~SceneCalmPlateu();
+    SceneCalmPlateu();
+    ~SceneCalmPlateu();
 
-	virtual void Init();
-	virtual void Update(double dt);
-	virtual void Exit();
-	
-	virtual void Render();
-	void RenderPassGPass();
-	void RenderPassMain();
-	void RenderMinimap();
+    virtual void Init();
+    virtual void Update(double dt);
+    virtual void Exit();
 
-	void RenderWorld();
-	void RenderTerrain();
-	void RenderSkyPlane();
-	void RenderParticles();
-	void RenderPuffer(Pufferfish *fo);
+    void InitGiantSquid();
 
-	Pufferfish* FetchPuffer();
-	void UpdatePuffer(double dt);
+    virtual void Render();
+    void RenderPassGPass();
+    void RenderPassMain();
+
+    void RenderWorld();
+    void RenderTerrain();
+    void RenderSkyPlane();
+    void RenderPuffer(Pufferfish *fo);
+
+    Pufferfish* FetchPuffer();
+
+    void RenderGiantSquid();
+
+    void UpdatePuffer(double dt);
+
+    void UpdateGiantSquid(double dt);
+
+    bool isPlayerHit;
 
 private:
 
     // Shadow
-	
-   // Light lights[2];
+
+    // Light lights[2];
 
     bool bLightEnabled;
 
-   // float fps;
+    // float fps;
 
     //Terrain
     //std::vector<unsigned char> m_heightMap;
 
-    // Particles 
-    std::vector<ParticleObject*> particleList; // Used to store
-    Vector3 m_gravity;      // Gravity affecting the particles
-    int m_particleCount;    // Number of particles
+    //Fish test
+    Capture fishy;
 
+    GiantSquid* giantSquid;
 
-
-
-	//Fish test
-	Capture fishy;
-
+    Pufferfish* pf;
 };
-
-
-
-
-
-
-
 
 #endif

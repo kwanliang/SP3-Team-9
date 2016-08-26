@@ -12,11 +12,9 @@ protected:
 public:
     enum BOSS_TYPE
     {
-		GIANTSQUID = 0,
+        GIANTSQUID = 0,
         GIANTSQUIDTENTACLE,
-		FRILLEDSHARK,
-
-		GIANTCRAB,
+        FRILLEDSHARK,
 
         TYPE_TOTAL,
     };
@@ -24,18 +22,12 @@ public:
     BOSS_TYPE bossType;
 
     Boss();
-    Boss(int m_health, BOSS_TYPE bossType, OBJECT_TYPE objectType, Vector3 pos, Vector3 vel, Vector3 scale, bool active);
     ~Boss();
 
     int getHealth();
     void setHealth(int m_health);
-	bool isdead;
+    bool isdead;
     hitbox collision;
-	Vector3 direction;
-
-	void RotateDirection(const float &degrees);
-	float GetOrientation();
-	void SetDirection(const Vector3 &direction);
 };
 
 #endif

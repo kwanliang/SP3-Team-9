@@ -248,6 +248,8 @@ void main(){
 	if(fogParam.enabled > 0 && isGUI == 0)
 	{
 		float fogDistance = abs(vertexPosition_cameraspace.z);
+		if (fogDistance > fogParam.end)
+			discard;
 		float fogFactor = getFogFactor(fogParam, fogDistance);
 		color = mix(color, vec4(fogParam.color, 1), fogFactor);
 	}

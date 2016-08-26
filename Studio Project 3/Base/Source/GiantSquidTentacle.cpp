@@ -2,10 +2,9 @@
 
 GiantSquidTentacle::GiantSquidTentacle()
     : m_TentaclePos(Vector3(0, 0, 0))
-    , m_TentacleInitialRotate(0.f)
-    , m_TentacleAnimateRotate(0.f)
-    , m_TentacleAnimateRotate2(0.f)
+    , m_scale(Vector3(0, 0, 0))
     , m_health(0)
+    , m_active(false)
 {
 
 }
@@ -25,34 +24,14 @@ void GiantSquidTentacle::setTentaclePos(Vector3 m_TentaclePos)
     this->m_TentaclePos = m_TentaclePos;
 }
 
-float GiantSquidTentacle::getTentacleInitialRotate()
+Vector3 GiantSquidTentacle::getScale()
 {
-    return this->m_TentacleInitialRotate;
+    return this->m_scale;
 }
 
-void GiantSquidTentacle::setTentacleInitialRotate(float m_TentacleInitialRotate)
+void GiantSquidTentacle::setScale(Vector3 m_scale)
 {
-    this->m_TentacleInitialRotate = m_TentacleInitialRotate;
-}
-
-float GiantSquidTentacle::getTentacleAnimateRotate()
-{
-    return this->m_TentacleAnimateRotate;
-}
-
-void GiantSquidTentacle::setTentacleAnimateRotate(float m_TentacleAnimateRotate)
-{
-    this->m_TentacleAnimateRotate = m_TentacleAnimateRotate;
-}
-
-float GiantSquidTentacle::getTentacleAnimateRotate2()
-{
-    return this->m_TentacleAnimateRotate2;
-}
-
-void GiantSquidTentacle::setTentacleAnimateRotate2(float m_TentacleAnimateRotate2)
-{
-    this->m_TentacleAnimateRotate2 = m_TentacleAnimateRotate2;
+    this->m_scale = m_scale;
 }
 
 int GiantSquidTentacle::getHealth()
@@ -63,4 +42,14 @@ int GiantSquidTentacle::getHealth()
 void GiantSquidTentacle::setHealth(int m_health)
 {
     this->m_health = m_health;
+}
+
+bool GiantSquidTentacle::getActive()
+{
+    return this->m_active;
+}
+
+void GiantSquidTentacle::setActive(bool m_active)
+{
+    this->m_active = m_active;
 }

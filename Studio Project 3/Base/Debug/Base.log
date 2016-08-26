@@ -1,18 +1,57 @@
-﻿  SceneSP3.cpp
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(248): warning C4305: 'argument' : truncation from 'double' to 'float'
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(538): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(540): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(555): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(614): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(706): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(839): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(848): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(853): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1042): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1049): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1193): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1297): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-c:\users\garygoh\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1310): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-Application.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  Base.vcxproj -> C:\Users\GaryGoh\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.exe
+﻿Build started 8/26/2016 1:17:03 PM.
+     1>Project "C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Base\Base.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/Common/Source" /I"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/glew/include" /I"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/glfw/include" /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\Application.cpp
+         Application.cpp
+       Link:
+         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug" /LIBPATH:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/glfw/lib-msvc100" /LIBPATH:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/glew/lib" Common.lib winmm.lib opengl32.lib glu32.lib glew32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.lib" /MACHINE:X86 Debug\Application.obj
+         Debug\Boss.obj
+         Debug\Camera.obj
+         Debug\Camera2.obj
+         Debug\Camera3.obj
+         Debug\Capture.obj
+         Debug\Chimera.obj
+         Debug\CollisionManager.obj
+         Debug\Cuttlefish.obj
+         Debug\DamageText.obj
+         Debug\DepthFBO.obj
+         Debug\Fcrab.obj
+         Debug\FrilledShark.obj
+         Debug\GameObject.obj
+         Debug\GiantCrab.obj
+         Debug\GiantSquid.obj
+         Debug\GiantSquidTentacle.obj
+         Debug\LoadHmap.obj
+         Debug\LoadOBJ.obj
+         Debug\LoadTGA.obj
+         Debug\main.obj
+         Debug\Mesh.obj
+         Debug\MeshBuilder.obj
+         Debug\Minnow.obj
+         Debug\OBJMesh.obj
+         Debug\Particle.obj
+         Debug\Projectile.obj
+         Debug\Pufferfish.obj
+         Debug\SceneCalmPlateu.obj
+         Debug\SceneCreepingRidge.obj
+         Debug\SceneGhastlyDepths.obj
+         Debug\SceneManager.obj
+         Debug\SceneNightmareTrench.obj
+         Debug\SceneTutorial.obj
+         Debug\SeaCreature.obj
+         Debug\shader.obj
+         Debug\Skipper.obj
+         Debug\Spawner.obj
+         Debug\SpriteAnimation.obj
+         Debug\SceneSP3.obj
+         Debug\ThirdPersonCamera.obj
+         Debug\Utility.obj
+         Debug\WalkCamera.obj
+     1>Application.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
+     1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+         Base.vcxproj -> C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.exe
+     1>Done Building Project "C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Base\Base.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.57

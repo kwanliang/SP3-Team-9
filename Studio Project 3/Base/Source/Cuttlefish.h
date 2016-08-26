@@ -17,8 +17,6 @@ public:
 		STATE_TOTAL
 	};
 
-	
-
 	Cuttlefish();
 	Cuttlefish(Vector3 pos);
 	~Cuttlefish();

@@ -1,9 +1,7 @@
 #ifndef FRILLEDSHARK_H
 #define	FRILLEDSHARK_H
 
-
 #include "Boss.h"
-
 
 class FrilledShark :public Boss
 {
@@ -43,15 +41,6 @@ public:
 	
 
 private:
-
-
-
-
-
-
-
-
-
 
 };
 

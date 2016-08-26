@@ -24,7 +24,6 @@ public:
 	unsigned SD_CurrentArea = 2;
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
-    bool SD_immobility = false;
 
 private:
     SharedData(){};

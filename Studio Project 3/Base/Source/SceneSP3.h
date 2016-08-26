@@ -39,6 +39,7 @@ public:
     virtual void RenderPassMain() = 0;
     virtual void RenderWorld() = 0;
 	virtual void RenderMinimap();
+    virtual void RenderHUD();
 
 	void UpdateTravel();
     void UpdateLoop(double dt);
@@ -46,15 +47,16 @@ public:
 	void UpdateCaptured(double dt);
 	void UpdateProjectile(double dt);
 	void UpdateSquadFire(double dt);
+    void UpdateSpawner(double dt);
 
     void RenderText(Mesh* mesh, std::string text, Color color);
     void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-    void RenderMeshIn2D(Mesh *mesh, bool enableLight, float size = 1.0f, float x = 0.0f, float y = 0.0f, float rot = 0.f);
+    void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex = 1.0f, float sizey = 1.0f, float x = 0.0f, float y = 0.0f, float rot = 0.f);
     void RenderMesh(Mesh *mesh, bool enableLight);
 
-    void UpdateParticles(double dt);
-    ParticleObject* GetParticle_NAME();
     void RenderParticles();
+    void UpdateParticles(double dt);
+    ParticleObject* GetParticle();
 
     Minnow* FetchFO();
     Projectile* FetchPO();
@@ -80,10 +82,6 @@ private:
     bool bLightEnabled;
 
     //Terrain
-    // Particles 
-    std::vector<ParticleObject*> particleList; // Used to store
-    Vector3 m_gravity;      // Gravity affecting the particles
-    int m_particleCount;    // Number of particles
  
 	//Fish test
 	Capture fishy;
@@ -222,12 +220,14 @@ protected:
 		GEO_CRAB_LEG_UPPER,
 		GEO_CRAB_LEG_LOWER,
 
+        GEO_BUBBLE,
+        GEO_VACUUM,
 
+        GEO_HUD_HEALTHBAR,
+        GEO_HUD_BOSSHEALTH,
 
-
-		SPRITE_NAME,
-		PARTICLE_NAME,
-		GEO_LIGHT_DEPTH_QUAD,
+        SPRITE_NAME,
+        GEO_LIGHT_DEPTH_QUAD,
 		NUM_GEOMETRY,
 	};
 	enum RENDER_PASS
@@ -238,9 +238,14 @@ protected:
 
 	// Game Object
 	std::vector<GameObject*> m_goList;
+
 	CameraV2 *currentCam;
 	WalkCamera walkCam;
 
+    // Particles 
+    std::vector<ParticleObject*> particleList; // Used to store
+    Vector3 m_gravity;      // Gravity affecting the particles
+    int m_particleCount;    // Number of particles
 
 	//ligts and rendering
 	MS modelStack;
@@ -271,13 +276,17 @@ protected:
 	float	fish_tailrot;
 	bool	fish_tailmax;
 	Vector3 fishVel;
-    //Minnow* minnowLeader;
 
     Skipper* skipper;
+    Minnow* minnowLeader;
 
     // Spawner
     Spawner MinnowLeaderSpawner;
     Spawner MinnowSpawner;
+    Spawner PufferfishSpawner;
+    Spawner FCrabSpawner;
+    Spawner ChimeraSpawner;
+    Spawner CuttlefishSpawner;
 
     //DamageText text;
     std::vector<DamageText*> m_textList;

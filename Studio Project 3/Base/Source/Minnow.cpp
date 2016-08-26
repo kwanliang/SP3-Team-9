@@ -4,16 +4,7 @@ Minnow::Minnow()
     : state(FLOCK)
     , m_isLeader(false)
     , panicTime(0.f)
-    , SeaCreature(0, MINNOW, SEACREATURE, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), false)
-{
-
-}
-
-Minnow::Minnow(MINNOW_BEHAVIORSTATE state, bool m_isLeader, float panicTime, int m_health, SEACREATURE_TYPE seaType, OBJECT_TYPE objectType, Vector3 pos, Vector3 vel, Vector3 scale, bool active)
-    : state(state)
-    , m_isLeader(m_isLeader)
-    , panicTime(panicTime)
-    , SeaCreature(m_health, seaType, objectType, pos, vel, scale, active)
+    , SeaCreature()
 {
 
 }

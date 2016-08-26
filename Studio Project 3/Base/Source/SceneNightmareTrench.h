@@ -6,6 +6,7 @@
 #include "Mtx44.h"
 #include "Chimera.h"
 
+static int g_ChimeraCount = 0;
 
 class SceneNightmareTrench : public SceneSP3
 {
@@ -27,7 +28,6 @@ public:
 	void RenderWorld();
 	void RenderTerrain();
 	void RenderSkyPlane();
-	void RenderParticles();
 	void RenderChimera(Chimera*);
 
 
@@ -44,24 +44,10 @@ private:
     //Terrain
     //std::vector<unsigned char> m_heightMap;
 
-    // Particles 
-    std::vector<ParticleObject*> particleList; // Used to store
-    Vector3 m_gravity;      // Gravity affecting the particles
-    int m_particleCount;    // Number of particles
-	//Chimera* c;
-
-
 
 	//Fish test
 	Capture fishy;
 
 };
-
-
-
-
-
-
-
 
 #endif

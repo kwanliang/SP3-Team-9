@@ -158,26 +158,6 @@ Cuttlefish*  SceneGhastlyDepths::FetchCuttle()
 	return go;
 }
 
-void SceneGhastlyDepths::RenderParticles()
-{
-	//for (auto it : particleList)
-	//{
-	//    ParticleObject* particle = (ParticleObject*)it;
-	//    if (particle->active)
-	//    {
-	//        if (particle->type == PARTICLEOBJECT_TYPE::P_NAME)
-	//        {
-	//            modelStack.PushMatrix();
-	//            modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
-	//            modelStack.Rotate(particle->rotation, 0, 1, 0);
-	//            modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
-	//            RenderMesh(meshList[PARTICLE_NAME], false);
-	//            modelStack.PopMatrix();
-	//        }
-	//    }
-	//}
-}
-
 void SceneGhastlyDepths::RenderWorld()
 {
 	RenderTerrain();
@@ -354,10 +334,6 @@ void SceneGhastlyDepths::RenderPassMain()
 	ss.precision(3);
 	ss << "FPS: " << fps;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
-	//std::ostringstream ss;
-	//ss.precision(3);
-	//ss << "FPS: " << fps;
-	//RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
 
 	modelStack.PushMatrix();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line

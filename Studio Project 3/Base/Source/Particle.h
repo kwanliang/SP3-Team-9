@@ -5,8 +5,8 @@
 
 enum PARTICLEOBJECT_TYPE
 {
-    P_SPARK,
-	P_POOF,
+    P_BUBBLE,
+    P_VACUUM,
     P_TOTAL,
 };
 

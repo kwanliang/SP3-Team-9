@@ -22,31 +22,23 @@ Defines spawner and its methods
 /******************************************************************************/
 
 static int g_MaxMinnowLeader = 3;
-static int g_MaxMinnow = 30;
+static int g_MaxMinnow = 40;
+static int g_MaxPufferfish = 30;
+static int g_MaxFCrab = 30;
+static int g_MaxChimera = 30;
+static int g_MaxCuttlefish = 30;
 
 class Spawner
 {
 private:
-    Vector3 m_pos;
-    Vector3 m_MinRange;
-    Vector3 m_MaxRange;
     bool m_IsSpawn;
 
 public:
     Spawner();
     ~Spawner();
 
-    Vector3 getPos();
-    void setPos(Vector3 m_pos);
-
     bool getIsSpawn();
     void setIsSpawn(bool m_IsSpawn);
-
-    Vector3 getMinRange();
-    void setMinRange(Vector3 m_MinRange);
-
-    Vector3 getMaxRange();
-    void setMaxRange(Vector3 m_MaxRange);
 
     void CheckCount(int CurrentCount, int MaxCount);
 };

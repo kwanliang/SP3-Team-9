@@ -6,32 +6,27 @@
 
 class GiantSquidTentacle
 {
-private:
+protected:
     Vector3 m_TentaclePos;
-    float m_TentacleInitialRotate;
-    float m_TentacleAnimateRotate;
-    float m_TentacleAnimateRotate2;
-
+    Vector3 m_scale;
     int m_health;
+    bool m_active;
 
 public:
     GiantSquidTentacle();
-    ~GiantSquidTentacle();
+    virtual ~GiantSquidTentacle();
 
     Vector3 getTentaclePos();
     void setTentaclePos(Vector3 m_TentaclePos);
 
-    float getTentacleInitialRotate();
-    void setTentacleInitialRotate(float m_TentacleInitialRotate);
-
-    float getTentacleAnimateRotate();
-    void setTentacleAnimateRotate(float m_TentacleAnimateRotate);
-
-    float getTentacleAnimateRotate2();
-    void setTentacleAnimateRotate2(float m_TentacleAnimateRotate2);
+    Vector3 getScale();
+    void setScale(Vector3 m_scale);
 
     int getHealth();
     void setHealth(int m_health);
+
+    bool getActive();
+    void setActive(bool m_active);
 
     hitbox collision;
 };

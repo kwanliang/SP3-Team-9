@@ -22,7 +22,6 @@ public:
     MINNOW_BEHAVIORSTATE state;
 
     Minnow();
-    Minnow(MINNOW_BEHAVIORSTATE state, bool m_isLeader, float panicTime, int m_health, SEACREATURE_TYPE seaType, OBJECT_TYPE objectType, Vector3 pos, Vector3 vel, Vector3 scale, bool active);
     ~Minnow();
 
     Vector3 cohesion(Minnow* minnowLeader);

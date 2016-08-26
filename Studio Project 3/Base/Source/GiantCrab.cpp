@@ -35,9 +35,9 @@ float GiantCrab::GetWalkAnim(const unsigned &id)
 	return 0.f;
 }
 
-void GiantCrab::Move(const double &dist)
-{
-	Vector3 right = direction.Cross(Vector3(0, 1, 0));
-	right.Normalize();
-	pos += right * (float)dist;
-}
+//void GiantCrab::Move(const double &dist)
+//{
+//	Vector3 right = direction.Cross(Vector3(0, 1, 0));
+//	right.Normalize();
+//	pos += right * (float)dist;
+//}

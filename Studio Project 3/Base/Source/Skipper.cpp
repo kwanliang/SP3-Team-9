@@ -6,16 +6,7 @@ Skipper::Skipper()
 	, m_baseDamage(0)
 	, stamina(100)
 	, boostStatus(BOOST_READY)
-    , GameObject(PLAYER, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), false)
-{
-
-}
-
-Skipper::Skipper(int m_health, int m_damage, int m_baseDamage, OBJECT_TYPE objectType, Vector3 pos, Vector3 vel, Vector3 scale, bool active)
-    : m_health(m_health)
-    , m_damage(m_damage)
-    , m_baseDamage(m_baseDamage)
-    , GameObject(objectType, pos, vel, scale, active)
+    , GameObject()
 {
 
 }

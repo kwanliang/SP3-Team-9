@@ -12,7 +12,6 @@
 class SceneManager
 {
 private:
-
 	SceneSP3 *currentScene;
 
 public:

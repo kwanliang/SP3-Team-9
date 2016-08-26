@@ -5,24 +5,24 @@
 
 class Pufferfish : public SeaCreature
 {
-private:
+protected:
+    double m_MoveCoolDown;
 
-	
 public:
-	enum PUFFER_STATE
-	{
-		IDLE,
-		ENRAGED,
-		FLEEING,
-		STATE_TOTAL,
-	};
-    Pufferfish();
-	Pufferfish(Vector3 pos);
-	~Pufferfish();
-    void expand();
-	PUFFER_STATE pstate;
-	
+    enum PUFFER_STATE
+    {
+        IDLE,
+        ENRAGED,
+        FLEEING,
+        STATE_TOTAL,
+    };
+    PUFFER_STATE pstate;
 
+    Pufferfish();
+    ~Pufferfish();
+
+    double getMoveCoolDown();
+    void setMoveCoolDown(double m_MoveCoolDown);
 };
 
 #endif

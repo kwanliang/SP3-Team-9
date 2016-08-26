@@ -2,19 +2,21 @@
 
 Pufferfish::Pufferfish()
 {
-	SeaCreature(0, PUFFER, SEACREATURE, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), false);
+    this->m_MoveCoolDown = 0.0;
+    SeaCreature();
 }
-Pufferfish::Pufferfish(Vector3 pos)
-{
-	SeaCreature(40, PUFFER, SEACREATURE, pos, Vector3(0, 0, 0), Vector3(1, 1, 1), false);
-	//SeaCreature::m_position = pos;
-}
+
 Pufferfish::~Pufferfish()
 {
 
 }
 
-void Pufferfish::expand()
+double Pufferfish::getMoveCoolDown()
 {
+    return this->m_MoveCoolDown;
+}
 
+void Pufferfish::setMoveCoolDown(double m_MoveCoolDown)
+{
+    this->m_MoveCoolDown = m_MoveCoolDown;
 }

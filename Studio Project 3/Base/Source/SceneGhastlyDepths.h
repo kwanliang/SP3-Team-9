@@ -28,9 +28,6 @@ public:
 	void RenderWorld();
 	void RenderTerrain();
 	void RenderSkyPlane();
-	void RenderParticles();
-
-
 
 private:
 
@@ -45,13 +42,7 @@ private:
     //Terrain
     //std::vector<unsigned char> m_heightMap;
 
-    // Particles 
-    std::vector<ParticleObject*> particleList; // Used to store
-    Vector3 m_gravity;      // Gravity affecting the particles
-    int m_particleCount;    // Number of particles
-
 	FrilledShark* frilledshark;
-
 
 	//Fish test
 	Capture fishy;
@@ -59,12 +50,5 @@ private:
 	//Cuttlefish* c;
 
 };
-
-
-
-
-
-
-
 
 #endif

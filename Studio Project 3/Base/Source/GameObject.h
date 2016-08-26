@@ -12,20 +12,19 @@ struct GameObject
         PROJECTILE,
         SEACREATURE,
         BOSS,
-		CAPTURED,
+        CAPTURED,
 
         TYPE_TOTAL
     };
     OBJECT_TYPE objectType;
 
-	Vector3 pos;
-	Vector3 vel;
-	Vector3 scale;
-	bool active;
+    Vector3 pos;
+    Vector3 vel;
+    Vector3 scale;
+    bool active;
 
     GameObject();
-    GameObject(OBJECT_TYPE objectType, Vector3 pos, Vector3 vel, Vector3 scale, bool active);
-	~GameObject();
+    ~GameObject();
 };
 
 #endif

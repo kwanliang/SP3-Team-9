@@ -3,17 +3,7 @@
 
 Chimera::Chimera()
 {
-	SeaCreature(0, CHIMERA, SEACREATURE, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), false);
-	rotate = Math::RandFloatMinMax(-20, 20);
-	chstate = IDLE;
-}
-
-Chimera::Chimera(Vector3 pos)
-{
-	SeaCreature(0, CHIMERA, SEACREATURE, pos, Vector3(0, 0, 0), Vector3(1, 1, 1), false);
-	flip[0].rotation = 20;
-	flip[1].rotation = 27;
-	flip[2].rotation = 10;
+	SeaCreature();
 	rotate = Math::RandFloatMinMax(-20, 20);
 	chstate = IDLE;
 }

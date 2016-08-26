@@ -10,40 +10,29 @@ private:
 
 
 public:
-	struct Flipper
-	{
-		float rotation = 0;
-		bool flipper_max = 0;
-	};
-	enum CHIMERA_STATE
-	{
-		IDLE,
-		ATTACKING,
-		RETURNING,
-		FLEEING,
-		STATE_TOTAL,
-	};
-	Chimera();
-	Chimera(Vector3 pos);
-	void UpdateChimera(double dt);
-	~Chimera();
-	//void expand();
-	CHIMERA_STATE chstate;
-	float rotate ;
-	Flipper flip[4];
+    struct Flipper
+    {
+        float rotation = 0;
+        bool flipper_max = 0;
+    };
+    enum CHIMERA_STATE
+    {
+        IDLE,
+        ATTACKING,
+        SPEED,
+        RETURNING,
+        FLEEING,
+        STATE_TOTAL,
+    };
+    Chimera();
+    ~Chimera();
 
+    void UpdateChimera(double dt);
 
-
-
+    //void expand();
+    CHIMERA_STATE chstate;
+    float rotate;
+    Flipper flip[4];
 };
-
-
-
-
-
-
-
-
-
 
 #endif

@@ -2,19 +2,10 @@
 
 Cuttlefish::Cuttlefish()
 {
-	SeaCreature(0, CUTTLE, SEACREATURE, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(1, 1, 1), false);
+	SeaCreature();
 	rotate = 0;
 	ctstate = IDLE;
 	jet = false;
-}
-
-Cuttlefish::Cuttlefish(Vector3 pos)
-{
-	SeaCreature(0, CUTTLE, SEACREATURE, pos, Vector3(0, 0, 0), Vector3(1, 1, 1), false);
-	rotate = 0;
-	ctstate = IDLE;
-	jet = false;
-	
 }
 
 Cuttlefish::~Cuttlefish()

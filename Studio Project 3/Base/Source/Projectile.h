@@ -5,20 +5,24 @@
 
 class Projectile : public GameObject
 {
+private:
+    double m_lifetime;
+
 public:
     enum PROJECTILE_TYPE
     {
         BULLET,
         INK,
-		PBULLET,
 
         TYPE_TOTAL
     };
     PROJECTILE_TYPE projectileType;
 
     Projectile();
-    Projectile(PROJECTILE_TYPE projectileType, OBJECT_TYPE objectType, Vector3 pos, Vector3 vel, Vector3 scale, bool active);
     ~Projectile();
+
+    double getLifetime();
+    void setLifetime(double m_lifetime);
 };
 
 #endif

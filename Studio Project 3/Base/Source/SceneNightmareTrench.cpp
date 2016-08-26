@@ -64,25 +64,6 @@ void SceneNightmareTrench::RenderSkyPlane()
 	modelStack.PopMatrix();
 }
 
-void SceneNightmareTrench::RenderParticles()
-{
-	//for (auto it : particleList)
-	//{
-	//    ParticleObject* particle = (ParticleObject*)it;
-	//    if (particle->active)
-	//    {
-	//        if (particle->type == PARTICLEOBJECT_TYPE::P_NAME)
-	//        {
-	//            modelStack.PushMatrix();
-	//            modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
-	//            modelStack.Rotate(particle->rotation, 0, 1, 0);
-	//            modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
-	//            RenderMesh(meshList[PARTICLE_NAME], false);
-	//            modelStack.PopMatrix();
-	//        }
-	//    }
-	//}
-}
 
 void SceneNightmareTrench::RenderWorld()
 {
@@ -419,14 +400,52 @@ void SceneNightmareTrench::Update(double dt)
 				}
 				
 				c->UpdateChimera(dt);
-			
-			
-
 	}
 
+    static bool trest = false;
+    if (Application::IsKeyPressed('E') && !trest)
+    {
+        trest = true;
+    }
+    else if (!Application::IsKeyPressed('E') && trest)
+    {
+        for (int i = 0; i < 10; ++i)
+        {
+            Chimera*c = FetchChimera();
+            c->active = true;
+            c->objectType = GameObject::SEACREATURE;
+            c->seaType = SeaCreature::CHIMERA;
+            //p->pstate = Pufferfish::IDLE;
+            c->scale.Set(20, 20, 20);
+            c->pos.Set(Math::RandFloatMinMax(-1000, 1000), Math::RandFloatMinMax(200, 500), Math::RandFloatMinMax(-1000, 1000));
+            c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
+            //p->collision = hitbox2::generatehitbox(p->pos, 8, 8, 8);
+            c->setHealth(200);
+        }
 
-	
-	}
+        trest = false;
+    }
+
+    ChimeraSpawner.CheckCount(g_ChimeraCount, g_MaxChimera);
+
+    if (ChimeraSpawner.getIsSpawn())
+    {
+        Vector3 tv(Math::RandFloatMinMax(0.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(0.f, 1000.f));
+        if (!terraincollision(tv, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
+        {
+            Chimera*c = FetchChimera();
+            c->active = true;
+            c->objectType = GameObject::SEACREATURE;
+            c->seaType = SeaCreature::CHIMERA;
+            //p->pstate = Pufferfish::IDLE;
+            c->scale.Set(20, 20, 20);
+            c->pos.Set(tv.x, tv.y, tv.z);
+            c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
+            //p->collision = hitbox2::generatehitbox(p->pos, 8, 8, 8);
+            c->setHealth(200);
+        }
+    }
+}
 
 
 

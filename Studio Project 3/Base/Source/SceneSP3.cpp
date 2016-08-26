@@ -8,8 +8,6 @@
 #include "Utility.h"
 #include "LoadTGA.h"
 
-
-
 using std::cout;
 using std::endl;
 
@@ -26,7 +24,7 @@ SceneSP3::~SceneSP3()
 void SceneSP3::Init()
 {
     // Black background
-    glClearColor(0.0f, 0.6f, 0.9f, 0.0f);
+    glClearColor(0.0f, 0.8f, 0.7f, 0.0f);
     // Enable depth test
     glEnable(GL_DEPTH_TEST);
     // Accept fragment if it closer to the camera than the former one
@@ -206,7 +204,7 @@ void SceneSP3::Init()
     glUniform1f(m_parameters[U_LIGHT2_COSINNER], lights[2].cosInner);
     glUniform1f(m_parameters[U_LIGHT2_EXPONENT], lights[2].exponent);
 
-    Color fogColor(0.2f, 0.0f, 0.7f);
+    Color fogColor(0.0f, 0.8f, 0.7f);
     glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
     glUniform1f(m_parameters[U_FOG_START], 10);
     glUniform1f(m_parameters[U_FOG_END], 1000);
@@ -332,7 +330,17 @@ void SceneSP3::Init()
     //meshList[OBJ_NAME]->textureArray[0] = LoadTGA("Image//.tga");
 
     // Particles
-    //meshList[PARTICLE_NAME] = MeshBuilder::GenerateQuad("", Color(1, .5f, 0), 1.f);
+    meshList[GEO_BUBBLE] = MeshBuilder::GenerateQuad("bubble", Color(1, 0, 0), 1.f);
+    meshList[GEO_BUBBLE]->textureArray[0] = LoadTGA("Image//bubble.tga");
+
+    meshList[GEO_VACUUM] = MeshBuilder::GenerateQuad("vacuum", Color(1, 0, 0), 1.f);
+    meshList[GEO_VACUUM]->textureArray[0] = LoadTGA("Image//vacuum.tga");
+
+    // HUD
+    meshList[GEO_HUD_HEALTHBAR] = MeshBuilder::GenerateQuad("health bar hud", Color(1, 0, 0), 2.f);
+    meshList[GEO_HUD_HEALTHBAR]->textureID = LoadTGA("Image//healthbar.tga");
+    meshList[GEO_HUD_BOSSHEALTH] = MeshBuilder::GenerateQuad("boss health hud", Color(1, 0, 0), 2.f);
+    meshList[GEO_HUD_BOSSHEALTH]->textureID = LoadTGA("Image//bosshealth.tga");
 
     // Shadow
     //meshList[GEO_LIGHT_DEPTH_QUAD] = MeshBuilder::GenerateQuad("Shadow Test", 1, 1);
@@ -402,35 +410,35 @@ void SceneSP3::Init()
     m_goList.push_back(skipper);
     //skipper->collision = hitbox2::generatehitbox(minnowLeader->pos, 10, 10, 10);
 
-    //minnowLeader = new Minnow();
-    //minnowLeader->active = true;
-    //minnowLeader->objectType = GameObject::SEACREATURE;
-    //minnowLeader->seaType = SeaCreature::MINNOW;
-    //minnowLeader->state = Minnow::FLOCK;
-    //minnowLeader->setHealth(50);
-    //minnowLeader->setisLeader(true);
-    //minnowLeader->scale.Set(1, 1, 1);
-    //minnowLeader->pos.Set(Math::RandFloatMinMax(-100, 100), Math::RandFloatMinMax(400, 600), Math::RandFloatMinMax(-100, 100));
-    //minnowLeader->vel.Set(Math::RandFloatMinMax(-10, 10), 0, Math::RandFloatMinMax(-10, 10));
-    //minnowLeader->collision = hitbox2::generatehitbox(minnowLeader->pos, 10, 10, 10);
-    //g_MinnowLeaderCount++;
-    //m_goList.push_back(minnowLeader);
+    minnowLeader = new Minnow();
+    minnowLeader->active = true;
+    minnowLeader->objectType = GameObject::SEACREATURE;
+    minnowLeader->seaType = SeaCreature::MINNOW;
+    minnowLeader->state = Minnow::FLOCK;
+    minnowLeader->setHealth(50);
+    minnowLeader->setisLeader(true);
+    minnowLeader->scale.Set(1, 1, 1);
+    minnowLeader->pos.Set(Math::RandFloatMinMax(-100, 100), Math::RandFloatMinMax(400, 600), Math::RandFloatMinMax(-100, 100));
+    minnowLeader->vel.Set(Math::RandFloatMinMax(-10, 10), 0, Math::RandFloatMinMax(-10, 10));
+    minnowLeader->collision = hitbox2::generatehitbox(minnowLeader->pos, 10, 10, 10);
+    g_MinnowLeaderCount++;
+    m_goList.push_back(minnowLeader);
 
-  //  for (int i = 0; i < 60; i++)
-  //  {
-  //      Minnow *fo = FetchFO();
-  //      fo->active = true;
-  //      fo->objectType = GameObject::SEACREATURE;
-  //      fo->seaType = SeaCreature::MINNOW;
-  //      fo->state = Minnow::FLOCK;
-  //      fo->setisLeader(false);
-  //      fo->scale.Set(1, 1, 1);
-  //      fo->pos.Set(Math::RandFloatMinMax(-200, -100), Math::RandFloatMinMax(400, 600), Math::RandFloatMinMax(-100, 100));
-  //      fo->vel.Set(Math::RandFloatMinMax(-10, 10), 0, Math::RandFloatMinMax(-10, 10));
-  //      fo->collision = hitbox2::generatehitbox(fo->pos, 10, 10, 10);
-		//fo->setHealth(10);
-  //      g_MinnowCount++;
-  //  }
+    for (int i = 0; i < 10; i++)
+    {
+        Minnow *fo = FetchFO();
+        fo->active = true;
+        fo->objectType = GameObject::SEACREATURE;
+        fo->seaType = SeaCreature::MINNOW;
+        fo->state = Minnow::FLOCK;
+        fo->setisLeader(false);
+        fo->scale.Set(1, 1, 1);
+        fo->pos.Set(Math::RandFloatMinMax(-200, -100), Math::RandFloatMinMax(400, 600), Math::RandFloatMinMax(-100, 100));
+        fo->vel.Set(Math::RandFloatMinMax(-10, 10), 0, Math::RandFloatMinMax(-10, 10));
+        fo->collision = hitbox2::generatehitbox(fo->pos, 10, 10, 10);
+        fo->setHealth(10);
+        g_MinnowCount++;
+    }
 }
 
 Minnow* SceneSP3::FetchFO()
@@ -529,24 +537,35 @@ void SceneSP3::UpdateLoop(double dt)
         GameObject *go = (GameObject *)*it;
         if (go->active)
         {
+            // SEA CREATURE
             if (go->objectType == GameObject::SEACREATURE)
             {
-                Minnow *fo = (Minnow *)*it;
-                if (fo->seaType == SeaCreature::MINNOW)
+                SeaCreature *sc = (SeaCreature *)*it;
+
+                if (sc->getHealth() <= 0)
+                    sc->active = false;
+
+                // MINNOW
+                if (sc->seaType == SeaCreature::MINNOW)
                 {
-                    if (fo->state == Minnow::FLOCK)
+                    Minnow *fo = (Minnow *)*it;
+
+                    if (fo->getisLeader())
+                        fo->pos += fo->vel * dt * 2;
+                    else if (fo->state == Minnow::FLOCK)
                         fo->pos += fo->vel * dt;
                     else
                         fo->pos += fo->vel * dt * 10;
 
-                    // Collision
                     hitbox2::updatehitbox(fo->collision, fo->pos);
 
                     Vector3 tempCentreOfMass(0, 0, 0);
                     Vector3 tempRepelVector(0, 0, 0);
                     Vector3 tempForceVector(0, 0, 0);
+                    Vector3 ahead(0, 0, 0);
 
-                    Vector3 ahead = fo->pos + fo->vel.Normalized() * 5;
+                    if (!fo->vel.IsZero())
+                        ahead = fo->pos + fo->vel.Normalized() * 5;
 
                     if (terraincollision(ahead, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
                     {
@@ -562,35 +581,25 @@ void SceneSP3::UpdateLoop(double dt)
                     for (std::vector<GameObject *>::iterator it2 = m_goList.begin(); it2 != m_goList.end(); ++it2)
                     {
                         Minnow *other = (Minnow *)*it2;
-                        if (other->objectType == GameObject::SEACREATURE)
+                        if (other->active)
                         {
-                            if (other->getisLeader())
+                            if (other->objectType == GameObject::SEACREATURE)
                             {
-                                continue;
-                            }
-                            else if (other->active && fo != other && fo->seaType == SeaCreature::MINNOW && fo->state == Minnow::FLOCK)
-                            {
-                                if ((fo->pos - other->pos).LengthSquared() < g_distFromSeperation)
+                                if (fo != other && other->seaType == SeaCreature::MINNOW &&other->getisLeader())
                                 {
-                                    tempRepelVector = other->pos - fo->pos;
-                                    other->vel += other->seperation(tempRepelVector);
+                                    if (fo->state == Minnow::FLOCK && !fo->getisLeader() && (other->pos - fo->pos).LengthSquared() < g_MinnowAttractRange * 2)
+                                        fo->vel += fo->cohesion(other) + fo->alignment(tempForceVector);
+                                    else if (fo->state == Minnow::FLEE && !fo->getisLeader())
+                                        fo->vel += fo->seperation(tempCentreOfMass) * 2;
                                 }
-                            }
-                        }
-                    }
-
-
-                    for (std::vector<GameObject *>::iterator it2 = m_goList.begin(); it2 != m_goList.end(); ++it2)
-                    {
-                        Minnow *other = (Minnow *)*it2;
-                        if (other->objectType == GameObject::SEACREATURE)
-                        {
-                            if (other->seaType == SeaCreature::MINNOW && fo != other && other->getisLeader())
-                            {
-                                if (fo->state == Minnow::FLOCK && !fo->getisLeader() && (other->pos - fo->pos).LengthSquared() < g_MinnowAttractRange)
-                                    fo->vel += fo->cohesion(other) + fo->alignment(tempForceVector);
-                                else if (fo->state == Minnow::FLEE && !fo->getisLeader())
-                                    fo->vel += fo->seperation(tempCentreOfMass) * 2;
+                                else if (other->active && fo != other && fo->seaType == SeaCreature::MINNOW && fo->state == Minnow::FLOCK)
+                                {
+                                    if ((fo->pos - other->pos).LengthSquared() < g_distFromSeperation)
+                                    {
+                                        tempRepelVector = other->pos - fo->pos;
+                                        other->vel += other->seperation(tempRepelVector);
+                                    }
+                                }
                             }
                         }
                     }
@@ -620,72 +629,293 @@ void SceneSP3::UpdateLoop(double dt)
                         fo->setpanicTime(0.f);
                     }
                 }
+                // PUFFERFISH
+                else if (sc->seaType == SeaCreature::PUFFER)
+                {
+                    Pufferfish *fo = (Pufferfish*)*it;
+
+                    hitbox2::updatehitbox(fo->collision, fo->pos);
+                    Vector3 displacement = playerpos - fo->pos;
+
+                    switch (fo->pstate)
+                    {
+                    case Pufferfish::IDLE:
+                    {
+                        if (collision(fo->collision, player_box))
+                        {
+                            fo->setMoveCoolDown(0.0);
+                            fo->vel *= -2;
+
+                            if (fishVel.Length() < 3)
+                                fishVel = Vector3(5, 5, 5);
+
+                            fishVel *= -2.f;
+                            walkCam.Move(fishVel * (float)dt);
+                            playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+
+                            skipper->setHealth(skipper->getHealth() - 10);
+
+                            DamageText* text = FetchTO();
+                            text->setActive(true);
+                            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
+                            text->setLastDamage(10);
+                            text->setScaleText(Vector3(0, 0, 0));
+
+                            fo->scale = Vector3(10, 10, 10);
+                            fo->pstate = Pufferfish::ENRAGED;
+                        }
+
+                        fo->pos += fo->vel * dt;
+
+                        break;
+                    }
+                    case Pufferfish::ENRAGED:
+                    {
+                        if (displacement.LengthSquared() > 400 * 400)
+                        {
+                            fo->vel *= -1.f;
+                            fo->scale = Vector3(5, 5, 5);
+                            fo->pstate = Pufferfish::IDLE;
+                        }
+
+                        if (collision(fo->collision, player_box))
+                        {
+                            fo->setMoveCoolDown(0.0);
+                            fo->vel *= -2;
+
+                            if (fishVel.Length() < 3)
+                                fishVel = Vector3(5, 5, 5);
+
+                            fishVel *= -2.f;
+                            walkCam.Move(fishVel * (float)dt);
+                            playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+
+                            skipper->setHealth(skipper->getHealth() - 20);
+
+                            DamageText* text = FetchTO();
+                            text->setActive(true);
+                            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
+                            text->setLastDamage(20);
+                            text->setScaleText(Vector3(0, 0, 0));
+                        }
+
+                        if (fo->getMoveCoolDown() > 0.5)
+                        {
+                            fo->vel += displacement.Normalized();
+                        }
+
+                        if (fo->vel.x > 50)
+                            fo->vel.x = 50;
+                        if (fo->vel.y > 50)
+                            fo->vel.y = 50;
+                        if (fo->vel.z > 50)
+                            fo->vel.z = 50;
+                        if (fo->vel.x < -50)
+                            fo->vel.x = -50;
+                        if (fo->vel.y < -50)
+                            fo->vel.y = -50;
+                        if (fo->vel.z < -50)
+                            fo->vel.z = -50;
+
+                        fo->setMoveCoolDown(fo->getMoveCoolDown() + dt);
+                        fo->pos += fo->vel * dt;
+
+                        break;
+                    }
+                    }
+
+                    // terrain collision
+                    if (terraincollision(fo->collision, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
+                    {
+                        fo->vel *= -5.f;
+                        fo->pos.y += 4;
+                    }
+
+                    // height limit
+                    if (fo->pos.y > 1000)
+                    {
+                        fo->pos.y -= 1;
+                        fo->vel.y = -fo->vel.y;
+                    }
+                }
             }
+            // PROJECTILE
             else if (go->objectType == GameObject::PROJECTILE)
             {
                 Projectile *po = (Projectile *)*it;
-                po->pos += po->vel * (float)dt;
+                po->pos += po->vel * dt * 500;
 
-                if (go->pos.y < -1000)
-                    po->active = false;
-                else if (go->pos.y > 1000)
-                    po->active = false;
+                po->setLifetime(po->getLifetime() - dt);
 
-                if (go->pos.x < -1000)
-                    po->active = false;
-                else if (go->pos.x > 1000)
-                    po->active = false;
-
-                if (go->pos.z < -1000)
-                    po->active = false;
-                else if (go->pos.z > 1000)
-                    po->active = false;
-
-                for (std::vector<GameObject *>::iterator it2 = m_goList.begin(); it2 != m_goList.end(); ++it2)
+                if (po->getLifetime() <= 0.0)
                 {
-                    GameObject* other = (GameObject *)*it2;
-                    if (other->objectType == GameObject::SEACREATURE && other->active && go != other)
-                    {
-                        Minnow *fo = (Minnow *)*it2;
-                        if (fo->seaType != SeaCreature::MINNOW)
-                            continue;
-                        else
-                        {
-                            if (fo->state == Minnow::FLOCK && (fo->pos - po->pos).LengthSquared() < 5000)
-                            {
-                                fo->state = Minnow::FLEE;
-                                fo->vel.Set(Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10));
-                            }
-                            if ((fo->pos - po->pos).LengthSquared() < po->scale.z + fo->scale.z)
-                            {
-                                po->active = false;
-                                fo->active = false;
-                                cout << "dead" << endl;
-                                g_MinnowCount--;
-                            }
-                        }
-                    }
-                    if (other->objectType == GameObject::BOSS && other->active && go != other)
-                    {
-                        GiantSquid *squid = (GiantSquid *)*it2;
-                        if (squid->bossType != Boss::GIANTSQUID || po->projectileType != Projectile::BULLET)
-                            continue;
-                        else
-                        {
-                            if (collision(squid->collision, go->pos))
-                            {
-                                po->active = false;
-                                squid->setHealth(squid->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                    po->active = false;
+                }
 
-                                DamageText* text = FetchTO();
-                                text->setActive(true);
-                                text->setLastHitPos(po->pos);
-                                text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-                                text->setScaleText(Vector3(0, 0, 0));
+                // BULLET
+                if (po->projectileType == Projectile::BULLET)
+                {
+                    for (std::vector<GameObject *>::iterator it2 = m_goList.begin(); it2 != m_goList.end(); ++it2)
+                    {
+                        GameObject* other = (GameObject *)*it2;
+                        if (other->active)
+                        {
+                            // Collision check of BULLET on SEA CREATURES
+                            if (other->objectType == GameObject::SEACREATURE && go != other)
+                            {
+                                SeaCreature *sc = (SeaCreature *)*it2;
+                                if (sc->seaType == SeaCreature::MINNOW)
+                                {
+                                    Minnow *fo = (Minnow *)*it2;
+                                    if (fo->state == Minnow::FLOCK && (fo->pos - po->pos).LengthSquared() < 5000)
+                                    {
+                                        fo->state = Minnow::FLEE;
+                                        fo->vel.Set(Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10));
+                                    }
+                                    if ((fo->pos - po->pos).LengthSquared() < po->scale.z + fo->scale.z)
+                                    {
+                                        po->active = false;
+                                        fo->active = false;
+                                        cout << "dead" << endl;
+                                        g_MinnowCount--;
+                                    }
+                                }
+                                else if (sc->seaType == SeaCreature::PUFFER)
+                                {
+                                    Pufferfish *fo = (Pufferfish *)*it2;
+
+                                    Vector3 displacement = po->pos - fo->pos;
+                                    if (displacement.LengthSquared() < fo->scale.z + fo->scale.z + 50)
+                                    {
+                                        fo->scale = Vector3(10, 10, 10);
+                                        if (fo->pstate == Pufferfish::IDLE)
+                                            fo->pstate = Pufferfish::ENRAGED;
+
+                                        po->active = false;
+                                        fo->setHealth(fo->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+                                        DamageText* text = FetchTO();
+                                        text->setActive(true);
+                                        text->setLastHitPos(po->pos);
+                                        text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                                        text->setScaleText(Vector3(0, 0, 0));
+                                    }
+                                }
+                                else if (sc->seaType == SeaCreature::FCRAB)
+                                {
+
+                                }
+                                else if (sc->seaType == SeaCreature::CHIMERA)
+                                {
+
+                                }
+                                else if (sc->seaType == SeaCreature::CUTTLE)
+                                {
+
+                                }
+                            }
+                            // Collision check of BULLET on BOSS
+                            else if (other->objectType == GameObject::BOSS && go != other)
+                            {
+                                Boss* bo = (Boss*)*it2;
+                                if (bo->bossType == Boss::GIANTSQUID)
+                                {
+                                    GiantSquid *squid = (GiantSquid *)*it2;
+                                    // Squid head
+                                    if (collision(squid->collision, po->pos))
+                                    {
+                                        po->active = false;
+                                        squid->setHealth(squid->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+                                        DamageText* text = FetchTO();
+                                        text->setActive(true);
+                                        text->setLastHitPos(po->pos);
+                                        text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                                        text->setScaleText(Vector3(0, 0, 0));
+                                    }
+
+                                    // Tentacle
+                                    for (int i = 0; i < 6; ++i)
+                                    {
+                                        if (collision(squid->tentacle[i]->collision, po->pos))
+                                        {
+                                            po->active = false;
+                                            squid->tentacle[i]->setHealth(squid->tentacle[i]->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+                                            DamageText* text = FetchTO();
+                                            text->setActive(true);
+                                            text->setLastHitPos(po->pos);
+                                            text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                                            text->setScaleText(Vector3(0, 0, 0));
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
+                if (po->projectileType == Projectile::INK)
+                {
+                    if ((po->pos - playerpos).LengthSquared() < (po->scale.x * po->scale.x) + (skipper->scale.x * skipper->scale.x))
+                    {
+                        po->active = false;
+
+                        skipper->setHealth(skipper->getHealth() - 20);
+
+                        DamageText* text = FetchTO();
+                        text->setActive(true);
+                        text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() + Vector3(0, 10, 0));
+                        text->setLastDamage(20);
+                        text->setScaleText(Vector3(0, 0, 0));
+                    }
+                }
+            }
+            // CAPTURED
+            else if (go->objectType == GameObject::CAPTURED)
+            {
+                SeaCreature *fo = (SeaCreature *)*it;
+
+                fo->pos += fo->vel * dt;
+
+                hitbox2::updatehitbox(fo->collision, fo->pos);
+
+                Vector3 tempCentreOfMass(0, 0, 0);
+                Vector3 tempRepelVector(0, 0, 0);
+                Vector3 tempForceVector(0, 0, 0);
+
+                if (terraincollision(fo->collision, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
+                {
+                    fo->vel *= -5;
+                }
+
+                for (std::vector<GameObject *>::iterator it2 = m_goList.begin(); it2 != m_goList.end(); ++it2)
+                {
+                    Minnow *other = (Minnow *)*it2;
+                    if (other->active)
+                    {
+                        if ((playerpos - other->pos).LengthSquared() < g_distFromSeperation)
+                        {
+                            tempRepelVector = other->pos - playerpos;
+                            other->vel += other->seperation(tempRepelVector);
+                        }
+                    }
+                }
+
+                fo->vel += fo->cohesion(playerpos, walkCam.GetDir()) + fo->alignment(tempForceVector);
+
+                // Cap velocity
+                if (go->vel.x > 20)
+                    go->vel.x = 20;
+                if (go->vel.y > 20)
+                    go->vel.y = 20;
+                if (go->vel.z > 20)
+                    go->vel.z = 20;
+                if (go->vel.x < -20)
+                    go->vel.x = -20;
+                if (go->vel.y < -20)
+                    go->vel.y = -20;
+                if (go->vel.z < -20)
+                    go->vel.z = -20;
             }
         }
     }
@@ -820,17 +1050,17 @@ void SceneSP3::Update(double dt)
         Projectile *po = FetchPO();
 
 		static const float focusLength = 300.f;
-		static const float projectileSpeed = 20.f;
 
 		Vector3 focusPoint = walkCam.GetPos() + Vector3(0, walkCam.yOffset, 0) + walkCam.GetDir() * (focusLength - walkCam.distance);
 
         po->objectType = GameObject::PROJECTILE;
-        po->projectileType = Projectile::PBULLET;
+        po->projectileType = Projectile::BULLET;
         po->active = true;
         po->scale.Set(1, 1, 1);
 		po->pos = playerpos;
-		po->vel = (focusPoint - playerpos).Normalized() * projectileSpeed;
+		po->vel = (focusPoint - playerpos).Normalized();
 		po->vel += fishVel;
+        po->setLifetime(0.5);
 
         bSPACEstate = false;
     }
@@ -988,7 +1218,6 @@ void SceneSP3::Update(double dt)
 			//			skipper->stamina = 100;
 			//	}
 
-				std::cout << skipper->stamina << std::endl;
 
 			fishVel +=
 				forceApplied
@@ -1115,6 +1344,8 @@ void SceneSP3::Update(double dt)
 	UpdateCaptured(dt);
 	UpdateProjectile(dt);
 	UpdateSquadFire(dt);
+    UpdateSpawner(dt);
+
 	if (Application::IsKeyPressed('M'))
 	{
 		for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
@@ -1138,49 +1369,99 @@ void SceneSP3::Update(double dt)
 	{
 		skipper->setTarget(skipper);
 	}
+}
 
-    MinnowLeaderSpawner.setPos(Vector3(-200, 500, 0));
+void SceneSP3::UpdateSpawner(double dt)
+{
+    // Spawner
     MinnowLeaderSpawner.CheckCount(g_MinnowLeaderCount, g_MaxMinnowLeader);
 
     if (MinnowLeaderSpawner.getIsSpawn())
     {
-        Minnow* minnowLeader = FetchFO();
-        minnowLeader->active = true;
-        minnowLeader->objectType = GameObject::SEACREATURE;
-        minnowLeader->seaType = SeaCreature::MINNOW;
-        minnowLeader->state = Minnow::FLOCK;
-        minnowLeader->setHealth(50);
-        minnowLeader->setisLeader(true);
-        minnowLeader->scale.Set(1, 1, 1);
-        minnowLeader->pos.Set(MinnowLeaderSpawner.getPos().x, MinnowLeaderSpawner.getPos().y, MinnowLeaderSpawner.getPos().z);
-        minnowLeader->vel.Set(Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10));
-        minnowLeader->collision = hitbox2::generatehitbox(minnowLeader->pos, 10, 10, 10);
-        g_MinnowLeaderCount++;
+        Vector3 tv1(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(-1000.f, 1000.f));
+        if (!terraincollision(tv1, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
+        {
+            Minnow* minnowLeader = FetchFO();
+            minnowLeader->active = true;
+            minnowLeader->objectType = GameObject::SEACREATURE;
+            minnowLeader->seaType = SeaCreature::MINNOW;
+            minnowLeader->state = Minnow::FLOCK;
+            minnowLeader->setHealth(50);
+            minnowLeader->setisLeader(true);
+            minnowLeader->scale.Set(1, 1, 1);
+            minnowLeader->pos.Set(tv1.x, tv1.y, tv1.z);
+            minnowLeader->vel.Set(Math::RandFloatMinMax(-20, 20), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-20, 20));
+            minnowLeader->collision = hitbox2::generatehitbox(minnowLeader->pos, 10, 10, 10);
+            g_MinnowLeaderCount++;
+
+            for (int i = 0; i <= 10; ++i)
+            {
+                Minnow* minnow = FetchFO();
+                minnow->active = true;
+                minnow->objectType = GameObject::SEACREATURE;
+                minnow->seaType = SeaCreature::MINNOW;
+                minnow->state = Minnow::FLOCK;
+                minnow->setHealth(50);
+                minnow->setisLeader(false);
+                minnow->scale.Set(1, 1, 1);
+                minnow->pos.Set(tv1.x + Math::RandFloatMinMax(-20, 20), tv1.y + Math::RandFloatMinMax(-20, 20), tv1.z + Math::RandFloatMinMax(-20, 20));
+                minnow->vel.Set(Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10));
+                minnow->collision = hitbox2::generatehitbox(minnow->pos, 10, 10, 10);
+                g_MinnowCount++;
+            }
+        }
     }
 
-    MinnowSpawner.setPos(Vector3(-200, 500, 0));
     MinnowSpawner.CheckCount(g_MinnowCount, g_MaxMinnow);
 
     if (MinnowSpawner.getIsSpawn())
     {
-        Minnow* minnow = FetchFO();
-        minnow->active = true;
-        minnow->objectType = GameObject::SEACREATURE;
-        minnow->seaType = SeaCreature::MINNOW;
-        minnow->state = Minnow::FLOCK;
-        minnow->setHealth(50);
-        minnow->setisLeader(false);
-        minnow->scale.Set(1, 1, 1);
-        minnow->pos.Set(MinnowSpawner.getPos().x, MinnowSpawner.getPos().y, MinnowSpawner.getPos().z);
-        minnow->vel.Set(Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10));
-        minnow->collision = hitbox2::generatehitbox(minnow->pos, 10, 10, 10);
-        g_MinnowCount++;
+        Vector3 tv2(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(-1000.f, 1000.f));
+        if (!terraincollision(tv2, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
+        {
+            Minnow* minnow = FetchFO();
+            minnow->active = true;
+            minnow->objectType = GameObject::SEACREATURE;
+            minnow->seaType = SeaCreature::MINNOW;
+            minnow->state = Minnow::FLOCK;
+            minnow->setHealth(50);
+            minnow->setisLeader(false);
+            minnow->scale.Set(1, 1, 1);
+            minnow->pos.Set(tv2.x, tv2.y, tv2.z);
+            minnow->vel.Set(Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10));
+            minnow->collision = hitbox2::generatehitbox(minnow->pos, 10, 10, 10);
+            g_MinnowCount++;
+        }
+    }
+
+    switch (SharedData::GetInstance()->SD_CurrentArea)
+    {
+    case 1:
+    {
+
+        break;
+    }
+    case 2:
+    {
+
+        break;
+    }
+    case 3:
+    {
+
+        break;
+    }
+    case 4:
+    {
+
+        break;
+    }
     }
 }
 
 void SceneSP3::UpdateProjectile(double dt)
 {
-	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	/*for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
 	{
 		GameObject *go = (GameObject *)*it;
 		if (go->active)
@@ -1263,7 +1544,7 @@ void SceneSP3::UpdateProjectile(double dt)
 				}
 			}
 		}
-	}
+	}*/
 }
 
 void SceneSP3::UpdateSquadFire(double dt)
@@ -1387,9 +1668,9 @@ void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
     glEnable(GL_DEPTH_TEST);
 }
 
-void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x, float y, float rot)
+void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex, float sizey, float x, float y, float rot)
 {
-	glDisable(GL_DEPTH_TEST);
+    glDisable(GL_DEPTH_TEST);
 
     Mtx44 ortho;
     ortho.SetToOrtho(-80, 80, -60, 60, -10, 10);
@@ -1400,8 +1681,8 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x,
     modelStack.PushMatrix();
     modelStack.LoadIdentity();
     modelStack.Translate(x, y, 0);
-	modelStack.Rotate(rot, 0, 0, 1);
-    modelStack.Scale(size, size, size);
+    modelStack.Rotate(rot, 0, 0, 1);
+    modelStack.Scale(sizex, sizey, 1);
 
     Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -1427,7 +1708,7 @@ void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float size, float x,
     modelStack.PopMatrix();
     viewStack.PopMatrix();
     projectionStack.PopMatrix();
-	glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
@@ -1505,71 +1786,114 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
     mesh->Render();
 }
 
-ParticleObject* SceneSP3::GetParticle_NAME()
-{
-//    for (auto it : particleList)
-//    {
-//        ParticleObject *particle = (ParticleObject *)it;
-//        if (!particle->active)
-//        {
-//            particle->active = true;
-//            m_particleCount++;
-//            return particle;
-//        }
-//    }
-//
-//    for (unsigned i = 0; i <= 1; ++i)
-//    {
-//        ParticleObject *particle = new ParticleObject(PARTICLEOBJECT_TYPE::P_NAME);
-//        particleList.push_back(particle);
-//    }
-//
-//    ParticleObject *particle = particleList.back();
-//    particle->active = true;
-//    m_particleCount++;
-//
-//    return particle;
-    return 0;
-}
-
 void SceneSP3::UpdateParticles(double dt)
 {
-    //ParticleObject* P_NAME = GetParticle_NAME();
-    //P_NAME->type = PARTICLEOBJECT_TYPE::P_NAME;
-    //P_NAME->scale.Set(1.5f, 1.5f, 1.5f);
-    //P_NAME->vel.Set(Math::RandFloatMinMax(-3.f, 3.f), Math::RandFloatMinMax(0, 8.f), Math::RandFloatMinMax(-3.f, 3.f));
-    //P_NAME->rotateSpeed = Math::RandFloatMinMax(20.f, 40.f);
-    //P_NAME->pos.Set(0, 0, 0);
+    if (m_particleCount < 300)
+    {
+        ParticleObject* P_Bubble = GetParticle();
+        P_Bubble->type = PARTICLEOBJECT_TYPE::P_BUBBLE;
+        P_Bubble->scale.Set(5.0f, 5.0f, 5.0f);
+        P_Bubble->vel.Set(Math::RandFloatMinMax(-3.f, 3.f), Math::RandFloatMinMax(0, 8.f), Math::RandFloatMinMax(-3.f, 3.f));
+        P_Bubble->pos.Set(Math::RandFloatMinMax(-2000.f, 2000.f), Math::RandFloatMinMax(-2000.f, 2000.f), Math::RandFloatMinMax(-2000.f, 2000.f));
+    }
 
-    //for (auto it : particleList)
+    //for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     //{
-    //    ParticleObject* particle = (ParticleObject*)it;
-    //    if (particle->active)
+    //    GameObject* go = (GameObject*)*it;
+    //    if (go->objectType != GameObject::SEACREATURE)
+    //        continue;
+    //    else
     //    {
-    //        if (particle->type == PARTICLEOBJECT_TYPE::P_NAME)
+    //        SeaCreature* sc = (SeaCreature*)*it;
+    //        if (sc->getHealth() <= 50)
     //        {
-    //            particle->vel += m_gravity * (float)dt;
-    //            particle->pos += particle->vel  * (float)dt * 10.f;
-    //            particle->rotation = Math::RadianToDegree(atan2(camera.position.x - particle->pos.x, camera.position.z - particle->pos.z));
-    //            particle->scale -= Vector3(.01f, .01f, .01f);
-    //        }
-
-    //        if (particle->scale.x <= 0 ||
-    //            particle->scale.y <= 0 ||
-    //            particle->scale.z <= 0)
-    //        {
-    //            particle->active = false;
-    //            m_particleCount--;
-    //        }
-
-    //        // If particle reaches below terrain
-    //        if (particle->pos.y < (350.f * ReadHeightMap(m_heightMap, particle->pos.x / 4000.0f, particle->pos.z / 4000.0f)))
-    //        {
-    //            particle->active = false;
-    //            m_particleCount--;
+    //            ParticleObject* P_Vacuum = GetParticle();
+    //            P_Vacuum->type = PARTICLEOBJECT_TYPE::P_VACUUM;
+    //            P_Vacuum->scale.Set(5.0f, 5.0f, 5.0f);
+    //            P_Vacuum->vel.Set(Math::RandFloatMinMax(-3.f, 3.f), Math::RandFloatMinMax(0, 8.f), Math::RandFloatMinMax(-3.f, 3.f));
+    //            P_Vacuum->pos.Set(Math::RandFloatMinMax(-2000.f, 2000.f), Math::RandFloatMinMax(-2000.f, 2000.f), Math::RandFloatMinMax(-2000.f, 2000.f));
     //        }
     //    }
+
     //}
+
+
+    for (auto it : particleList)
+    {
+        ParticleObject* particle = (ParticleObject*)it;
+        if (particle->active)
+        {
+            if (particle->type == PARTICLEOBJECT_TYPE::P_BUBBLE)
+            {
+                particle->vel += (0, 9.8f, 0) * (float)dt;
+                particle->pos += particle->vel  * (float)dt * 10.f;
+                particle->rotation = Math::RadianToDegree(atan2(playerpos.x - particle->pos.x, playerpos.z - particle->pos.z));
+
+                if (particle->pos.y > 2000.f)
+                {
+                    particle->active = false;
+                    m_particleCount--;
+                }
+            }
+            else if (particle->type == PARTICLEOBJECT_TYPE::P_VACUUM)
+            {
+                particle->pos += particle->vel  * (float)dt * 10.f;
+                particle->rotation = Math::RadianToDegree(atan2(playerpos.x - particle->pos.x, playerpos.z - particle->pos.z));
+            }
+        }
+    }
+}
+
+ParticleObject* SceneSP3::GetParticle()
+{
+    for (auto it : particleList)
+    {
+        ParticleObject *particle = (ParticleObject *)it;
+        if (!particle->active)
+        {
+            particle->active = true;
+            m_particleCount++;
+            return particle;
+        }
+    }
+
+    for (unsigned i = 0; i <= 1; ++i)
+    {
+        ParticleObject *particle = new ParticleObject(PARTICLEOBJECT_TYPE::P_BUBBLE);
+        particleList.push_back(particle);
+    }
+
+    ParticleObject *particle = particleList.back();
+    particle->active = true;
+    m_particleCount++;
+
+    return particle;
+}
+
+void SceneSP3::RenderParticles()
+{
+    for (auto it : particleList)
+    {
+        ParticleObject* particle = (ParticleObject*)it;
+        if (particle->type == PARTICLEOBJECT_TYPE::P_BUBBLE)
+        {
+            modelStack.PushMatrix();
+            modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
+            modelStack.Rotate(particle->rotation, 0, 1, 0);
+            modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
+            RenderMesh(meshList[GEO_BUBBLE], false);
+            modelStack.PopMatrix();
+        }
+        else if (particle->type == PARTICLEOBJECT_TYPE::P_VACUUM)
+        {
+            modelStack.PushMatrix();
+            modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
+            modelStack.Rotate(particle->rotation, 0, 1, 0);
+            modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
+            RenderMesh(meshList[GEO_VACUUM], false);
+            modelStack.PopMatrix();
+        }
+    }
 }
 
 void SceneSP3::RenderFO(Minnow *fo)
@@ -1625,6 +1949,38 @@ void SceneSP3::Render()
 	RenderPassMain();
 }
 
+void SceneSP3::RenderHUD()
+{
+    float barscale = 50.f;
+
+    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+    {
+        GameObject* go = (GameObject*)*it;
+        if (go->objectType != GameObject::BOSS)
+            continue;
+        else
+        {
+            Boss* bo = (Boss*)*it;
+            switch (bo->bossType)
+            {
+            case Boss::GIANTSQUID:
+            {
+                if ((bo->pos - playerpos).LengthSquared() < 400 * 400)
+                {
+                    float percentage = (100.f / 1000.f) * (float)bo->getHealth();
+                    float healthscale = (barscale / 100) * percentage;
+                    float healthtranslate = (50.f / 100.f) * (100.f - percentage);
+                    RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 5.0f, 0.f, 50.0f);
+                    RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 5.0f, 0.f - healthtranslate, 50.0f);
+                }
+                break;
+            }
+            }
+
+        }
+    }
+}
+
 void SceneSP3::RenderMinimap()
 {
 	const float scale = 0.08f;
@@ -1634,7 +1990,7 @@ void SceneSP3::RenderMinimap()
 
 	float angle = 90 + Math::RadianToDegree(atan2(walkCam.GetDir().z, walkCam.GetDir().x));
 
-	RenderMeshIn2D(meshList[GEO_MINIMAP], false, 20,
+	RenderMeshIn2D(meshList[GEO_MINIMAP], false, 20, 20,
 		mPos.x, mPos.y, angle);
 
 	for (auto it : m_goList)
@@ -1695,7 +2051,7 @@ void SceneSP3::RenderMinimap()
 
 			Vector2 r = mPos + p2;
 
-			RenderMeshIn2D(meshList[g], false, inRange ? 1.f : 0.8f, r.x, r.y);
+            RenderMeshIn2D(meshList[g], false, inRange ? 1.f : 0.8f, inRange ? 1.f : 0.8f, r.x, r.y);
 
 		} break;
 
@@ -1712,7 +2068,7 @@ void SceneSP3::RenderMinimap()
 
 			Vector2 r = mPos + p2;
 
-			RenderMeshIn2D(meshList[GEO_MINIMAP_BOSS], false, inRange ? 1.5f : 1.2f , r.x, r.y);
+            RenderMeshIn2D(meshList[GEO_MINIMAP_BOSS], false, inRange ? 1.5f : 1.2f, inRange ? 1.5f : 1.2f, r.x, r.y);
 
 		} break;
 
@@ -1721,7 +2077,7 @@ void SceneSP3::RenderMinimap()
 		}
 	}
 
-	RenderMeshIn2D(meshList[GEO_MINIMAP_AVATAR], false, 3.f,
+    RenderMeshIn2D(meshList[GEO_MINIMAP_AVATAR], false, 3.f, 3.f,
 		mPos.x, mPos.y);
 }
 
