@@ -312,11 +312,18 @@ void SceneSP3::Init()
     meshList[GEO_SQUIDTENTACLEEND]->textureArray[0] = LoadTGA("Image//squidtentacle.tga");
 
 	meshList[GEO_CRAB_BODY] = MeshBuilder::GenerateOBJ("crabBody", "Models//OBJ//scrab_body.obj");
+	meshList[GEO_CRAB_BODY]->textureArray[0] = LoadTGA("Image//scrab.tga");
 	meshList[GEO_CRAB_LEG_UPPER] = MeshBuilder::GenerateOBJ("crabLegUpper", "Models//OBJ//scrab_Uleg.obj");
+	meshList[GEO_CRAB_LEG_UPPER]->textureArray[0] = LoadTGA("Image//scrab.tga");
 	meshList[GEO_CRAB_LEG_LOWER] = MeshBuilder::GenerateOBJ("crabLegLower", "Models//OBJ//scrab_Lleg.obj");
+	meshList[GEO_CRAB_LEG_LOWER]->textureArray[0] = LoadTGA("Image//scrab.tga");
 	meshList[GEO_CRAB_ARM_UPPER] = MeshBuilder::GenerateOBJ("crabArmUpper", "Models//OBJ//scrab_Uarm.obj");
+	meshList[GEO_CRAB_ARM_UPPER]->textureArray[0] = LoadTGA("Image//scrab.tga");
 	meshList[GEO_CRAB_ARM_MID] = MeshBuilder::GenerateOBJ("crabArmMid", "Models//OBJ//scrab_Marm.obj");
+	meshList[GEO_CRAB_ARM_MID]->textureArray[0] = LoadTGA("Image//scrab.tga");
 	meshList[GEO_CRAB_ARM_LOWER] = MeshBuilder::GenerateOBJ("crabArmLower", "Models//OBJ//scrab_Larm.obj");
+	meshList[GEO_CRAB_ARM_LOWER]->textureArray[0] = LoadTGA("Image//scrab.tga");
+
 
     meshList[GEO_MINNOW] = MeshBuilder::GenerateOBJ("minnow", "Models//OBJ//minnow.obj");
 

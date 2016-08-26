@@ -1,7 +1,9 @@
 #ifndef FRILLEDSHARK_H
 #define	FRILLEDSHARK_H
 
+
 #include "Boss.h"
+
 
 class FrilledShark :public Boss
 {
@@ -20,9 +22,8 @@ public:
 		CHARGE,
 		STRAFE,
 		GRAPPLE,
+		COLLIDING,
 		STATE_END
-
-
 
 	};
 
@@ -31,16 +32,30 @@ public:
 					Vector3 pos, Vector3 vel, Vector3 scale, bool active);
 	~FrilledShark();
 	
-	void UpdateFrilledShark(double);
-	void AnimateFrilledShark(double);
-
+	void UpdateFrilledShark(double,std::vector<unsigned char>);
+	void AnimateFrilledShark(double); 
+	void UpdateWhiskers();
+	void HandleCollision();
+	float Ljaw_rotate;
+	double m_strafeTime;
 	FSstate m_state;
 	FSnode m_node[5];
-	FSnode m_Rwhisker;
-	FSnode m_Lwhisker;
+
+
+	hitbox2 m_Rwhisker;
+	hitbox2 m_Lwhisker;
 	
 
 private:
+
+
+
+
+
+
+
+
+
 
 };
 

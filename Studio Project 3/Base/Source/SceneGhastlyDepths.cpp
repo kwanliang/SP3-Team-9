@@ -391,7 +391,7 @@ void SceneGhastlyDepths::RenderMinimap()
 void SceneGhastlyDepths::Update(double dt)
 {
 	SceneSP3::Update(dt);
-	frilledshark->UpdateFrilledShark(dt);
+	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
 	frilledshark->m_node[0].yaw = val*4;
 	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
 	{

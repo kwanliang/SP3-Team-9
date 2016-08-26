@@ -15,7 +15,7 @@ public:
         GIANTSQUID = 0,
         GIANTSQUIDTENTACLE,
         FRILLEDSHARK,
-
+		GIANTCRAB,
         TYPE_TOTAL,
     };
 
