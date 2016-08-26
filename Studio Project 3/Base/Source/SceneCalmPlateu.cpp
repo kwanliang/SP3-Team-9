@@ -38,12 +38,12 @@ void SceneCalmPlateu::Init()
             );
     }
 
-    walkCam.Init(
-        Vector3(0, 500, 0),
-        Vector3(0, 0, 10),
-        Vector3(0, 1, 0),
-        60
-        );
+    //walkCam.Init(
+    //    Vector3(0, 500, 0),
+    //    Vector3(0, 0, 10),
+    //    Vector3(0, 1, 0),
+    //    60
+    //    );
 
 
     for (int i = 0; i < 10; i++)
@@ -106,7 +106,7 @@ void SceneCalmPlateu::InitGiantSquid()
         giantSquid->tentacle[i]->setTentaclePos(giantSquid->pos);
         giantSquid->tentacle[i]->setScale(Vector3(10, 30, 10));
         giantSquid->tentacle[i]->setHealth(50);
-        giantSquid->tentacle[i]->setActive(true);
+        giantSquid->tentacle[i]->m_active = true;
         giantSquid->tentacle[i]->collision = hitbox::generatehitbox(giantSquid->pos, giantSquid->tentacle[i]->getScale().x, giantSquid->tentacle[i]->getScale().y, giantSquid->tentacle[i]->getScale().z, 0);
     }
 
@@ -149,7 +149,7 @@ void SceneCalmPlateu::RenderGiantSquid()
         RenderMesh(meshList[GEO_SQUIDBODY], false);
 
         // Part 1
-        if (giantSquid->tentacle[0]->getActive())
+        if (giantSquid->tentacle[0]->m_active)
         {
             modelStack.PushMatrix();
             modelStack.Translate(-.25f, .1f, -.15f);
@@ -181,7 +181,7 @@ void SceneCalmPlateu::RenderGiantSquid()
 
 
         // Part 2
-        if (giantSquid->tentacle[5]->getActive())
+        if (giantSquid->tentacle[5]->m_active)
         {
             modelStack.PushMatrix();
             modelStack.Translate(-.25f, .1f, .15f);
@@ -212,7 +212,7 @@ void SceneCalmPlateu::RenderGiantSquid()
         }
 
         // Part 3
-        if (giantSquid->tentacle[1]->getActive())
+        if (giantSquid->tentacle[1]->m_active)
         {
             modelStack.PushMatrix();
             modelStack.Translate(.15f, .1f, -.15f);
@@ -243,7 +243,7 @@ void SceneCalmPlateu::RenderGiantSquid()
         }
 
         // Part 4
-        if (giantSquid->tentacle[4]->getActive())
+        if (giantSquid->tentacle[4]->m_active)
         {
             modelStack.PushMatrix();
             modelStack.Translate(.15f, .1f, .15f);
@@ -275,7 +275,7 @@ void SceneCalmPlateu::RenderGiantSquid()
 
 
         // Part 5
-        if (giantSquid->tentacle[2]->getActive())
+        if (giantSquid->tentacle[2]->m_active)
         {
             modelStack.PushMatrix();
             modelStack.Translate(-.05f, .1f, -.35f);
@@ -306,7 +306,7 @@ void SceneCalmPlateu::RenderGiantSquid()
         }
 
         // Part 6
-        if (giantSquid->tentacle[3]->getActive())
+        if (giantSquid->tentacle[3]->m_active)
         {
             modelStack.PushMatrix();
             modelStack.Translate(-.05f, .1f, .35f);
@@ -534,7 +534,7 @@ void SceneCalmPlateu::RenderPassMain()
 
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
     // Render the crosshair
-    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f);
+    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
 
     RenderMesh(meshList[GEO_AXES], false);
 
@@ -599,7 +599,7 @@ void SceneCalmPlateu::Update(double dt)
 {
     SceneSP3::Update(dt);
     //UpdatePuffer(dt);
-    UpdateGiantSquid(dt);
+    //UpdateGiantSquid(dt);
     UpdateParticles(dt);
 
     hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
@@ -617,9 +617,9 @@ void SceneCalmPlateu::Update(double dt)
         hitbox::updatehitbox(giantSquid->tentacle[i]->collision, giantSquid->tentacle[i]->collision.m_position);
 
         if (giantSquid->tentacle[i]->getHealth() < 0)
-            giantSquid->tentacle[i]->setActive(false);
+            giantSquid->tentacle[i]->m_active = false;
 
-        if (!giantSquid->tentacle[i]->getActive())
+        if (!giantSquid->tentacle[i]->m_active)
             giantSquid->tentacle[i]->collision.m_position = Vector3(0, 0, 0);
     }
 
@@ -659,7 +659,7 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
 
         for (int i = 0; i < 6; ++i)
         {
-            if (giantSquid->tentacle[i]->getActive())
+            if (giantSquid->tentacle[i]->m_active)
             {
                 canSpin = true;
                 break;

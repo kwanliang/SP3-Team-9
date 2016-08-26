@@ -154,6 +154,8 @@ void Application::Init()
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	sceneManager = new SceneManager();
+    sceneManager->SetCurrentScene(NULL);
+    sceneManager->SetPreviousScene(NULL);
 }
 
 void Application::Run()
@@ -167,6 +169,12 @@ void Application::Run()
 		GetMouseUpdate();
 		sceneManager->GetCurrentScene()->Update(m_timer.getElapsedTime());
 		sceneManager->GetCurrentScene()->Render();
+        if (sceneManager->GetPreviousScene() != NULL)
+        {
+            sceneManager->GetPreviousScene()->Exit();
+            delete sceneManager->GetPreviousScene();
+            sceneManager->SetPreviousScene(NULL);
+        }
 		//Swap buffers
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...

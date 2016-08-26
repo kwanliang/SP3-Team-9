@@ -30,9 +30,6 @@ public:
 
 	static SceneManager *sceneManager;
 
-
-
-
 private:
 	Application();
 	~Application();

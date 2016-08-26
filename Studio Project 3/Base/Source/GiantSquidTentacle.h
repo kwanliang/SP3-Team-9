@@ -10,7 +10,7 @@ protected:
     Vector3 m_TentaclePos;
     Vector3 m_scale;
     int m_health;
-    bool m_active;
+
 
 public:
     GiantSquidTentacle();
@@ -25,8 +25,9 @@ public:
     int getHealth();
     void setHealth(int m_health);
 
-    bool getActive();
-    void setActive(bool m_active);
+    bool m_active;
+    //bool getActive();
+    //void setActive(bool m_active);
 
     hitbox collision;
 };

@@ -2091,11 +2091,13 @@ void SceneSP3::RenderMinimap()
 void SceneSP3::Exit()
 {
     // Cleanup VBO
+
     for (int i = 0; i < NUM_GEOMETRY; ++i)
     {
         if (meshList[i])
             delete meshList[i];
     }
+
     while (particleList.size() > 0)
     {
         ParticleObject *particle = particleList.back();
@@ -2114,7 +2116,9 @@ void SceneSP3::Exit()
         delete to;
         m_textList.pop_back();
     }
+
     glDeleteProgram(m_programID);
     glDeleteProgram(m_gPassShaderID);
     glDeleteVertexArrays(1, &m_vertexArrayID);
+
 }

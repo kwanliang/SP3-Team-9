@@ -44,12 +44,12 @@ void GiantSquidTentacle::setHealth(int m_health)
     this->m_health = m_health;
 }
 
-bool GiantSquidTentacle::getActive()
-{
-    return this->m_active;
-}
-
-void GiantSquidTentacle::setActive(bool m_active)
-{
-    this->m_active = m_active;
-}
+//bool GiantSquidTentacle::getActive()
+//{
+//    return this->m_active;
+//}
+//
+//void GiantSquidTentacle::setActive(bool m_active)
+//{
+//    this->m_active = m_active;
+//}

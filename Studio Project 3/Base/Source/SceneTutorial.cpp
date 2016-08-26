@@ -19,7 +19,7 @@ SceneTutorial::~SceneTutorial()
 
 void SceneTutorial::Init()
 {
-    SceneSP3::Init();
+    //SceneSP3::Init();
     currentCam = &walkCam;
     walkCam.Init(
         Vector3(0, 400, 0),
