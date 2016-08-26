@@ -45,7 +45,6 @@ public:
     void UpdateLoop(double dt);
 	void UpdatePuffer(double dt);
 	void UpdateCaptured(double dt);
-	void UpdateProjectile(double dt);
 	void UpdateSquadFire(double dt);
     void UpdateSpawner(double dt);
 
