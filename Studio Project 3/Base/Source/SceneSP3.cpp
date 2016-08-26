@@ -810,7 +810,7 @@ void SceneSP3::UpdateLoop(double dt)
             else if (go->objectType == GameObject::PROJECTILE)
             {
                 Projectile *po = (Projectile *)*it;
-                po->pos += po->vel * dt * 500;
+                po->pos += po->vel * (float)dt;
 
                 po->setLifetime(po->getLifetime() - dt);
 
@@ -818,6 +818,8 @@ void SceneSP3::UpdateLoop(double dt)
                 {
                     po->active = false;
                 }
+
+				cout << po->pos << endl;
 
                 // BULLET
                 if (po->projectileType == Projectile::BULLET)
@@ -1081,6 +1083,9 @@ void SceneSP3::UpdateTravel()
 
 void SceneSP3::Update(double dt)
 {
+	const float acceleration = 50.f;
+	const float speedLimit = 50.f;
+
     if (Application::IsKeyPressed('1'))
         glEnable(GL_CULL_FACE);
     if (Application::IsKeyPressed('2'))
@@ -1118,6 +1123,8 @@ void SceneSP3::Update(double dt)
 
 		static const float focusLength = 300.f;
 
+		static const float projectileSpeed = 150.f;
+
 		Vector3 focusPoint = walkCam.GetPos() + Vector3(0, walkCam.yOffset, 0) + walkCam.GetDir() * (focusLength - walkCam.distance);
 
         po->objectType = GameObject::PROJECTILE;
@@ -1125,9 +1132,18 @@ void SceneSP3::Update(double dt)
         po->active = true;
         po->scale.Set(1, 1, 1);
 		po->pos = playerpos;
-		po->vel = (focusPoint - playerpos).Normalized();
-		po->vel += fishVel;
-        po->setLifetime(0.5);
+
+		//po->vel = (focusPoint - playerpos).Normalized();
+		//po->vel += fishVel;
+        po->setLifetime(3.);
+
+		{
+			Vector3 bulletDirection = focusPoint - playerpos;
+			bulletDirection.Normalize();
+
+			po->vel = bulletDirection * projectileSpeed + fishVel;
+
+		}
 
         bSPACEstate = false;
     }
@@ -1177,9 +1193,6 @@ void SceneSP3::Update(double dt)
 		}*/
 
 		{
-			const float acceleration = 50.f;
-			const float speedLimit = 50.f;
-
 			static float staminaFactor = 1.f;
 
 			Vector3 forceApplied;
@@ -1284,7 +1297,6 @@ void SceneSP3::Update(double dt)
 			//		if (skipper->stamina >= 100)
 			//			skipper->stamina = 100;
 			//	}
-
 
 			fishVel +=
 				forceApplied

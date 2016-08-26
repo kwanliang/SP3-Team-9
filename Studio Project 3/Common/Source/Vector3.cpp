@@ -210,6 +210,20 @@ Vector3& Vector3::operator*=( float scalar )
 	return *this;
 }
 
+Vector3 Vector3::operator/ (float divisor) const
+{
+	return Vector3(x / divisor, y / divisor, z / divisor);
+}
+
+Vector3& Vector3::operator/= (float divisor)
+{
+	x /= divisor;
+	y /= divisor;
+	z /= divisor;
+
+	return *this;
+}
+
 /******************************************************************************/
 /*!
 \brief
