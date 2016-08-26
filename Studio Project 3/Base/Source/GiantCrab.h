@@ -24,6 +24,7 @@ public:
 	};
 	struct Carm
 	{
+		Vector3 m_Upos;
 		float y_upper = 0;
 		float x_upper = 0;
 		float x_lower = 0;
@@ -35,13 +36,20 @@ public:
 	CrabState GetState() const;
 	void SetState(const CrabState &state);
 	float GetWalkAnim(const unsigned &id = 0);
-	float speed;
+	//float speed;
+	float m_rotate;
 	void Move(const double &dist);
-	void updateGC(double);
+	void UpdateGC(double);
 	void AnimateGC(double);
+	void UpdateArms(double);
+	
+	float a = 250;
+	float b = 200;
+
 	Cleg m_leg[8];
 
 	Carm m_Larm;
+	Carm m_Rarm;
 
 	float walkAnim;
 

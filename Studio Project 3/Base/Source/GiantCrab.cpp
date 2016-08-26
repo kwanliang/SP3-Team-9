@@ -2,9 +2,12 @@
 #include "SharedData.h"
 
 GiantCrab::GiantCrab()
-	: state(GiantCrab::IDLE), walkAnim(0)
+	: state(GiantCrab::IDLE), walkAnim(0), m_rotate (0)
 {
-	speed = 10;
+	//float a = 200;
+	//float b = 100;
+
+	//speed = 10;
 	m_leg[0].Ulegmax = true;
 	m_leg[0].Llegmax = true;
 	m_leg[0].m_Urotate = 10;
@@ -88,10 +91,10 @@ void GiantCrab::Move(const double &dist)
 	//pos += right * (float)dist;
 }
 
-void GiantCrab::updateGC(double dt)
+void GiantCrab::UpdateGC(double dt)
 {
 	Vector3 P_pos = SharedData::GetInstance()->SD_PlayerPos;
-	Vector3 Pdisplacement = pos - P_pos;
+	Vector3 Pdisplacement = m_Larm.m_Upos - P_pos;
 	//std::cout << Pdisplacement.Length() << std::endl;
 
 	if (Pdisplacement.LengthSquared() > 500 * 500)
@@ -107,13 +110,12 @@ void GiantCrab::updateGC(double dt)
 	else
 	{
 		float upperY_angle = Math::RadianToDegree(atan2(Pdisplacement.x, Pdisplacement.z));//upper arm y rotation
-		m_Larm.y_upper = upperY_angle + 90+20;
+		m_Larm.y_upper = upperY_angle + 90;
 		
 		//init sides of triangle
-		float c = Pdisplacement.Length()-150;
-		std::cout << c << std::endl;
-		float a = 180;
-		float b = 100;
+		float c = Pdisplacement.Length();
+		//std::cout << c << std::endl;
+
 
 		//float  upperX_angle = Math::RadianToDegree(acos(Math::DegreeToRadian (((b*b) + (c*c) - (a*a)) / (2 * (b*c)) ) ));
 		////std::cout << upperX_angle << std::endl;
@@ -125,18 +127,52 @@ void GiantCrab::updateGC(double dt)
 		
 		float lowerX_angle = Math::RadianToDegree( acos( -((a*a) + (b*b) - (c*c)) / (2 * (a*b))) );
 		//std::cout << lowerX_angle << std::endl;
-		m_Larm.x_lower = lowerX_angle;
+		m_Larm.x_lower = -lowerX_angle;
 	}
 
 
-
+	UpdateArms(dt);
 	AnimateGC(dt);
 	
 }
 
+void GiantCrab::UpdateArms(double dt)
+{
+	Vector3 P_pos = SharedData::GetInstance()->SD_PlayerPos;
+	Vector3 Pdisplacement = pos - P_pos;
+	//std::cout << Pdisplacement.Length() << std::endl;
+	float x_com, z_com, y_com;
+	float x, y, z;
+
+
+	x_com = Math::RadianToDegree(cos(Math::DegreeToRadian(65 - m_rotate))) * 0.9;
+	z_com = Math::RadianToDegree(sin(Math::DegreeToRadian(65 - m_rotate))) * 0.9;
+
+	x = pos.x + x_com;
+	z = pos.z + z_com;
+	m_Larm.m_Upos = Vector3(x, pos.y, z);
+	//m_Larm.y_upper m_rotate;
+
+	//lower arm cords
+	
+	//x_com = (Math::RadianToDegree(cos(Math::DegreeToRadian(m_Larm.y_upper)))  -
+	//	Math::RadianToDegree(cos(Math::DegreeToRadian(m_Larm.x_upper))) )*2.15 ;
+	//y_com = Math::RadianToDegree(sin(Math::DegreeToRadian(m_Larm.x_upper))) * 4.3;
+	//z_com = Math::RadianToDegree(sin(Math::DegreeToRadian(m_Larm.y_upper))) * 4.3;
+	//
+	//z = m_Larm.m_Upos.z - z_com;
+	//x = m_Larm.m_Upos.x + x_com;
+	//y = m_Larm.m_Upos.y + y_com;
+	//m_Larm.m_Lpos = Vector3(x, y, z);
+
+
+	
+
+}
 
 void GiantCrab::AnimateGC(double dt)
 {
+	float speed = 10;
 
 	for (unsigned i = 0; i < 8; ++i)
 	{

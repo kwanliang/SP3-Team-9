@@ -49,9 +49,8 @@ void SceneGhastlyDepths::Init()
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, 0);
 	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
-	frilledshark = new FrilledShark();
-    //m_goList.push_back(frilledshark);
-
+	frilledshark = new FrilledShark;
+	//frilledshark->active = true;
 	for (unsigned i = 0; i <= 20; i++)
 	{
 		Cuttlefish* c = FetchCuttle();
@@ -392,7 +391,7 @@ void SceneGhastlyDepths::Update(double dt)
 {
 	SceneSP3::Update(dt);
 	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
-	frilledshark->m_node[0].yaw = val*4;
+	//frilledshark->m_node[0].yaw = val*4;
 	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
 	{
 		GameObject *go = (GameObject*)*it;
