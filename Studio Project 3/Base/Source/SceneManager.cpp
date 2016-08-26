@@ -24,8 +24,6 @@ void SceneManager::LoadScene()
 	case SharedData::A_CALMPLATAEU:
 		currentScene = new SceneCalmPlateu();
 		currentScene->Init();
-        //if (previousScene != NULL)
-        //    previousScene->Exit();
 		break;
 
 	case SharedData::A_CREEPINGRIDGE:

@@ -49,7 +49,8 @@ void SceneGhastlyDepths::Init()
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, 0);
 	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
-	frilledshark = new FrilledShark;
+	frilledshark = new FrilledShark();
+    //m_goList.push_back(frilledshark);
 
 	for (unsigned i = 0; i <= 20; i++)
 	{
@@ -63,7 +64,6 @@ void SceneGhastlyDepths::Init()
 		c->vel.Set(Math::RandFloatMinMax(-40, 40), Math::RandFloatMinMax(-20, 20), Math::RandFloatMinMax(-40, 40));
 	}
 
-	m_goList.push_back(frilledshark);
 }
 
 

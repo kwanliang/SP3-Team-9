@@ -25,12 +25,6 @@ public:
 
     void SetCurrentScene(SceneSP3* currentScene);
     void SetPreviousScene(SceneSP3* previousScene);
-
-    //SceneTutorial* SceneTutorial;
-    //SceneCalmPlateu* SceneCalmPlateu;
-    //SceneCreepingRidge* SceneCreepingRidge;
-    //SceneGhastlyDepths* SceneGhastlyDepths;
-    //SceneNightmareTrench* SceneNightmareTrench;
 };
 
 #endif
