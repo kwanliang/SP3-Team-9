@@ -22,6 +22,12 @@ FrilledShark::FrilledShark()
 		m_node[i].pos.z = m_node[i - 1].pos.z -80;
 
 	}
+	for (unsigned i = 0; i < 5; i++)
+	{
+		m_FSbox[i] = hitbox::generatehitbox(Vector3(0, 0, 0), 110, 50, 110 ,NULL);
+
+	}
+
 
 	m_node[4].pos = m_node[3].pos;
 	m_node[4].pos.z = m_node[3].pos.z;
@@ -49,6 +55,7 @@ void FrilledShark::UpdateFrilledShark(double dt, std::vector<unsigned char> hmap
 	Vector3 P_displacement = P_pos - pos;
 
 	UpdateWhiskers();
+	UpdateHitboxes();
 	switch (m_state)
 	{
 	case IDLE:
@@ -56,6 +63,10 @@ void FrilledShark::UpdateFrilledShark(double dt, std::vector<unsigned char> hmap
 		Ljaw_rotate = -10;
 
 		std::cout << "IDLE" << std::endl;
+
+
+		if (P_displacement.LengthSquared() < 500 * 500)
+			m_state = AGGRO;
 		break;
 
 
@@ -231,5 +242,15 @@ void FrilledShark::UpdateWhiskers()
 
 void FrilledShark::HandleCollision()
 {
+	if (m_state != IDLE)
 	m_state = STRAFE;
+}
+
+void FrilledShark::UpdateHitboxes()
+{
+	for (unsigned i = 0; i < 5; i++)
+	{
+		hitbox::updatehitbox(m_FSbox[i],m_node[i].pos);
+
+	}
 }

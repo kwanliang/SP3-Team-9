@@ -5,7 +5,7 @@
 #include <vector>
 #include "Mtx44.h"
 #include "Chimera.h"
-
+#include "Isopod.h"
 static int g_ChimeraCount = 0;
 
 class SceneNightmareTrench : public SceneSP3
@@ -29,6 +29,7 @@ public:
 	void RenderTerrain();
 	void RenderSkyPlane();
 	void RenderChimera(Chimera*);
+	void RenderBoss();
 
 
 private:
@@ -47,7 +48,7 @@ private:
 
 	//Fish test
 	Capture fishy;
-
+	Isopod* isopod;
 };
 
 #endif

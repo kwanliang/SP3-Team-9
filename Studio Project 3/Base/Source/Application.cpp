@@ -160,7 +160,7 @@ void Application::Init()
 
 void Application::Run()
 {
-	SharedData::GetInstance()->SD_CurrentArea = 3;
+	SharedData::GetInstance()->SD_CurrentArea = 4;
 	sceneManager->LoadScene();
 	//scene
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame

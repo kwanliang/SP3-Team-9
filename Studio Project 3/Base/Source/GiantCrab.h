@@ -12,7 +12,8 @@ public:
 		IDLE = 0,
 		ATTACK,
 		GRAB,
-		AGGRESSIVE,
+		AGGRO,
+		VORTEX,
 		NUM_STATE
 	};
 	struct Cleg
@@ -39,7 +40,7 @@ public:
 	//float speed;
 	float m_rotate;
 	void Move(const double &dist);
-	void UpdateGC(double);
+	void UpdateGC(double, std::vector<unsigned char>);
 	void AnimateGC(double);
 	void UpdateArms(double);
 	
@@ -50,8 +51,10 @@ public:
 
 	Carm m_Larm;
 	Carm m_Rarm;
-
+	float speed;
 	float walkAnim;
+
+	hitbox grabArea;
 
 private:
 	CrabState state;

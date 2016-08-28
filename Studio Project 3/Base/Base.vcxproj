@@ -28,6 +28,7 @@
     <ClCompile Include="Source\GiantCrab.cpp" />
     <ClCompile Include="Source\GiantSquid.cpp" />
     <ClCompile Include="Source\GiantSquidTentacle.cpp" />
+    <ClCompile Include="Source\Isopod.cpp" />
     <ClCompile Include="Source\LoadHmap.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
@@ -74,6 +75,7 @@
     <ClInclude Include="Source\GiantCrab.h" />
     <ClInclude Include="Source\GiantSquid.h" />
     <ClInclude Include="Source\GiantSquidTentacle.h" />
+    <ClInclude Include="Source\Isopod.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadHmap.h" />
     <ClInclude Include="Source\LoadOBJ.h" />

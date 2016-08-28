@@ -1,69 +1,21 @@
-﻿Build started 8/26/2016 4:41:13 PM.
-     1>Project "C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Base\Base.vcxproj" on node 2 (Build target(s)).
+﻿Build started 8/29/2016 12:55:25 AM.
+     1>Project "C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\Base\Base.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/Common/Source" /I"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/glew/include" /I"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/glfw/include" /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\Application.cpp Source\Camera.cpp Source\Camera2.cpp Source\Camera3.cpp Source\SceneCalmPlateu.cpp Source\SceneCreepingRidge.cpp Source\SceneGhastlyDepths.cpp Source\SceneManager.cpp Source\SceneNightmareTrench.cpp Source\SceneSP3.cpp Source\SceneTutorial.cpp Source\main.cpp
-         SceneSP3.cpp
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(246): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(561): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(563): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(565): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(581): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(630): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(675): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(728): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(752): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(780): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(782): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(787): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(813): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(945): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1003): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1136): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1145): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1150): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1338): warning C4244: '+=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1345): warning C4244: '-=' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1556): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenesp3.cpp(1569): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-         Generating Code...
-         Compiling...
-         SceneTutorial.cpp
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenetutorial.cpp(83): warning C4305: 'argument' : truncation from 'double' to 'float'
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\/Common/Source" /I"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\/glew/include" /I"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\/glfw/include" /ZI /nologo /W3 /WX- /Od /Oy- /D _VARIADIC_MAX=10 /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source\SceneNightmareTrench.cpp
          SceneNightmareTrench.cpp
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(82): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(303): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(310): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(319): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(325): warning C4305: 'argument' : truncation from 'double' to 'float'
-         SceneGhastlyDepths.cpp
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\sceneghastlydepths.cpp(79): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\sceneghastlydepths.cpp(176): warning C4305: 'argument' : truncation from 'double' to 'float'
-         SceneCreepingRidge.cpp
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(45): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(101): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(107): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(113): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(123): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(129): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(135): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(143): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(177): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(207): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(236): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecreepingridge.cpp(287): warning C4305: 'argument' : truncation from 'double' to 'float'
-         SceneCalmPlateu.cpp
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecalmplateu.cpp(65): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>c:\users\509n1\desktop\sp3-team-9\studio project 3\base\source\scenecalmplateu.cpp(373): warning C4305: 'argument' : truncation from 'double' to 'float'
-         Generating Code...
-         Skipping... (no relevant changes detected)
-         main.cpp
-         SceneManager.cpp
-         Camera3.cpp
-         Camera2.cpp
-         Camera.cpp
-         Application.cpp
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(81): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(81): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(88): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(88): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(94): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(100): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(122): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(344): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(351): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(360): warning C4305: 'argument' : truncation from 'double' to 'float'
+     1>c:\users\yue xian\desktop\sp3-team-9\studio project 3\base\source\scenenightmaretrench.cpp(366): warning C4305: 'argument' : truncation from 'double' to 'float'
        Link:
-         D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug" /LIBPATH:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/glfw/lib-msvc100" /LIBPATH:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\/glew/lib" Common.lib winmm.lib opengl32.lib glu32.lib glew32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.lib" /MACHINE:X86 Debug\Application.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\Debug" /LIBPATH:"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\/glfw/lib-msvc100" /LIBPATH:"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\/glew/lib" Common.lib winmm.lib opengl32.lib glu32.lib glew32.lib glfw3.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.lib" /MACHINE:X86 Debug\Application.obj
          Debug\Boss.obj
          Debug\Camera.obj
          Debug\Camera2.obj
@@ -80,6 +32,7 @@
          Debug\GiantCrab.obj
          Debug\GiantSquid.obj
          Debug\GiantSquidTentacle.obj
+         Debug\Isopod.obj
          Debug\LoadHmap.obj
          Debug\LoadOBJ.obj
          Debug\LoadTGA.obj
@@ -108,9 +61,9 @@
          Debug\WalkCamera.obj
      1>Application.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:LBR' specification
      1>LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-         Base.vcxproj -> C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.exe
-     1>Done Building Project "C:\Users\509n1\Desktop\SP3-Team-9\Studio Project 3\Base\Base.vcxproj" (Build target(s)).
+         Base.vcxproj -> C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\Debug\Base.exe
+     1>Done Building Project "C:\Users\Yue Xian\Desktop\SP3-Team-9\Studio Project 3\Base\Base.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:06.56
+Time Elapsed 00:00:01.05

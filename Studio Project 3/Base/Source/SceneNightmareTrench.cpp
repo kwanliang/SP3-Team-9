@@ -44,6 +44,8 @@ void SceneNightmareTrench::Init()
 		c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10,NULL);
 		c->setHealth(200);
 	}
+
+	isopod = new Isopod;
 }
 
 void SceneNightmareTrench::RenderTerrain()
@@ -64,12 +66,50 @@ void SceneNightmareTrench::RenderSkyPlane()
 	modelStack.PopMatrix();
 }
 
+void SceneNightmareTrench::RenderBoss()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 500, 0);
+	modelStack.Scale(80, 80, 80);
+	//modelStack.Rotate(rotateSky, 0, 1, 0);
+	RenderMesh(meshList[GEO_ISOPOD_BODY], false);
+
+	for (unsigned i = 0; i < 6; i++)
+	{
+		float rr = 60 * sin(isopod->m_Rleg[i].roll);
+		modelStack.PushMatrix();//right side
+		modelStack.Translate(0.6-i*0.3, 0.08, -0.4+i*0.05);
+		modelStack.Rotate(90+rr, 0, 1, 0);
+		RenderMesh(meshList[GEO_ISOPOD_LEG], false);
+		modelStack.PopMatrix();
+
+		float rl = 60 * sin(isopod->m_Lleg[i].roll);
+		modelStack.PushMatrix();//left side
+		modelStack.Translate(0.6 - i*0.3, 0.08, 0.4-i*0.05);
+		modelStack.Rotate(-90-rl, 0, 1, 0);
+		RenderMesh(meshList[GEO_ISOPOD_LEG], false);
+		modelStack.PopMatrix();
+	}
+	modelStack.PushMatrix();//left claw
+	modelStack.Translate(0.9, 0.05, 0.22);
+	modelStack.Rotate(30, 0, 0,1);
+	RenderMesh(meshList[GEO_ISOPOD_CLAW], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();//right claw
+	modelStack.Translate(0.9, 0.05, -0.22);
+	modelStack.Rotate(30, 0, 0,1);
+	RenderMesh(meshList[GEO_ISOPOD_CLAW], false);
+	modelStack.PopMatrix();
+
+	modelStack.PopMatrix();
+}
 
 void SceneNightmareTrench::RenderWorld()
 {
 	RenderTerrain();
 	RenderSkyPlane();
-
+	RenderBoss();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(playerpos.x, playerpos.y+5, playerpos.z);
@@ -190,6 +230,7 @@ void SceneNightmareTrench::RenderPassMain()
 	viewStack.LoadMatrix(currentCam->GetView());
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
+	SceneSP3::RenderParticles();
 	RenderWorld();
 	/*if (lights[0].type == Light::LIGHT_DIRECTIONAL)
 	{
@@ -426,25 +467,28 @@ void SceneNightmareTrench::Update(double dt)
         trest = false;
     }
 
-    ChimeraSpawner.CheckCount(g_ChimeraCount, g_MaxChimera);
+   // ChimeraSpawner.CheckCount(g_ChimeraCount, g_MaxChimera);
 
-    if (ChimeraSpawner.getIsSpawn())
-    {
-        Vector3 tv(Math::RandFloatMinMax(0.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(0.f, 1000.f));
-        if (!terraincollision(tv, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
-        {
-            Chimera*c = FetchChimera();
-            c->active = true;
-            c->objectType = GameObject::SEACREATURE;
-            c->seaType = SeaCreature::CHIMERA;
-            //p->pstate = Pufferfish::IDLE;
-            c->scale.Set(20, 20, 20);
-            c->pos.Set(tv.x, tv.y, tv.z);
-            c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
-            //p->collision = hitbox2::generatehitbox(p->pos, 8, 8, 8);
-            c->setHealth(200);
-        }
-    }
+    //if (ChimeraSpawner.getIsSpawn())
+    //{
+    //    Vector3 tv(Math::RandFloatMinMax(0.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(0.f, 1000.f));
+    //    if (!terraincollision(tv, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
+    //    {
+    //        Chimera*c = FetchChimera();
+    //        c->active = true;
+    //        c->objectType = GameObject::SEACREATURE;
+    //        c->seaType = SeaCreature::CHIMERA;
+    //        //p->pstate = Pufferfish::IDLE;
+    //        c->scale.Set(20, 20, 20);
+    //        c->pos.Set(tv.x, tv.y, tv.z);
+    //        c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
+    //        //p->collision = hitbox2::generatehitbox(p->pos, 8, 8, 8);
+    //        c->setHealth(200);
+    //    }
+    //}
+
+	isopod->UpdateIsopod(dt,m_heightMap[4]);
+
 }
 
 

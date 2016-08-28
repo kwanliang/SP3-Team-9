@@ -16,7 +16,7 @@ SceneGhastlyDepths::~SceneGhastlyDepths()
 void SceneGhastlyDepths::Init()
 {
 	SceneSP3::Init();
-	/*if (SharedData::GetInstance()->SD_Down)
+	if (SharedData::GetInstance()->SD_Down)
 	{
 	
 		walkCam.Init(
@@ -36,16 +36,16 @@ void SceneGhastlyDepths::Init()
 		60
 		);
 	
-	}*/
+	}
 
-	walkCam.Init(
-		Vector3(0, 350, 0),
-		Vector3(0, 0, 10),
-		Vector3(0, 1, 0),
-		60
-		);
+	//walkCam.Init(
+	//	Vector3(0, 350, 0),
+	//	Vector3(0, 0, 10),
+	//	Vector3(0, 1, 0),
+	//	60
+	//	);
 
-	m_travelzonedown = hitbox::generatehitbox(Vector3(-27, 288, 1490), 250, 500, 1000, 0);
+	m_travelzonedown = hitbox::generatehitbox(Vector3(-27, 288, 1890), 150, 500, 1000, 0);
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, 0);
 	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
@@ -76,7 +76,7 @@ void SceneGhastlyDepths::RenderBoss()
 	
 	modelStack.PushMatrix();
 	modelStack.Translate(0,-0.2,1);
-	modelStack.Rotate(-10,1, 0, 0);
+	modelStack.Rotate(frilledshark->Ljaw_rotate,1, 0, 0);
 	RenderMesh(meshList[GEO_FSHARK_LJAW], false);
 	
 	modelStack.PopMatrix();
@@ -261,6 +261,7 @@ void SceneGhastlyDepths::RenderPassMain()
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 	RenderWorld();
+	SceneSP3::RenderParticles();
 	/*if (lights[0].type == Light::LIGHT_DIRECTIONAL)
 	{
 		Vector3 lightDir(lights[0].position.x, lights[0].position.y, lights[0].position.z);
@@ -322,6 +323,21 @@ void SceneGhastlyDepths::RenderPassMain()
 	}
 
 
+
+	for (unsigned i = 0; i < 5; i++)
+	{
+		
+		modelStack.PushMatrix();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
+		modelStack.Translate(frilledshark->m_FSbox[i].m_position.x, frilledshark->m_FSbox[i].m_position.y, frilledshark->m_FSbox[i].m_position.z);
+		modelStack.Scale(frilledshark->m_FSbox[i].m_width, frilledshark->m_FSbox[i].m_height, frilledshark->m_FSbox[i].m_length);
+		RenderMesh(meshList[GEO_CUBE], false);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
+		modelStack.PopMatrix();
+
+	}
+
+
 	// Render the crosshair
 	glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 	RenderMesh(meshList[GEO_AXES], false);
@@ -343,13 +359,13 @@ void SceneGhastlyDepths::RenderPassMain()
 	modelStack.PopMatrix();
 
 
-	modelStack.PushMatrix();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-	modelStack.Translate(m_travelzoneup.m_position.x, m_travelzoneup.m_position.y, m_travelzoneup.m_position.z);
-	modelStack.Scale(m_travelzoneup.m_width, m_travelzoneup.m_height, m_travelzoneup.m_length);
-	RenderMesh(meshList[GEO_CUBE], false);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
+	//modelStack.Translate(m_travelzoneup.m_position.x, m_travelzoneup.m_position.y, m_travelzoneup.m_position.z);
+	//modelStack.Scale(m_travelzoneup.m_width, m_travelzoneup.m_height, m_travelzoneup.m_length);
+	//RenderMesh(meshList[GEO_CUBE], false);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
+	//modelStack.PopMatrix();
 
 
 
@@ -391,6 +407,23 @@ void SceneGhastlyDepths::Update(double dt)
 {
 	SceneSP3::Update(dt);
 	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
+	for (unsigned i = 0; i < 5; ++i)
+	{
+		if (collision(frilledshark->m_FSbox[i], player_box))
+		{
+			std::cout << "collide" << std::endl;
+			////fishVel  += frilledshark->vel *200 * dt;
+			//fishVel = -20 * fishVel;
+			////Vector3 p = walkCam.GetPos();
+			////walkCam.SetPos(Vector3(p.x, p.y+10, p.z));
+		}
+	}
+
+
+
+
+
+
 	//frilledshark->m_node[0].yaw = val*4;
 	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
 	{

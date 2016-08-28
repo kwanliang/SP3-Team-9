@@ -34,12 +34,15 @@ public:
 	
 	void UpdateFrilledShark(double,std::vector<unsigned char>);
 	void AnimateFrilledShark(double); 
+	void UpdateHitboxes();
 	void UpdateWhiskers();
 	void HandleCollision();
 	float Ljaw_rotate;
 	double m_strafeTime;
 	FSstate m_state;
 	FSnode m_node[5];
+
+	hitbox m_FSbox[5];
 
 
 	hitbox2 m_Rwhisker;

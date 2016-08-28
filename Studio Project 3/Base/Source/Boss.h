@@ -16,6 +16,7 @@ public:
         GIANTSQUIDTENTACLE,
         FRILLEDSHARK,
 		GIANTCRAB,
+		ISOPOD,
         TYPE_TOTAL,
     };
 

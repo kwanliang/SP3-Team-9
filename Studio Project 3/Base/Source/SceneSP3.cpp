@@ -227,7 +227,7 @@ void SceneSP3::Init()
     {
         meshList[i] = NULL;
     }
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1,0,0),1.f );
+	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1,1,1),1.f );
     meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference");//, 1000, 1000, 1000);
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateQuad("minimap", Color(0, 0, 0), 2);
 	meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//crosshair.tga");
@@ -306,6 +306,16 @@ void SceneSP3::Init()
 	meshList[GEO_FSHARK_TAIL]->textureArray[0] = LoadTGA("Image//frilledshark.tga");
 
 
+
+
+	meshList[GEO_ISOPOD_BODY] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_body.obj");
+	meshList[GEO_ISOPOD_BODY]->textureArray[0] = LoadTGA("Image//isopod.tga");
+	meshList[GEO_ISOPOD_LEG] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_leg.obj");
+	meshList[GEO_ISOPOD_LEG]->textureArray[0] = LoadTGA("Image//isopod.tga");
+	meshList[GEO_ISOPOD_CLAW] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_claw.obj");
+	meshList[GEO_ISOPOD_CLAW]->textureArray[0] = LoadTGA("Image//isopod.tga");
+
+
     meshList[GEO_SQUIDTENTACLENODE] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//tentacle_node.obj");
     meshList[GEO_SQUIDTENTACLENODE]->textureArray[0] = LoadTGA("Image//squidtentacle.tga");
     meshList[GEO_SQUIDTENTACLEEND] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//tentacle_end.obj");
@@ -326,6 +336,7 @@ void SceneSP3::Init()
 
 
     meshList[GEO_MINNOW] = MeshBuilder::GenerateOBJ("minnow", "Models//OBJ//minnow.obj");
+	meshList[GEO_MINNOW]->textureArray[0] = LoadTGA("Image//minnow.tga");
 
     meshList[GEO_BALL] = MeshBuilder::GenerateSphere("ball", Color(0, 0, 0), 16, 16, 1.f);
     meshList[GEO_BALL2] = MeshBuilder::GenerateSphere("ball", Color(1, 0, 0), 16, 16, 1.f);
@@ -367,7 +378,7 @@ void SceneSP3::Init()
 	player_box = hitbox2::generatehitbox(playerpos, 10, 10, 10);
 	fish_tailrot = 0;
 	fish_tailmax = false;
-
+	m_spCount = 0;
     //if (SPRITENAME)
     //{
     //    SPRITENAME->m_anim = new Animation();
@@ -1158,12 +1169,12 @@ void SceneSP3::Update(double dt)
 		float movespeed = 1000;
 		if (Application::IsKeyPressed('Z'))
 		{
-			val += 20*dt;
+			val += 10*dt;
 			cout << val << endl;
 		}
 		if (Application::IsKeyPressed('X'))
 		{
-			val -=20* dt;
+			val -=10* dt;
 			cout << val << endl;
 		}
 
@@ -1417,7 +1428,7 @@ void SceneSP3::Update(double dt)
     //SPRITENAME->m_anim->animActive = true;
 
     // Particles
-    //UpdateParticles(dt);
+    UpdateParticles(dt);
 	UpdateTravel();
     UpdateLoop(dt);
 	UpdateCaptured(dt);
@@ -1658,7 +1669,7 @@ void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
     glEnable(GL_DEPTH_TEST);
 }
 
-void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex, float sizey, float x, float y, float rot)
+void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex , float sizey , float x, float y, float rot)
 {
     glDisable(GL_DEPTH_TEST);
 
@@ -1781,12 +1792,11 @@ void SceneSP3::UpdateParticles(double dt)
     if (m_particleCount < 300)
     {
         ParticleObject* P_Bubble = GetParticle();
-        P_Bubble->type = PARTICLEOBJECT_TYPE::P_BUBBLE;
+        P_Bubble->type = ParticleObject::P_BUBBLE;
         P_Bubble->scale.Set(5.0f, 5.0f, 5.0f);
         P_Bubble->vel.Set(Math::RandFloatMinMax(-3.f, 3.f), Math::RandFloatMinMax(0, 8.f), Math::RandFloatMinMax(-3.f, 3.f));
         P_Bubble->pos.Set(Math::RandFloatMinMax(-2000.f, 2000.f), Math::RandFloatMinMax(-2000.f, 2000.f), Math::RandFloatMinMax(-2000.f, 2000.f));
     }
-
     //for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     //{
     //    GameObject* go = (GameObject*)*it;
@@ -1807,36 +1817,80 @@ void SceneSP3::UpdateParticles(double dt)
 
     //}
 
+	Vector3 c_pos = walkCam.GetPos();
+	if (m_spCount < 100)
+	{
+		for (unsigned i = 0; i < 3; ++i)
+		{
+			ParticleObject* p = GetParticle(ParticleObject::P_PARTICLE);
+			p->type = ParticleObject::P_PARTICLE;
+			//p->scale.Set(5.0f, 5.0f, 5.0f);
+			p->vel.Set(Math::RandFloatMinMax(-1.f, 1.f), Math::RandFloatMinMax(0, 2.f), Math::RandFloatMinMax(-1.f, 1.f));
+			p->pos.Set(Math::RandFloatMinMax(c_pos.x - 50, c_pos.x + 50), Math::RandFloatMinMax(c_pos.y + 50, c_pos.y + 300), Math::RandFloatMinMax(c_pos.z - 50, c_pos.z + 50));
+		}
+	}
+
 
     for (auto it : particleList)
     {
         ParticleObject* particle = (ParticleObject*)it;
-        if (particle->active)
-        {
-            if (particle->type == PARTICLEOBJECT_TYPE::P_BUBBLE)
-            {
-                particle->vel += (0, 9.8f, 0) * (float)dt;
-                particle->pos += particle->vel  * (float)dt * 10.f;
-                particle->rotation = Math::RadianToDegree(atan2(playerpos.x - particle->pos.x, playerpos.z - particle->pos.z));
+		if (!particle->active)
+			continue;
 
-                if (particle->pos.y > 2000.f)
-                {
-                    particle->active = false;
-                    m_particleCount--;
-                }
-            }
-            else if (particle->type == PARTICLEOBJECT_TYPE::P_VACUUM)
-            {
-                particle->pos += particle->vel  * (float)dt * 10.f;
-                particle->rotation = Math::RadianToDegree(atan2(playerpos.x - particle->pos.x, playerpos.z - particle->pos.z));
-            }
-        }
-    }
+		switch (particle->type)
+		{
+
+		case ParticleObject::P_BUBBLE :
+			{
+				particle->vel += (0, 9.8f, 0) * (float)dt;
+				particle->pos += particle->vel  * (float)dt * 10.f;
+				particle->rotation = Math::RadianToDegree(atan2(playerpos.x - particle->pos.x, playerpos.z - particle->pos.z));
+
+				if (particle->pos.y > 2000.f)
+				{
+					particle->active = false;
+					m_particleCount--;
+				}
+			}
+			break;
+		case ParticleObject::P_VACUUM :
+			{
+				particle->pos += particle->vel  * (float)dt * 10.f;
+				particle->rotation = Math::RadianToDegree(atan2(playerpos.x - particle->pos.x, playerpos.z - particle->pos.z));
+			}
+			break;
+		case ParticleObject::P_PARTICLE :
+			{
+				/*	particle->pos += particle->vel  * (float)dt * 10.f;
+					particle->rotation = Math::RadianToDegree(atan2(playerpos.x - particle->pos.x, playerpos.z - particle->pos.z));*/
+				UpdateSP(particle, dt);
+			}
+			break;
+
+
+		}
+
+     }
 }
 
-ParticleObject* SceneSP3::GetParticle()
+
+void SceneSP3::UpdateSP(ParticleObject* p, double dt)
 {
-    for (auto it : particleList)
+	float range = 150;
+	Vector3 displacment = walkCam.GetPos() - p->pos;
+
+	if (displacment.LengthSquared() > range*range)
+	{
+		p->active = false;
+		m_spCount--;
+	}
+	p->pos += p->vel*dt;
+}
+
+ParticleObject* SceneSP3::GetParticle(ParticleObject::PARTICLEOBJECT_TYPE type)
+{
+	
+	  for (auto it : particleList)
     {
         ParticleObject *particle = (ParticleObject *)it;
         if (!particle->active)
@@ -1847,11 +1901,40 @@ ParticleObject* SceneSP3::GetParticle()
         }
     }
 
+	
+	
+	if (type == ParticleObject::P_PARTICLE)//suspended particles
+	{
+		for (auto it : particleList)
+		{
+			ParticleObject *particle = (ParticleObject *)it;
+			if (!particle->active)
+			{
+				particle->active = true;
+				m_spCount++;
+				return particle;
+			}
+		}
+		for (unsigned i = 0; i <= 1; ++i)
+		{
+			ParticleObject *particle = new ParticleObject(ParticleObject::P_BUBBLE);
+			particleList.push_back(particle);
+		}
+		ParticleObject *particle = particleList.back();
+		particle->active = true;
+		m_spCount++;
+	}
+	
+
     for (unsigned i = 0; i <= 1; ++i)
     {
-        ParticleObject *particle = new ParticleObject(PARTICLEOBJECT_TYPE::P_BUBBLE);
+        ParticleObject *particle = new ParticleObject(ParticleObject::P_BUBBLE);
         particleList.push_back(particle);
     }
+
+
+
+
 
     ParticleObject *particle = particleList.back();
     particle->active = true;
@@ -1865,24 +1948,38 @@ void SceneSP3::RenderParticles()
     for (auto it : particleList)
     {
         ParticleObject* particle = (ParticleObject*)it;
-        if (particle->type == PARTICLEOBJECT_TYPE::P_BUBBLE)
-        {
-            modelStack.PushMatrix();
-            modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
-            modelStack.Rotate(particle->rotation, 0, 1, 0);
-            modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
-            RenderMesh(meshList[GEO_BUBBLE], false);
-            modelStack.PopMatrix();
-        }
-        else if (particle->type == PARTICLEOBJECT_TYPE::P_VACUUM)
-        {
-            modelStack.PushMatrix();
-            modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
-            modelStack.Rotate(particle->rotation, 0, 1, 0);
-            modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
-            RenderMesh(meshList[GEO_VACUUM], false);
-            modelStack.PopMatrix();
-        }
+		if (!particle->active)
+			continue;
+
+		switch (particle->type)
+		{
+		case ParticleObject::P_BUBBLE :
+	
+				modelStack.PushMatrix();
+				modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
+				modelStack.Rotate(particle->rotation, 0, 1, 0);
+				modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
+				RenderMesh(meshList[GEO_BUBBLE], false);
+				modelStack.PopMatrix();
+				break;
+		case ParticleObject::P_VACUUM:
+				modelStack.PushMatrix();
+				modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
+				modelStack.Rotate(particle->rotation, 0, 1, 0);
+				modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
+				RenderMesh(meshList[GEO_VACUUM], false);
+				modelStack.PopMatrix();
+				break;
+		case ParticleObject::P_PARTICLE:
+			modelStack.PushMatrix();
+			modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
+			//modelStack.Rotate(particle->rotation, 0, 1, 0);
+			modelStack.Scale(0.2,0.2,0.2);
+			RenderMesh(meshList[GEO_CUBE], false);
+			modelStack.PopMatrix();
+			break;
+			
+		}
     }
 }
 

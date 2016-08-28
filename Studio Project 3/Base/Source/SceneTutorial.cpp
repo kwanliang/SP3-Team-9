@@ -86,6 +86,8 @@ void SceneTutorial::RenderWorld()
     RenderMesh(meshList[GEO_FISHTAIL], true);
     modelStack.PopMatrix();
     modelStack.PopMatrix();
+
+	SceneSP3::RenderParticles();
 }
 
 void SceneTutorial::RenderPassGPass()

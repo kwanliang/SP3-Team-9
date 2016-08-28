@@ -50,12 +50,13 @@ public:
 
     void RenderText(Mesh* mesh, std::string text, Color color);
     void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-    void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex = 1.0f, float sizey = 1.0f, float x = 0.0f, float y = 0.0f, float rot = 0.f);
+    void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex = 5.0f, float sizey = 5.0f, float x = 0.0f, float y = 0.0f, float rot = 0.f);
     void RenderMesh(Mesh *mesh, bool enableLight);
 
     void RenderParticles();
     void UpdateParticles(double dt);
-    ParticleObject* GetParticle();
+	void UpdateSP(ParticleObject*, double);
+	ParticleObject* GetParticle(ParticleObject::PARTICLEOBJECT_TYPE = ParticleObject::P_BUBBLE);
 
     Minnow* FetchFO();
     Projectile* FetchPO();
@@ -200,6 +201,11 @@ protected:
 		GEO_FSHARK_NODE,
 		GEO_FSHARK_TAIL,
 
+		GEO_ISOPOD_BODY,
+		GEO_ISOPOD_LEG,
+		GEO_ISOPOD_CLAW,
+
+
 		GEO_CHIMERA_BODY,
 		GEO_CHIMERA_FFLIP,
 		GEO_CHIMERA_BFLIP,
@@ -245,6 +251,7 @@ protected:
     std::vector<ParticleObject*> particleList; // Used to store
     Vector3 m_gravity;      // Gravity affecting the particles
     int m_particleCount;    // Number of particles
+	int m_spCount;//suspended particle count
 
 	//ligts and rendering
 	MS modelStack;

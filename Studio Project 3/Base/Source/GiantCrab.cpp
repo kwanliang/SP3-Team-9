@@ -2,7 +2,7 @@
 #include "SharedData.h"
 
 GiantCrab::GiantCrab()
-	: state(GiantCrab::IDLE), walkAnim(0), m_rotate (0)
+	: state(GiantCrab::VORTEX), walkAnim(0), m_rotate (0)
 {
 	//float a = 200;
 	//float b = 100;
@@ -52,6 +52,9 @@ GiantCrab::GiantCrab()
 	m_leg[7].m_Urotate = 17;
 	m_leg[7].m_Lrotate = 34;
 
+
+	grabArea = hitbox::generatehitbox(Vector3(0, 0, 0), 120, 30, 120, NULL);
+
 }
 
 GiantCrab::~GiantCrab()
@@ -91,45 +94,60 @@ void GiantCrab::Move(const double &dist)
 	//pos += right * (float)dist;
 }
 
-void GiantCrab::UpdateGC(double dt)
+void GiantCrab::UpdateGC(double dt, std::vector<unsigned char> hmap)
 {
+	float h = 350.f * ReadHeightMap(hmap, pos.x / 3000.f, pos.z / 3000.f) + 170;
 	Vector3 P_pos = SharedData::GetInstance()->SD_PlayerPos;
-	Vector3 Pdisplacement = m_Larm.m_Upos - P_pos;
+	Vector3 P_displacement = P_pos  -pos;
 	//std::cout << Pdisplacement.Length() << std::endl;
+	
+	if (pos.y < h)
+		pos.y += dt * 10;
+	else if (pos.y > h)
+		pos.y -= dt * 10;
 
-	if (Pdisplacement.LengthSquared() > 500 * 500)
+	switch(state)
 	{
-		float upperY_angle = Math::RadianToDegree(atan2(Pdisplacement.x, Pdisplacement.z));//upper arm y rotation
-		m_Larm.y_upper = upperY_angle + 90;
+	case IDLE:
+		speed = 6;
+		if (P_displacement.LengthSquared() < 600 * 600)
+		{
+			state = AGGRO;
+		}
 
-		float vertical_displace = Pdisplacement.y;
-		float lateral_displace = sqrt((Pdisplacement.x*Pdisplacement.x) + (Pdisplacement.z*Pdisplacement.z));
-		float  upperX_angle = -Math::RadianToDegree(atan2(vertical_displace, lateral_displace));//upper arm x rotation
-		m_Larm.x_upper = upperX_angle;
+		break;
+	case AGGRO:
+		speed = 15;
+		vel = P_displacement.Normalized();
+		m_rotate = Math::RadianToDegree(atan2(P_displacement.x, P_displacement.z))-90;
+		//need collision here
+		//if player enters grabbox, grab mode
+
+		//if (P_displacement.Length() > 500)
+		//{
+		//	state = VORTEX;
+		//}
+
+		break;
+	case GRAB:
+		speed = 0;
+		//vel.Normalize();
+		//if crab takes damage, release --> strafe 
+
+
+		break;
+	case VORTEX:
+		speed = 1;
+		vel = P_pos - grabArea.m_position;
+		vel.Normalize();
+
+
+
+		break;
 	}
-	else
-	{
-		float upperY_angle = Math::RadianToDegree(atan2(Pdisplacement.x, Pdisplacement.z));//upper arm y rotation
-		m_Larm.y_upper = upperY_angle + 90;
-		
-		//init sides of triangle
-		float c = Pdisplacement.Length();
-		//std::cout << c << std::endl;
 
-
-		//float  upperX_angle = Math::RadianToDegree(acos(Math::DegreeToRadian (((b*b) + (c*c) - (a*a)) / (2 * (b*c)) ) ));
-		////std::cout << upperX_angle << std::endl;
-		//m_Larm.x_upper = upperX_angle;
-
-		float  upperX_angle = Math::RadianToDegree(acos((((c*c) + (a*a) - (b*b)) / (2 * (c*a)))));
-		//std::cout << upperX_angle << std::endl;
-		m_Larm.x_upper = upperX_angle;
-		
-		float lowerX_angle = Math::RadianToDegree( acos( -((a*a) + (b*b) - (c*c)) / (2 * (a*b))) );
-		//std::cout << lowerX_angle << std::endl;
-		m_Larm.x_lower = -lowerX_angle;
-	}
-
+	vel.y = 0;
+	pos += vel*dt*speed;
 
 	UpdateArms(dt);
 	AnimateGC(dt);
@@ -138,33 +156,103 @@ void GiantCrab::UpdateGC(double dt)
 
 void GiantCrab::UpdateArms(double dt)
 {
+
+
+
+
+
+
+
 	Vector3 P_pos = SharedData::GetInstance()->SD_PlayerPos;
 	Vector3 Pdisplacement = pos - P_pos;
-	//std::cout << Pdisplacement.Length() << std::endl;
 	float x_com, z_com, y_com;
 	float x, y, z;
 
+	//grabbox
+	x_com = Math::RadianToDegree(cos(Math::DegreeToRadian(-m_rotate))) * 2.5;
+	z_com = Math::RadianToDegree(sin(Math::DegreeToRadian(-m_rotate))) * 2.5;
 
+	hitbox::updatehitbox(grabArea, Vector3(pos.x + x_com, pos.y, pos.z + z_com));
+
+
+	//left
 	x_com = Math::RadianToDegree(cos(Math::DegreeToRadian(65 - m_rotate))) * 0.9;
 	z_com = Math::RadianToDegree(sin(Math::DegreeToRadian(65 - m_rotate))) * 0.9;
 
 	x = pos.x + x_com;
 	z = pos.z + z_com;
 	m_Larm.m_Upos = Vector3(x, pos.y, z);
+
+
+	//right
+	x_com = Math::RadianToDegree(cos(Math::DegreeToRadian(-65 - m_rotate))) * 0.9;
+	z_com = Math::RadianToDegree(sin(Math::DegreeToRadian(-65 - m_rotate))) * 0.9;
+
+	x = pos.x + x_com;
+	z = pos.z + z_com;
+	m_Rarm.m_Upos = Vector3(x, pos.y, z);
+
 	//m_Larm.y_upper m_rotate;
 
-	//lower arm cords
-	
-	//x_com = (Math::RadianToDegree(cos(Math::DegreeToRadian(m_Larm.y_upper)))  -
-	//	Math::RadianToDegree(cos(Math::DegreeToRadian(m_Larm.x_upper))) )*2.15 ;
-	//y_com = Math::RadianToDegree(sin(Math::DegreeToRadian(m_Larm.x_upper))) * 4.3;
-	//z_com = Math::RadianToDegree(sin(Math::DegreeToRadian(m_Larm.y_upper))) * 4.3;
-	//
-	//z = m_Larm.m_Upos.z - z_com;
-	//x = m_Larm.m_Upos.x + x_com;
-	//y = m_Larm.m_Upos.y + y_com;
-	//m_Larm.m_Lpos = Vector3(x, y, z);
 
+	switch (state)
+	{
+	case IDLE:
+		m_Larm.y_upper = -50;
+		m_Larm.x_upper = 55;
+		m_Larm.x_lower = -120;
+
+		m_Rarm.y_upper = 50;
+		m_Rarm.x_upper = 55;
+		m_Rarm.x_lower = -120;
+
+	break;
+
+	case AGGRO:
+		m_Larm.y_upper = -50;
+		m_Larm.x_upper = 75;
+		m_Larm.x_lower = -120;
+
+		m_Rarm.y_upper = 50;
+		m_Rarm.x_upper = 75;
+		m_Rarm.x_lower = -120;
+
+		break;
+
+	case VORTEX:
+		m_Larm.y_upper = -80;
+		m_Larm.x_upper = 75;
+		m_Larm.x_lower = -120;
+
+		m_Rarm.y_upper = 80;
+		m_Rarm.x_upper = 75;
+		m_Rarm.x_lower = -120;
+
+		break;
+
+	case GRAB:
+
+		Vector3 Ldisp = m_Larm.m_Upos - P_pos;
+		float c = Ldisp.Length();
+		float upperY_angle, upperX_angle, lowerX_angle;
+		upperY_angle = Math::RadianToDegree(atan2(Ldisp.x, Ldisp.z));//upper arm y rotation
+		m_Larm.y_upper = upperY_angle + 90 - m_rotate;
+		upperX_angle = Math::RadianToDegree(acos((((c*c) + (a*a) - (b*b)) / (2 * (c*a)))));
+		m_Larm.x_upper = upperX_angle;
+		lowerX_angle = Math::RadianToDegree(acos(-((a*a) + (b*b) - (c*c)) / (2 * (a*b))));
+		m_Larm.x_lower = -lowerX_angle;
+
+
+
+		Vector3 Rdisp = m_Rarm.m_Upos - P_pos;
+		upperY_angle = Math::RadianToDegree(atan2(Rdisp.x, Rdisp.z));//upper arm y rotation
+		m_Rarm.y_upper = upperY_angle + 90 - m_rotate;
+		upperX_angle = Math::RadianToDegree(acos((((c*c) + (a*a) - (b*b)) / (2 * (c*a)))));
+		m_Rarm.x_upper = upperX_angle;
+		lowerX_angle = Math::RadianToDegree(acos(-((a*a) + (b*b) - (c*c)) / (2 * (a*b))));
+		m_Rarm.x_lower = -lowerX_angle;
+		break;
+	}
 
 	
 
@@ -172,7 +260,7 @@ void GiantCrab::UpdateArms(double dt)
 
 void GiantCrab::AnimateGC(double dt)
 {
-	float speed = 10;
+
 
 	for (unsigned i = 0; i < 8; ++i)
 	{
