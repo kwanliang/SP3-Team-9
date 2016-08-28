@@ -68,6 +68,8 @@ void SceneCalmPlateu::Init()
     InitGiantSquid();
 
     isPlayerHit = false;
+	SceneSP3::ReinitCaptured();
+	
 }
 
 void SceneCalmPlateu::InitGiantSquid()
@@ -509,6 +511,11 @@ void SceneCalmPlateu::RenderPassMain()
                 RenderPO(po);
             }
         }
+		else if (go->objectType == GameObject::CAPTURED)
+		{
+			SeaCreature* c = (SeaCreature*)go;
+			RenderSquad(c);
+		}
     }
 
     RenderGiantSquid();

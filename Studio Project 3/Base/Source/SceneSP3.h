@@ -40,13 +40,17 @@ public:
     virtual void RenderWorld() = 0;
 	virtual void RenderMinimap();
     virtual void RenderHUD();
+	void RenderSquad(SeaCreature *go);
 
 	void UpdateTravel();
     void UpdateLoop(double dt);
 	void UpdatePuffer(double dt);
 	void UpdateCaptured(double dt);
+	void UpdateProjectile(double dt);
 	void UpdateSquadFire(double dt);
     void UpdateSpawner(double dt);
+	void SaveCaptured();
+	void ReinitCaptured();
 
     void RenderText(Mesh* mesh, std::string text, Color color);
     void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);

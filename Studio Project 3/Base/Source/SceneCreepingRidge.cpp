@@ -63,8 +63,9 @@ void SceneCreepingRidge::Init()
         c->vel.Set(Math::RandFloatMinMax(0, 4), 0, Math::RandFloatMinMax(3, 6));
         c->FCstate = Fcrab::IDLE;
         c->aabb = hitbox::generatehitbox(c->pos, 8, 8, 8, NULL);
-        //p->setHealth(200);
+        c->setHealth(50);
     }
+	SceneSP3::ReinitCaptured();
 
 	giantCrab = new GiantCrab();
 	giantCrab->active = true;
@@ -461,6 +462,11 @@ void SceneCreepingRidge::RenderPassMain()
                 RenderPO(po);
             }
         }
+		else if (go->objectType == GameObject::CAPTURED)
+		{
+			SeaCreature* c = (SeaCreature*)go;
+			RenderSquad(c);
+		}
     }
 
     // Render the crosshair
@@ -505,6 +511,7 @@ void SceneCreepingRidge::Render()
     RenderPassMain();
 
 }
+
 
 void SceneCreepingRidge::Update(double dt)
 {

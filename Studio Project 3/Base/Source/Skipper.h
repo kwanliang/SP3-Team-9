@@ -9,7 +9,7 @@ private:
     int m_health;
     int m_damage;
     int m_baseDamage;
-	GameObject target;
+	GameObject* target;
 
 public:
 	enum BoostStatus
@@ -31,7 +31,7 @@ public:
     int getBaseDamage();
     void setBaseDamage(int m_baseDamage);
 
-	GameObject getTarget();
+	GameObject* getTarget();
 	void setTarget(GameObject *go);
 
     int randomDamage(int m_damage, int m_baseDamage);

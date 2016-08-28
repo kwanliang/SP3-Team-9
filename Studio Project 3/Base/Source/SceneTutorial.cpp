@@ -29,6 +29,8 @@ void SceneTutorial::Init()
         );
 
     m_travelzonedown = hitbox::generatehitbox(Vector3(52, 579, 1310), 600, 500, 600, 0);
+	SceneSP3::ReinitCaptured();
+	
 }
 
 void SceneTutorial::RenderTerrain()
@@ -187,7 +189,7 @@ void SceneTutorial::RenderPassMain()
     for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     {
         GameObject *go = (GameObject*)*it;
-        if (go->objectType == GameObject::SEACREATURE || go->objectType == GameObject::CAPTURED)
+        if (go->objectType == GameObject::SEACREATURE)
         {
             Minnow *fo = (Minnow*)*it;
             if (fo->active)
@@ -210,6 +212,11 @@ void SceneTutorial::RenderPassMain()
                 RenderPO(po);
             }
         }
+		else if (go->objectType == GameObject::CAPTURED)
+		{
+			SeaCreature* c = (SeaCreature*)go;
+			RenderSquad(c);
+		}
     }
 
     //modelStack.PushMatrix();

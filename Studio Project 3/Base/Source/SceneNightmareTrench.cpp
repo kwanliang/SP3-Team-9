@@ -44,8 +44,9 @@ void SceneNightmareTrench::Init()
 		c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10,NULL);
 		c->setHealth(200);
 	}
-
+	SceneSP3::ReinitCaptured();
 	isopod = new Isopod;
+
 }
 
 void SceneNightmareTrench::RenderTerrain()
@@ -167,6 +168,11 @@ void SceneNightmareTrench::RenderWorld()
 			{
 				RenderPO(po);
 			}
+		}
+		else if (go->objectType == GameObject::CAPTURED)
+		{
+			SeaCreature* c = (SeaCreature*)go;
+			RenderSquad(c);
 		}
 	}
 

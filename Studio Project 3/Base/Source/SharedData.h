@@ -2,6 +2,8 @@
 #define SHARED_DATA_H
 
 #include "Vector3.h"
+#include <vector>
+#include "GameObject.h"
 
 class SharedData
 {
@@ -24,6 +26,7 @@ public:
 	unsigned SD_CurrentArea = 0;
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
+	std::vector<GameObject*> SD_CapturedList;
 
 private:
     SharedData(){};

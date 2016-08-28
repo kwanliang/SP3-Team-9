@@ -63,6 +63,9 @@ void SceneGhastlyDepths::Init()
 		c->vel.Set(Math::RandFloatMinMax(-40, 40), Math::RandFloatMinMax(-20, 20), Math::RandFloatMinMax(-40, 40));
 	}
 
+	m_goList.push_back(frilledshark);
+	SceneSP3::ReinitCaptured();
+
 }
 
 
@@ -320,9 +323,12 @@ void SceneGhastlyDepths::RenderPassMain()
 
 			}
 		}
+		else if (go->objectType == GameObject::CAPTURED)
+		{
+			SeaCreature* c = (SeaCreature*)go;
+			RenderSquad(c);
+		}
 	}
-
-
 
 	for (unsigned i = 0; i < 5; i++)
 	{
