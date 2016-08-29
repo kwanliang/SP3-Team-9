@@ -14,6 +14,7 @@ public:
 		GRAB,
 		AGGRO,
 		VORTEX,
+		STRAFE,
 		NUM_STATE
 	};
 	struct Cleg
@@ -43,7 +44,9 @@ public:
 	void UpdateGC(double, std::vector<unsigned char>);
 	void AnimateGC(double);
 	void UpdateArms(double);
-	
+	float m_strafetime;
+
+
 	float a = 250;
 	float b = 200;
 
@@ -55,6 +58,10 @@ public:
 	float walkAnim;
 
 	hitbox grabArea;
+	hitbox2 m_hitbox;
+
+
+
 
 private:
 	CrabState state;

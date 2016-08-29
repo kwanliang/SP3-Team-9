@@ -46,20 +46,24 @@ void SceneNightmareTrench::Init()
 		60);
 
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1173,372,-1230),300,500,300,0);
-
-	//for (unsigned i = 0; i < 20; i++)
-	//{
-	//	Chimera*c = FetchChimera();
-	//	c->active = true;
-	//	c->objectType = GameObject::SEACREATURE;
-	//	c->seaType = SeaCreature::CHIMERA;
-	//	//p->pstate = Pufferfish::IDLE;
-	//	c->scale.Set(20, 20, 20);
-	//	c->pos.Set(Math::RandFloatMinMax(-1000, 1000), Math::RandFloatMinMax(100, 500), Math::RandFloatMinMax(-1000, 1000));
-	//	c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
-	//	c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10,NULL);
-	//	c->setHealth(200);
-	//}
+	for (unsigned i = 0; i < 20; i++)
+	{
+		Chimera*c = FetchChimera();
+		c->active = true;
+		c->objectType = GameObject::SEACREATURE;
+		c->seaType = SeaCreature::CHIMERA;
+		//p->pstate = Pufferfish::IDLE;
+		c->scale.Set(20, 20, 20);
+		c->pos.Set(Math::RandFloatMinMax(-1000, 1000), Math::RandFloatMinMax(100, 500), Math::RandFloatMinMax(-1000, 1000));
+		c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
+		c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10,NULL);
+		c->setHealth(200);
+	}
+	SceneSP3::ReinitCaptured();
+	isopod = new Isopod;
+	isopod->pos.y = 350.f * ReadHeightMap(m_heightMap[4], isopod->pos.x / 3000.f, isopod->pos.z / 3000.f) + 13;
+	isopod->m_nest_A.pos.Set(845, ReadHeightMap(m_heightMap[4], 845 / 3000.f, 820 / 3000.f)+10, 820);
+	isopod->m_nest_B.pos.Set(-688, ReadHeightMap(m_heightMap[4], -688 / 3000.f, -887 / 3000.f)+10, -887);
 }
 
 void SceneNightmareTrench::RenderTerrain()
@@ -82,15 +86,30 @@ void SceneNightmareTrench::RenderSkyPlane()
 
 void SceneNightmareTrench::RenderBoss()
 {
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0, 500, 0);
-	//modelStack.Scale(80, 80, 80);
-	////modelStack.Rotate(rotateSky, 0, 1, 0);
-	//RenderMesh(meshList[GEO_ISOPOD_BODY], false);
+	float rotate = 0;
+	rotate = -90+Math::RadianToDegree(atan2(isopod->vel.x, isopod->vel.z));
+	modelStack.PushMatrix();
+	modelStack.Translate(isopod->pos.x,isopod->pos.y, isopod->pos.z);
+	modelStack.Scale(80, 80, 80);
+	modelStack.Rotate(rotate, 0, 1, 0);
+	RenderMesh(meshList[GEO_ISOPOD_BODY], false);
 
-	//for (unsigned i = 0; i < 6; i++)
-	//{
-	//	float rr = 60 * sin(isopod->m_Rleg[i].roll);
+	for (unsigned i = 0; i < 6; i++)
+	{
+		float rr = 60 * sin(isopod->m_Rleg[i].roll);
+		modelStack.PushMatrix();//right side
+		modelStack.Translate(0.6-i*0.3, 0.08, -0.4+i*0.05);
+		modelStack.Rotate(90+rr, 0, 1, 0);
+		RenderMesh(meshList[GEO_ISOPOD_LEG], false);
+		modelStack.PopMatrix();
+
+		float rl = 60 * sin(isopod->m_Lleg[i].roll);
+		modelStack.PushMatrix();//left side
+		modelStack.Translate(0.6 - i*0.3, 0.08, 0.4-i*0.05);
+		modelStack.Rotate(-90-rl, 0, 1, 0);
+		RenderMesh(meshList[GEO_ISOPOD_LEG], false);
+		modelStack.PopMatrix();
+	}
 	//	modelStack.PushMatrix();//right side
 	//	modelStack.Translate(0.6-i*0.3, 0.08, -0.4+i*0.05);
 	//	modelStack.Rotate(90+rr, 0, 1, 0);
@@ -313,6 +332,7 @@ void SceneNightmareTrench::Render()
 void SceneNightmareTrench::Update(double dt)
 {
 	SceneSP3::Update(dt);
+	isopod->UpdateIsopod(dt,m_heightMap[4]);
 }
 
 void SceneNightmareTrench::Exit()

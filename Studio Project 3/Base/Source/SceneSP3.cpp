@@ -232,7 +232,7 @@ void SceneSP3::Init()
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateQuad("minimap", Color(0, 0, 0), 2);
 	meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//crosshair.tga");
     meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-    meshList[GEO_TEXT]->textureID = LoadTGA("Image//calibri.tga");
+    meshList[GEO_TEXT]->textureID = LoadTGA("Image//sfont.tga");
     meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
 
 	meshList[GEO_MINIMAP] = MeshBuilder::GenerateQuad("minimap", Color(1, 1, 1), 2);
@@ -243,7 +243,7 @@ void SceneSP3::Init()
 	meshList[GEO_MINIMAP_MINNOW] = MeshBuilder::GenerateSphere("minimap_minnow", Color(0.5f, 1, 1), 16, 16);
 	meshList[GEO_MINIMAP_CUTTLE] = MeshBuilder::GenerateSphere("minimap_cuttle", Color(1, 1, 1), 16, 16);
 	meshList[GEO_MINIMAP_CRAB] = MeshBuilder::GenerateSphere("minimap_crab", Color(1, 0.75f, 0.75f), 16, 16);
-	meshList[GEO_MINIMAP_GHOSTSHARK] = MeshBuilder::GenerateSphere("minimap_ghostshark", Color(0.1f, 0.9f, 0.4f), 16, 16, 1.2f);
+	meshList[GEO_MINIMAP_GHOSTSHARK] = MeshBuilder::GenerateSphere("minimap_ghostshark", Color(0.1, 0.9f, 0.4f), 16, 16, 1.2f);
 	meshList[GEO_MINIMAP_PUFFER] = MeshBuilder::GenerateSphere("minimap_puffer", Color(0.9f, 0.9f, 0.2f), 16, 16);
 	meshList[GEO_MINIMAP_BOSS] = MeshBuilder::GenerateSphere("minimap_boss", Color(1, 0.25f, 0.25f), 16, 16);
 
@@ -1560,6 +1560,10 @@ void SceneSP3::Update(double dt)
 	{
 		skipper->setTarget(skipper);
 	}
+
+
+
+//std::cout << m_spCount << std::endl;
 }
 
 void SceneSP3::UpdateSpawner(double dt)
@@ -2152,7 +2156,6 @@ void SceneSP3::UpdateParticles(double dt)
      }
 }
 
-
 void SceneSP3::UpdateSP(ParticleObject* p, double dt)
 {
 	float range = 150;
@@ -2161,7 +2164,7 @@ void SceneSP3::UpdateSP(ParticleObject* p, double dt)
 	if (displacment.LengthSquared() > range*range)
 	{
 		p->active = false;
-		m_spCount--;
+		m_spCount-=1;
 	}
 	p->pos += p->vel*dt;
 }

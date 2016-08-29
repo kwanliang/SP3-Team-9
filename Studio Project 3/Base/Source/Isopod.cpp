@@ -5,7 +5,7 @@ Isopod::Isopod()
 {
 	m_health = 1000;
 	bossType = ISOPOD;
-	pos = Vector3(0, 500, 0);
+	pos = Vector3(0, 0, 0);
 	vel = (0, 0, 0);
 	scale = Vector3(80, 80, 80);
 	active = true;
@@ -33,6 +33,9 @@ Isopod::Isopod()
 
 	//m_Lwhisker = hitbox2::generatehitbox(Vector3(0, 0, 0), 20, 20, 20);
 	//m_Rwhisker = hitbox2::generatehitbox(Vector3(0, 0, 0), 20, 20, 20);
+
+	m_targetnest = & m_nest_A;
+
 }
 
 Isopod::Isopod(int m_health, BOSS_TYPE bossType,
@@ -46,10 +49,55 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
 	float speed = 25;
 	Vector3 P_pos = SharedData::GetInstance()->SD_PlayerPos;
 	Vector3 P_displacement = P_pos - pos;
+	float h = 350.f * ReadHeightMap(hmap, pos.x / 3000.f, pos.z / 3000.f) + 13;//update height
+	if (pos.y < h)
+		pos.y += dt * 10;
+	else if (pos.y > h)
+		pos.y -= dt * 10;
 
-	
+	Vector3 displacement = m_targetnest->pos - pos;
+	switch (m_state)
+	{
+	case IDLE:
+		
+		vel = displacement.Normalized();
+		if (displacement.LengthSquared() < 100 * 100)
+		{
+			if (m_targetnest == &m_nest_A)
+				m_targetnest = &m_nest_B;
+			else
+				m_targetnest = &m_nest_A;
+		}
+
+		break;
+
+	case AGGRO:
+
+	/*	vel = displacement.Normalized();
+		if (displacement.LengthSquared() < 100 * 100)
+		{
+			if (m_targetnest == &m_nest_A)
+				m_targetnest = &m_nest_B;
+			else
+				m_targetnest = &m_nest_A;
+		}*/
+		break;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	AnimateIsopod(dt);
-	//pos += vel*dt;
+	pos += vel*dt*speed;
 
 
 

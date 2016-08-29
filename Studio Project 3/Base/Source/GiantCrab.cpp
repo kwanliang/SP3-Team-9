@@ -52,8 +52,9 @@ GiantCrab::GiantCrab()
 	m_leg[7].m_Urotate = 17;
 	m_leg[7].m_Lrotate = 34;
 
-
-	grabArea = hitbox::generatehitbox(Vector3(0, 0, 0), 120, 30, 120, NULL);
+	m_strafetime = 0;
+	grabArea = hitbox::generatehitbox(Vector3(0, 0, 0), 120, 35, 120, NULL);
+	m_hitbox = hitbox2::generatehitbox(Vector3(0, 0, 0), 200, 100, 200);
 
 }
 
@@ -117,7 +118,7 @@ void GiantCrab::UpdateGC(double dt, std::vector<unsigned char> hmap)
 
 		break;
 	case AGGRO:
-		speed = 15;
+		speed = 30;
 		vel = P_displacement.Normalized();
 		m_rotate = Math::RadianToDegree(atan2(P_displacement.x, P_displacement.z))-90;
 		//need collision here
@@ -140,10 +141,33 @@ void GiantCrab::UpdateGC(double dt, std::vector<unsigned char> hmap)
 		speed = 1;
 		vel = P_pos - grabArea.m_position;
 		vel.Normalize();
+		break;
 
+	case STRAFE:
+		speed = 10;
+		if (m_strafetime < 3)
+		{
+			m_strafetime += dt;
+		}
+		else
+		{
+			m_strafetime = 0;
+			state = IDLE;
 
+		}
 
 		break;
+
+
+
+	}
+
+
+
+	if (terraincollision(m_hitbox, hmap))
+	{
+		vel = -vel;
+		state = STRAFE;
 	}
 
 	vel.y = 0;
@@ -167,6 +191,12 @@ void GiantCrab::UpdateArms(double dt)
 	Vector3 Pdisplacement = pos - P_pos;
 	float x_com, z_com, y_com;
 	float x, y, z;
+
+
+
+	//hitbox
+	hitbox2::updatehitbox(m_hitbox, pos);
+
 
 	//grabbox
 	x_com = Math::RadianToDegree(cos(Math::DegreeToRadian(-m_rotate))) * 2.5;
@@ -197,6 +227,17 @@ void GiantCrab::UpdateArms(double dt)
 
 	switch (state)
 	{
+	case STRAFE:
+		m_Larm.y_upper = -40;
+		m_Larm.x_upper = 35;
+		m_Larm.x_lower = -120;
+
+		m_Rarm.y_upper = 40;
+		m_Rarm.x_upper = 35;
+		m_Rarm.x_lower = -120;
+
+		break;
+
 	case IDLE:
 		m_Larm.y_upper = -50;
 		m_Larm.x_upper = 55;
@@ -252,6 +293,10 @@ void GiantCrab::UpdateArms(double dt)
 		lowerX_angle = Math::RadianToDegree(acos(-((a*a) + (b*b) - (c*c)) / (2 * (a*b))));
 		m_Rarm.x_lower = -lowerX_angle;
 		break;
+
+
+
+
 	}
 
 	

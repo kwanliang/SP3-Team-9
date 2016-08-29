@@ -410,6 +410,14 @@ void SceneCreepingRidge::RenderPassMain()
     modelStack.PopMatrix();
 
 
+
+	modelStack.PushMatrix();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
+	modelStack.Translate(giantCrab->m_hitbox.m_position.x, giantCrab->m_hitbox.m_position.y, giantCrab->m_hitbox.m_position.z);
+	modelStack.Scale(giantCrab->m_hitbox.m_width, giantCrab->m_hitbox.m_height, giantCrab->m_hitbox.m_length);
+	RenderMesh(meshList[GEO_CUBE], false);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
+	modelStack.PopMatrix();
     //modelStack.PushMatrix();
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
     //modelStack.Translate(m_travelzoneup.m_position.x, m_travelzoneup.m_position.y, m_travelzoneup.m_position.z);
@@ -435,7 +443,6 @@ void SceneCreepingRidge::Render()
     RenderPassMain();
 
 }
-
 
 void SceneCreepingRidge::Update(double dt)
 {
@@ -518,10 +525,30 @@ void SceneCreepingRidge::Update(double dt)
     //        break;
     //    }
 
+    }
+	//giantCrab->m_rotate = val;
+	//
+	giantCrab->UpdateGC(dt, m_heightMap[2]);
+	if (collision(giantCrab->grabArea, player_box))
+	{
+		giantCrab->SetState(GiantCrab::GRAB);
+	}
+	
+	
 
-    //    (c)->UpdateFcrab(dt);//run update for fcrabs
+	if (giantCrab->GetState() == GiantCrab::VORTEX)
+	{
+		
+	Vector3 target = playerpos  - giantCrab->grabArea.m_position;
+		for (auto it : particleList)
+		{
+			ParticleObject* p = (ParticleObject*)it;
+			if (!p->active)
+				continue;
+			if (p->type != ParticleObject::P_PARTICLE)
+				continue;
 
-    //}
+			p->vel = -target.Normalized() * 200;
 
 	//giantCrab->pos.y = 350.f * ReadHeightMap(m_heightMap[2], giantCrab->pos.x / 3000.f, giantCrab->pos.z / 3000.f) + 170;
 	//giantCrab->updateGC(dt);
@@ -531,6 +558,11 @@ void SceneCreepingRidge::Update(double dt)
     {
         giantCrab->SetState(GiantCrab::GRAB);
     }
+
+
+
+		fishVel += -15*giantCrab->vel;
+		fishVel.y = -target.y;
 
 
 
