@@ -24,6 +24,11 @@
 #include "LoadHmap.h"
 #include "Skipper.h"
 
+#include "GiantSquid.h"
+#include "Isopod.h"
+#include "GiantCrab.h"
+
+
 static int g_MinnowLeaderCount = 0;
 static int g_MinnowCount = 0;
 
@@ -70,6 +75,7 @@ public:
     Fcrab* FetchFCrab();
     Chimera* FetchChimera();
     Cuttlefish* FetchCuttle();
+    //Drone* FetchDrone();
     Projectile* FetchPO();
     DamageText* FetchTO();
     void RenderFO(SeaCreature *fo);
@@ -84,6 +90,10 @@ public:
 
     float fogThickness;
     float blendFactor;
+
+    GiantSquid* giantSquid;
+    GiantCrab* giantCrab;
+    Isopod* isopod;
 
     enum DEATHSELECT
     {
@@ -327,6 +337,7 @@ protected:
     Spawner FCrabSpawner;
     Spawner ChimeraSpawner;
     Spawner CuttlefishSpawner;
+    Spawner IsopodDroneSpawner;
 
     //DamageText text;
     std::vector<DamageText*> m_textList;

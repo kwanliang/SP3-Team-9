@@ -27,6 +27,7 @@ static int g_MaxPufferfish = 30;
 static int g_MaxFCrab = 30;
 static int g_MaxChimera = 30;
 static int g_MaxCuttlefish = 30;
+static int g_MaxIsopodDrone = 8;
 
 class Spawner
 {

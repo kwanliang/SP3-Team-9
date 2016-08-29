@@ -448,107 +448,8 @@ void SceneCreepingRidge::Update(double dt)
 {
     SceneSP3::Update(dt);
 
-    //for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-    //{
-    //    GameObject *go = (GameObject*)*it;
-    //    if (!go->active)
-    //        continue;
-
-    //    if (go->objectType != GameObject::SEACREATURE)
-    //        continue;
-    //    SeaCreature *so = (SeaCreature*)*it;
-
-    //    if (so->seaType != SeaCreature::FCRAB)
-    //        continue;
-    //    Fcrab *c = (Fcrab*)*it;
-
-    //    c->pos += c->vel*dt;
-    //    float h = 350.f * ReadHeightMap(m_heightMap[2], c->pos.x / 3000.f, c->pos.z / 3000.f) + 4;//get height
-    //    //theta=0;
-    //    Vector3 displacement = playerpos - c->pos;
-
-    //    if (c->pos.y > 300)// reset crabs who move out of range
-    //    {
-    //        float x = Math::RandFloatMinMax(-300, 0);
-    //        float z = Math::RandFloatMinMax(-1000, -800);
-    //        float y = 350.f * ReadHeightMap(m_heightMap[2], x / 3000.f, z / 3000.f) + 4;
-    //        c->pos.Set(x, y, z);
-
-    //    }
-
-
-    //    switch (c->FCstate)
-    //    {
-    //    case Fcrab::IDLE:
-    //    {
-    //        if (displacement.LengthSquared() < 50 * 50)
-    //        {
-    //            c->pos.y += 1;
-    //            theta = Math::RadianToDegree(atan2(displacement.y, Vector3(displacement.x, 0, displacement.z).Length()));
-    //            c->vel = displacement.Normalized() * 30;
-    //            c->FCstate = Fcrab::ATTACKING;
-    //        }
-
-    //        if (c->pos.y < h)
-    //            c->pos.y += dt * 10;
-    //        else if (c->pos.y > h)
-    //            c->pos.y -= dt * 10;
-    //        break;
-    //    }
-
-    //    case Fcrab::ATTACKING:
-
-    //        c->vel.y -= 9.8*dt;
-
-
-
-    //        if (collision(c->aabb, player_box))
-    //        {
-    //            fishVel = -c->vel;
-    //        }
-
-    //        if (c->pos.y <= h)
-    //        {
-    //            c->vel.Set(Math::RandFloatMinMax(0, 4), 0, Math::RandFloatMinMax(3, 6));
-
-    //            c->pos.y = h;
-    //            //std::cout << "idling" << std::endl;
-    //            c->FCstate = Fcrab::IDLE;
-    //            break;
-
-    //        }
-
-    //        //c->vel *= Math::RadianToDegree(sin(theta))/(9.8*dt);
-
-    //        //if (displacement.LengthSquared() < 20 * 20)
-    //        //c->FCstate = Fcrab::ATTACKING;
-    //        break;
-    //    }
-
-    }
 	//giantCrab->m_rotate = val;
 	//
-	giantCrab->UpdateGC(dt, m_heightMap[2]);
-	if (collision(giantCrab->grabArea, player_box))
-	{
-		giantCrab->SetState(GiantCrab::GRAB);
-	}
-	
-	
-
-	if (giantCrab->GetState() == GiantCrab::VORTEX)
-	{
-		
-	Vector3 target = playerpos  - giantCrab->grabArea.m_position;
-		for (auto it : particleList)
-		{
-			ParticleObject* p = (ParticleObject*)it;
-			if (!p->active)
-				continue;
-			if (p->type != ParticleObject::P_PARTICLE)
-				continue;
-
-			p->vel = -target.Normalized() * 200;
 
 	//giantCrab->pos.y = 350.f * ReadHeightMap(m_heightMap[2], giantCrab->pos.x / 3000.f, giantCrab->pos.z / 3000.f) + 170;
 	//giantCrab->updateGC(dt);
@@ -558,12 +459,6 @@ void SceneCreepingRidge::Update(double dt)
     {
         giantCrab->SetState(GiantCrab::GRAB);
     }
-
-
-
-		fishVel += -15*giantCrab->vel;
-		fishVel.y = -target.y;
-
 
 
     if (giantCrab->GetState() == GiantCrab::VORTEX)

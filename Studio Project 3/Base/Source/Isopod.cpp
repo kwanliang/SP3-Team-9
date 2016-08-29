@@ -44,6 +44,7 @@ Isopod::Isopod(int m_health, BOSS_TYPE bossType,
 
 }
 
+
 void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
 {
 	float speed = 25;
@@ -55,51 +56,52 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
 	else if (pos.y > h)
 		pos.y -= dt * 10;
 
-	Vector3 displacement = m_targetnest->pos - pos;
-	switch (m_state)
-	{
-	case IDLE:
-		
-		vel = displacement.Normalized();
-		if (displacement.LengthSquared() < 100 * 100)
-		{
-			if (m_targetnest == &m_nest_A)
-				m_targetnest = &m_nest_B;
-			else
-				m_targetnest = &m_nest_A;
-		}
-
-		break;
-
-	case AGGRO:
-
-	/*	vel = displacement.Normalized();
-		if (displacement.LengthSquared() < 100 * 100)
-		{
-			if (m_targetnest == &m_nest_A)
-				m_targetnest = &m_nest_B;
-			else
-				m_targetnest = &m_nest_A;
-		}*/
-		break;
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
 	AnimateIsopod(dt);
 	pos += vel*dt*speed;
 
+    switch (m_state)
+    {
+    case IDLE:
+    {
+        vel = P_displacement.Normalized();
+        if (P_displacement.LengthSquared() < 100 * 100)
+        {
+            if (m_targetnest == &m_nest_A)
+                m_targetnest = &m_nest_B;
+            else
+                m_targetnest = &m_nest_A;
+        }
 
+        break;
+    }
+    case AGGRO:
+    {
+        /*	vel = displacement.Normalized();
+        if (displacement.LengthSquared() < 100 * 100)
+        {
+        if (m_targetnest == &m_nest_A)
+        m_targetnest = &m_nest_B;
+        else
+        m_targetnest = &m_nest_A;
+        }*/
+
+        m_SpawnBufferTime += dt;
+        if (m_SpawnBufferTime > 1.0)
+        {
+            m_SpawnIsopodDrone = true;
+            m_SpawnBufferTime = 0.f;
+        }
+        break;
+    }
+    case CHARGE:
+    {
+        break;
+    }
+    case COLLIDING:
+    {
+        break;
+    }
+    }
 
 }
 
@@ -112,6 +114,24 @@ void Isopod::AnimateIsopod(double dt)
 
 	}
 	
-	
+}
 
+bool Isopod::getSpawnIsopodDrone()
+{
+    return this->m_SpawnIsopodDrone;
+}
+
+void Isopod::setSpawnIsopodDrone(bool m_SpawnIsopodDrone)
+{
+    this->m_SpawnIsopodDrone = m_SpawnIsopodDrone;
+}
+
+double Isopod::getSpawnBufferTime()
+{
+    return this->m_SpawnBufferTime;
+}
+
+void Isopod::setSpawnBufferTime(double m_SpawnBufferTime)
+{
+    this->m_SpawnBufferTime = m_SpawnBufferTime;
 }

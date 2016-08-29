@@ -5,7 +5,6 @@
 #include <vector>
 #include "Mtx44.h"
 #include "CollisionManager.h"
-#include "GiantSquid.h"
 
 static int g_PufferfishCount = 0;
 
@@ -52,10 +51,6 @@ private:
 
     //Fish test
     Capture fishy;
-
-    GiantSquid* giantSquid;
-
-    Pufferfish* pf;
 };
 
 #endif

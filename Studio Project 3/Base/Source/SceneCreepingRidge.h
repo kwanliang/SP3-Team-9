@@ -4,7 +4,6 @@
 #include "SceneSP3.h"
 #include <vector>
 #include "Mtx44.h"
-#include "GiantCrab.h"
 
 static int g_FCrabCount = 0;
 
@@ -40,7 +39,7 @@ private:
     float theta = 0; //crab jump
 
     //Fish test
-	GiantCrab* giantCrab;
+
     Capture fishy;
     //Fcrab* c;
 };

@@ -4,9 +4,9 @@
 #include "SceneSP3.h"
 #include <vector>
 #include "Mtx44.h"
-#include "Isopod.h"
 
 static int g_ChimeraCount = 0;
+static int g_IsopodDroneCount = 0;
 
 class SceneNightmareTrench : public SceneSP3
 {
@@ -44,7 +44,6 @@ private:
 
 	//Fish test
 	Capture fishy;
-	Isopod* isopod;
 };
 
 #endif

@@ -539,6 +539,30 @@ Chimera* SceneSP3::FetchChimera()
     return go;
 }
 
+//Drone* SceneSP3::FetchDrone()
+//{
+//    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+//    {
+//        Drone *go = (Drone *)*it;
+//        if (!go->active)
+//        {
+//            go->objectType = GameObject::SEACREATURE;
+//            go->seaType = SeaCreature::DRONE;
+//            go->active = true;
+//            return go;
+//        }
+//    }
+//    for (unsigned i = 0; i < 10; ++i)
+//    {
+//        Drone *go = new Drone();
+//        go->objectType = GameObject::SEACREATURE;
+//        go->seaType = SeaCreature::DRONE;
+//        m_goList.push_back(go);
+//    }
+//    Drone *go = (Drone *)m_goList.back();
+//    go->active = true;
+//    return go;
+//}
 
 Projectile* SceneSP3::FetchPO()
 {
@@ -1726,6 +1750,27 @@ void SceneSP3::UpdateSpawner(double dt)
                 g_ChimeraCount++;
             }
         }
+
+        if (isopod->getSpawnIsopodDrone())
+        {
+            IsopodDroneSpawner.CheckCount(g_IsopodDroneCount, g_MaxIsopodDrone);
+
+            if (IsopodDroneSpawner.getIsSpawn())
+            {
+                //Drone* d = FetchDrone();
+                //d->active = true;
+                //d->objectType = GameObject::SEACREATURE;
+                //d->seaType = SeaCreature::DRONE;
+                //d->scale.Set(SCALE, SCALE, SCALE);
+                //d->pos.Set(isopod->pos.x, isopod->pos.y, isopod->pos.z);
+                //d->vel.Set(0, 0, 0);
+                //d->aabb = 
+                //d->setHealth();
+
+                g_IsopodDroneCount++;
+            }
+        }
+
         break;
     }
     }
@@ -2200,7 +2245,7 @@ void SceneSP3::RenderParticles()
     for (auto it : particleList)
     {
         ParticleObject* particle = (ParticleObject*)it;
-        if (!particle->active && PARTICLEOBJECT_TYPE::P_VACUUM)
+        if (!particle->active && PARTICLEOBJECT_TYPE::P_VACUUM && !PARTICLEOBJECT_TYPE::P_PARTICLE)
         {
             modelStack.PushMatrix();
             modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);

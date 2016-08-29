@@ -1,12 +1,14 @@
 #ifndef ISOPOD_H
 #define	ISOPOD_H
 
-
 #include "Boss.h"
-
 
 class Isopod :public Boss
 {
+private:
+    bool m_SpawnIsopodDrone;
+    double m_SpawnBufferTime;
+
 public:
 	struct Nest
 	{
@@ -27,7 +29,6 @@ public:
 		CHARGE,
 		COLLIDING,
 		STATE_END
-
 	};
 
 	Isopod();
@@ -38,6 +39,10 @@ public:
 	void UpdateIsopod(double, std::vector<unsigned char>);
 	void AnimateIsopod(double);
 
+    bool getSpawnIsopodDrone();
+    void setSpawnIsopodDrone(bool m_SpawnIsopodDrone);
+    double getSpawnBufferTime();
+    void setSpawnBufferTime(double m_SpawnBufferTime);
 
 	Istate m_state;
 	Leg m_Rleg[6];
@@ -49,27 +54,6 @@ public:
 
 private:
 
-
-
-
-
-
-
-
-
-
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif;
