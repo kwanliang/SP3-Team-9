@@ -21,9 +21,9 @@ SceneCalmPlateu::~SceneCalmPlateu()
 void SceneCalmPlateu::Init()
 {
     SceneSP3::Init();
-    glClearColor(0.1f, 0.9f, 0.9f, 0.0f);
-    Color fogColor(0.1f, 0.9f, 0.9f);
-    glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+	glClearColor(0.0f, 0.8f, 0.65,0.f);
+ /*   Color fogColor(0.1f, 0.9f, 0.9f);
+    glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);*/
 
     meshList[GEO_TERRAIN1] = MeshBuilder::GenerateTerrain("terrain", "Image//Area01.raw", m_heightMap[1]);
 
@@ -62,6 +62,12 @@ void SceneCalmPlateu::Init()
         Vector3(0, 1, 0),
         60
         );
+
+
+	Color fogColor(0.0f, 0.7f, 0.65f);
+	glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+	glUniform1f(m_parameters[U_FOG_END], 1800);
+	glUniform1f(m_parameters[U_FOG_THICKNESS], 1.0f);
 
 
     m_travelzonedown = hitbox::generatehitbox(Vector3(1386, 295, 5.8), 200, 600, 600, 0);
@@ -340,7 +346,7 @@ void SceneCalmPlateu::RenderSkyPlane()
 void SceneCalmPlateu::RenderWorld()
 {
     RenderTerrain();
-    RenderSkyPlane();
+    //RenderSkyPlane();
     modelStack.PushMatrix();
     modelStack.Translate(playerpos.x, playerpos.y + 5, playerpos.z);
     modelStack.Rotate(90 + fishRot.y, 0, 1, 0);

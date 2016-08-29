@@ -2142,7 +2142,7 @@ void SceneSP3::UpdateParticles(double dt)
     }
 
 	Vector3 c_pos = walkCam.GetPos();
-	if (m_spCount < 20)
+	if (m_spCount < 30)
 	{
 		for (unsigned i = 0; i < 5; ++i)
 		{
@@ -2203,7 +2203,7 @@ void SceneSP3::UpdateParticles(double dt)
 
 void SceneSP3::UpdateSP(ParticleObject* p, double dt)
 {
-	float range = 150;
+	float range = 120;
 	Vector3 displacment = walkCam.GetPos() - p->pos;
 
 	if (displacment.LengthSquared() > range*range)

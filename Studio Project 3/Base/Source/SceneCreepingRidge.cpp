@@ -21,9 +21,11 @@ SceneCreepingRidge::~SceneCreepingRidge()
 void SceneCreepingRidge::Init()
 {
     SceneSP3::Init();
-    glClearColor(0.1f, 0.5f, 0.5f, 0.0f);
-    Color fogColor(0.1f, 0.5f, 0.5f);
-    glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+	glClearColor(0.0f, 0.65f, 0.85f,0.f);
+	Color fogColor(0.0f, 0.65f, 0.85f);
+	glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+	glUniform1f(m_parameters[U_FOG_END], 1300);
+	glUniform1f(m_parameters[U_FOG_THICKNESS], 1.5f);
 
     meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("terrain", "Image//Area02.raw", m_heightMap[2]);
 
@@ -47,31 +49,33 @@ void SceneCreepingRidge::Init()
     meshList[GEO_FCRABCLAW] = MeshBuilder::GenerateOBJ("crabclaw", "Models//OBJ//fcrab_Lclaw.obj");
     meshList[GEO_FCRABCLAW]->textureArray[0] = LoadTGA("Image//fcrab_claw.tga");
 
-    //if (SharedData::GetInstance()->SD_Down)
-    //{
+    if (SharedData::GetInstance()->SD_Down)
+    {
 
-    //    walkCam.Init(
-    //        Vector3(-814, 253, -1075),
-    //        Vector3(10, 0, 0),
-    //        Vector3(0, 1, 0),
-    //        60
-    //        );
-    //}
-    //else
-    //{
-    //    walkCam.Init(
-    //        Vector3(-765, 175, -136),
-    //        Vector3(1, 0, 0.3),
-    //        Vector3(0, 1, 0),
-    //        60);
+        walkCam.Init(
+            Vector3(-814, 253, -1075),
+            Vector3(10, 0, 0),
+            Vector3(0, 1, 0),
+            60
+            );
+    }
+    else
+    {
+        walkCam.Init(
+            Vector3(-765, 175, -136),
+            Vector3(1, 0, 0.3),
+            Vector3(0, 1, 0),
+            60);
 
-    //}
+    }
 
-	walkCam.Init(
-		Vector3(-146, 371, 663),
-		Vector3(1, 0, 0.3),
-		Vector3(0, 1, 0),
-		60);
+	//walkCam.Init(
+	//	Vector3(-146, 371, 663),
+	//	Vector3(1, 0, 0.3),
+	//	Vector3(0, 1, 0),
+	//	60);
+
+
     m_travelzoneup = hitbox::generatehitbox(Vector3(-1233, 409, -1263), 600, 500, 600, 0);
     m_travelzonedown = hitbox::generatehitbox(Vector3(-1093, 131, 151), 500, 500, 500, 0);
 
@@ -269,7 +273,7 @@ void SceneCreepingRidge::RenderSkyPlane()
 void SceneCreepingRidge::RenderWorld()
 {
     RenderTerrain();
-    RenderSkyPlane();
+    //RenderSkyPlane();
 
     modelStack.PushMatrix();
     modelStack.Translate(playerpos.x, playerpos.y + 5, playerpos.z);
@@ -481,6 +485,11 @@ void SceneCreepingRidge::Update(double dt)
         fishVel.y = -target.y;
 
     }
+	if (giantCrab->GetState() == GiantCrab::GRAB)
+	{
+		fishVel.SetZero();
+	}
+
 }
 
 void SceneCreepingRidge::Exit()

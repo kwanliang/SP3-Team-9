@@ -21,6 +21,11 @@ void SceneGhastlyDepths::Init()
     //glClearColor(0.1f, 0.2f, 0.2f, 0.0f);
     //Color fogColor(0.1f, 0.2f, 0.2f);
     //glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+	glClearColor(0.3f, 0.1f, 0.9f, 0.f);
+	Color fogColor(0.3f, 0.1f, 0.9f);
+	glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+	glUniform1f(m_parameters[U_FOG_END], 1000);
+	glUniform1f(m_parameters[U_FOG_THICKNESS], 1.2f);
 
     meshList[GEO_TERRAIN3] = MeshBuilder::GenerateTerrain("terrain", "Image//Area03.raw", m_heightMap[3]);
 
@@ -309,6 +314,13 @@ void SceneGhastlyDepths::RenderPassMain()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
 	//modelStack.PopMatrix();
 
+	//modelStack.PushMatrix();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
+	//modelStack.Translate(frilledshark->m_Rwhisker.m_position.x, frilledshark->m_Rwhisker.m_position.y, frilledshark->m_Rwhisker.m_position.z);
+	//modelStack.Scale(frilledshark->m_Rwhisker.m_width, frilledshark->m_Rwhisker.m_height, frilledshark->m_Rwhisker.m_length);
+	//RenderMesh(meshList[GEO_CUBE], false);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
+	//modelStack.PopMatrix();
 
 
 	//modelStack.PushMatrix();
@@ -351,7 +363,7 @@ void SceneGhastlyDepths::Update(double dt)
 	SceneSP3::Update(dt);
 
 	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
-	frilledshark->m_node[0].yaw = val*4;
+	//frilledshark->m_node[0].yaw = val*4;
 }
 
 void SceneGhastlyDepths::Exit()

@@ -18,9 +18,11 @@ SceneNightmareTrench::~SceneNightmareTrench()
 void SceneNightmareTrench::Init()
 {
 	SceneSP3::Init();
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    Color fogColor(0.0f, 0.0f, 0.0f);
-    glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+	glClearColor(0.15f, 0.15f, 0.25f, 0.f);
+	Color fogColor(0.15f, 0.15f, 0.25f);
+	glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+	glUniform1f(m_parameters[U_FOG_END], 2000);
+	glUniform1f(m_parameters[U_FOG_THICKNESS], 1.5f);
 
     meshList[GEO_TERRAIN4] = MeshBuilder::GenerateTerrain("terrain", "Image//Area04.raw", m_heightMap[4]);
 
@@ -31,6 +33,15 @@ void SceneNightmareTrench::Init()
     meshList[GEO_CHIMERA_BFLIP] = MeshBuilder::GenerateOBJ("chimera", "Models//OBJ//ghostshark_Bflipper.obj");
     meshList[GEO_CHIMERA_BFLIP]->textureArray[0] = LoadTGA("Image//ghostshark.tga");
 
+	meshList[GEO_ISOPOD_BODY] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_body.obj");
+	meshList[GEO_ISOPOD_BODY]->textureArray[0] = LoadTGA("Image//isopod.tga");
+	meshList[GEO_ISOPOD_LEG] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_leg.obj");
+	meshList[GEO_ISOPOD_LEG]->textureArray[0] = LoadTGA("Image//isopod.tga");
+	meshList[GEO_ISOPOD_CLAW] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_claw.obj");
+	meshList[GEO_ISOPOD_CLAW]->textureArray[0] = LoadTGA("Image//isopod.tga");
+
+	//meshList[GEO_ISOPOD_DRONE] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_drone.obj");
+	//meshList[GEO_ISOPOD_DRONE]->textureArray[0] = LoadTGA("Image//isopod.tga");
 	//currentCam = &walkCam;
 	/*walkCam.Init(
 		Vector3(980, 279, -1040),
@@ -135,7 +146,7 @@ void SceneNightmareTrench::RenderBoss()
 	//RenderMesh(meshList[GEO_ISOPOD_CLAW], false);
 	//modelStack.PopMatrix();
 
-	//modelStack.PopMatrix();
+	modelStack.PopMatrix();
 }
 
 void SceneNightmareTrench::RenderWorld()
@@ -143,6 +154,7 @@ void SceneNightmareTrench::RenderWorld()
 	RenderTerrain();
 	RenderSkyPlane();
 	RenderBoss();
+	SceneSP3::RenderLoop();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(playerpos.x, playerpos.y+5, playerpos.z);
@@ -216,7 +228,6 @@ void SceneNightmareTrench::RenderPassMain()
 	viewStack.LoadMatrix(currentCam->GetView());
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
-	SceneSP3::RenderParticles();
 	RenderWorld();
 	/*if (lights[0].type == Light::LIGHT_DIRECTIONAL)
 	{
@@ -277,7 +288,7 @@ void SceneNightmareTrench::RenderPassMain()
 	//	}
 	//}
 
-    SceneSP3::RenderLoop();
+
     SceneSP3::RenderParticles();
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 

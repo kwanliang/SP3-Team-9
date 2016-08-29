@@ -129,12 +129,17 @@ void GiantCrab::UpdateGC(double dt, std::vector<unsigned char> hmap)
 			state = VORTEX;
 		}
 
+		if (P_displacement.Length() < 50)
+		{
+			state = VORTEX;
+		}
+
 		break;
 	case GRAB:
-		speed = 0;
+		speed = 0.1;
 		//vel.Normalize();
+		//SharedData::GetInstance()->SD_IsImmobile = true;//immobalize skipper
 		//if crab takes damage, release --> strafe 
-
 
 		break;
 	case VORTEX:
