@@ -4,7 +4,6 @@
 #include "SceneSP3.h"
 #include <vector>
 #include "Mtx44.h"
-#include "Fcrab.h"
 #include "GiantCrab.h"
 
 static int g_FCrabCount = 0;
@@ -22,15 +21,11 @@ public:
     virtual void Render();
     void RenderPassGPass();
     void RenderPassMain();
-    void RenderMinimap();
 	void RenderGiantCrab();
 
     void RenderWorld();
     void RenderTerrain();
     void RenderSkyPlane();
-    void RenderFcrab(Fcrab* c);
-
-    Fcrab* FetchFcrab();
 
 private:
 
@@ -43,8 +38,6 @@ private:
     // float fps;
 
     float theta = 0; //crab jump
-
-
 
     //Fish test
 	GiantCrab* giantCrab;

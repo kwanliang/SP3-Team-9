@@ -4,6 +4,7 @@ SeaCreature::SeaCreature()
     : m_health(100)
     , seaType(MINNOW)
     , m_DebounceTimer(0)
+    , m_canVacuum(false)
     , GameObject()
 {
 

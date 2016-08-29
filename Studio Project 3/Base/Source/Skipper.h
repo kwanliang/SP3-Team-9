@@ -10,6 +10,8 @@ private:
     int m_damage;
     int m_baseDamage;
 	GameObject* target;
+    double m_TimerReceieveDamage;
+    bool m_isDead;
 
 public:
 	enum BoostStatus
@@ -34,7 +36,13 @@ public:
 	GameObject* getTarget();
 	void setTarget(GameObject *go);
 
+    double getTimerReceieveDamage();
+    void setTimerReceieveDamage(double m_TimerReceieveDamage);
+
     int randomDamage(int m_damage, int m_baseDamage);
+
+    bool getIsDead();
+    void setIsDead(bool m_isDead);
 
 	float stamina;
 	BoostStatus boostStatus;

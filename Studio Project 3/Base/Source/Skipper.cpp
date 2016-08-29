@@ -6,6 +6,7 @@ Skipper::Skipper()
 	, m_baseDamage(0)
 	, stamina(100)
 	, boostStatus(BOOST_READY)
+    , m_isDead(false)
     , GameObject()
 {
 
@@ -56,7 +57,27 @@ void Skipper::setTarget(GameObject *go)
 	this->target = go;
 }
 
+double Skipper::getTimerReceieveDamage()
+{
+    return this->m_TimerReceieveDamage;
+}
+
+void Skipper::setTimerReceieveDamage(double m_TimerReceieveDamage)
+{
+    this->m_TimerReceieveDamage = m_TimerReceieveDamage;
+}
+
 int Skipper::randomDamage(int m_damage, int m_baseDamage)
 {
     return Math::RandIntMinMax(m_baseDamage, m_damage + m_baseDamage);
+}
+
+bool Skipper::getIsDead()
+{
+    return this->m_isDead;
+}
+
+void Skipper::setIsDead(bool m_isDead)
+{
+    this->m_isDead = m_isDead;
 }

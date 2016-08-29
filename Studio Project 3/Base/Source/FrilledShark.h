@@ -1,9 +1,7 @@
 #ifndef FRILLEDSHARK_H
 #define	FRILLEDSHARK_H
 
-
 #include "Boss.h"
-
 
 class FrilledShark :public Boss
 {
@@ -28,8 +26,6 @@ public:
 	};
 
 	FrilledShark();
-	FrilledShark(int m_health ,  BOSS_TYPE bossType, 
-					Vector3 pos, Vector3 vel, Vector3 scale, bool active);
 	~FrilledShark();
 	
 	void UpdateFrilledShark(double,std::vector<unsigned char>);
@@ -51,27 +47,6 @@ public:
 
 private:
 
-
-
-
-
-
-
-
-
-
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 #endif;

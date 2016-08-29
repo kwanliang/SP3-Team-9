@@ -6,7 +6,6 @@
 #include "Mtx44.h"
 #include "CollisionManager.h"
 #include "GiantSquid.h"
-#include "Pufferfish.h"
 
 static int g_PufferfishCount = 0;
 
@@ -29,9 +28,6 @@ public:
     void RenderWorld();
     void RenderTerrain();
     void RenderSkyPlane();
-    void RenderPuffer(Pufferfish *fo);
-
-    Pufferfish* FetchPuffer();
 
     void RenderGiantSquid();
 

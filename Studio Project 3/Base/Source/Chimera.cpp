@@ -31,7 +31,6 @@ void Chimera::UpdateChimera(double dt)
 		if (Odisplacement.LengthSquared() > 700 * 700)
 			chstate = RETURNING;
 
-
 		Vector3 direction = Vector3(Math::RadianToDegree(cos(Math::DegreeToRadian(rotate + 90))), Math::Clamp(vel.y, 0.f, 20.f), Math::RadianToDegree(sin(Math::DegreeToRadian(rotate + 90))));
 		vel = direction.Normalized() * 80;
 	}
@@ -45,9 +44,7 @@ void Chimera::UpdateChimera(double dt)
 		{
 			vel.y = Math::RandFloatMinMax(-20, 20);
 			rotate = Math::RandFloatMinMax(0, 180);
-			chstate = IDLE;
-
-			
+			chstate = IDLE;	
 		}
 		Vector3 direction = Vector3(Math::RadianToDegree(cos(Math::DegreeToRadian(rotate + 90))), Odisplacement.y * 4, Math::RadianToDegree(sin(Math::DegreeToRadian(rotate + 90))));
 		vel = direction.Normalized() * 80;
@@ -76,7 +73,7 @@ void Chimera::UpdateChimera(double dt)
 		Vector3 direction = Vector3(Math::RadianToDegree(cos(Math::DegreeToRadian(rotate + 90))), 0, Math::RadianToDegree(sin(Math::DegreeToRadian(rotate + 90))));
 		vel = direction.Normalized() * 80;
 	}
-					 break;
+	break;
 	}
 	
 
@@ -85,9 +82,6 @@ void Chimera::UpdateChimera(double dt)
 		pos.y -= 5;
 		vel.y = -vel.y;
 	}
-
-	
-	
 
 	hitbox::updatehitbox(aabb,pos);
 

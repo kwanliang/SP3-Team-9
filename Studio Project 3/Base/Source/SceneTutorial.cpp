@@ -1,8 +1,9 @@
 #include "SceneTutorial.h"
 #include "GL\glew.h"
 #include "Application.h"
+#include "MeshBuilder.h"
+#include "LoadTGA.h"
 #include <sstream>
-
 
 using std::cout;
 using std::endl;
@@ -20,6 +21,8 @@ SceneTutorial::~SceneTutorial()
 void SceneTutorial::Init()
 {
     SceneSP3::Init();
+    meshList[GEO_TERRAIN0] = MeshBuilder::GenerateTerrain("terrain", "Image//Area0.raw", m_heightMap[0]);
+
     currentCam = &walkCam;
     walkCam.Init(
         Vector3(0, 400, 0),
@@ -82,7 +85,7 @@ void SceneTutorial::RenderWorld()
     RenderMesh(meshList[GEO_FISHMODEL], true);
     modelStack.PushMatrix();
     modelStack.Scale(1, 1, 1);
-    modelStack.Translate(0, -0.02, -1.2);
+    modelStack.Translate(0, -0.02f, -1.2f);
     modelStack.Rotate(fish_tailrot, 0, 1, 0);
 
     RenderMesh(meshList[GEO_FISHTAIL], true);
@@ -186,39 +189,6 @@ void SceneTutorial::RenderPassMain()
     */
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
-    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-    {
-        GameObject *go = (GameObject*)*it;
-        if (go->objectType == GameObject::SEACREATURE)
-        {
-            Minnow *fo = (Minnow*)*it;
-            if (fo->active)
-            {
-                RenderFO(fo);
-                //modelStack.PushMatrix();
-                //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-                //modelStack.Translate(fo->pos.x, fo->pos.y, fo->pos.z);
-                //modelStack.Scale(fo->collision.m_width, fo->collision.m_height, fo->collision.m_length);
-                //RenderMesh(meshList[GEO_CUBE], false);
-                //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-                //modelStack.PopMatrix();
-            }
-        }
-        else if (go->objectType == GameObject::PROJECTILE)
-        {
-            Projectile *po = (Projectile*)*it;
-            if (po->active)
-            {
-                RenderPO(po);
-            }
-        }
-		else if (go->objectType == GameObject::CAPTURED)
-		{
-			SeaCreature* c = (SeaCreature*)go;
-			RenderSquad(c);
-		}
-    }
-
     //modelStack.PushMatrix();
     //modelStack.Translate(0, 300, 0);
     //modelStack.Rotate(Math::RadianToDegree(sin(rotater)), 0, 1, 0);
@@ -227,18 +197,16 @@ void SceneTutorial::RenderPassMain()
     //modelStack.PopMatrix();
 
     // Render the crosshair
-    glUniform1i(m_parameters[U_IS_GUI], 1);
-    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f);
-    SceneSP3::RenderMinimap();
-    RenderMesh(meshList[GEO_AXES], false);
-    glUniform1i(m_parameters[U_IS_GUI], 0);
-    std::ostringstream ss;
-    ss.precision(3);
-    ss << "FPS: " << fps;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
+    SceneSP3::RenderLoop();
+    SceneSP3::RenderParticles();
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
-    RenderMinimap();
-    glUniform1i(m_parameters[U_FOG_ENABLE], 1);
+
+    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
+
+    RenderMesh(meshList[GEO_AXES], false);
+
+    SceneSP3::RenderMinimap();
+    SceneSP3::RenderHUD();
 
     modelStack.PushMatrix();
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
@@ -263,6 +231,11 @@ void SceneTutorial::RenderPassMain()
         if (to->getActive())
             RenderTO(to);
     }
+
+    std::ostringstream ss;
+    ss.precision(3);
+    ss << "FPS: " << fps;
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
 }
 
 

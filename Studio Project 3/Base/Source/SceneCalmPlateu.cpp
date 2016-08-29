@@ -1,6 +1,8 @@
 #include "SceneCalmPlateu.h"
 #include "GL\glew.h"
 #include "Application.h"
+#include "MeshBuilder.h"
+#include "LoadTGA.h"
 #include <sstream>
 
 using std::cout;
@@ -19,6 +21,22 @@ SceneCalmPlateu::~SceneCalmPlateu()
 void SceneCalmPlateu::Init()
 {
     SceneSP3::Init();
+    glClearColor(0.1f, 0.9f, 0.9f, 0.0f);
+    Color fogColor(0.1f, 0.9f, 0.9f);
+    glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+
+    meshList[GEO_TERRAIN1] = MeshBuilder::GenerateTerrain("terrain", "Image//Area01.raw", m_heightMap[1]);
+
+    meshList[GEO_SQUIDBODY] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//squid.obj");
+    meshList[GEO_SQUIDBODY]->textureArray[0] = LoadTGA("Image//squidbody.tga");
+    meshList[GEO_SQUIDTENTACLENODE] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//tentacle_node.obj");
+    meshList[GEO_SQUIDTENTACLENODE]->textureArray[0] = LoadTGA("Image//squidtentacle.tga");
+    meshList[GEO_SQUIDTENTACLEEND] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//tentacle_end.obj");
+    meshList[GEO_SQUIDTENTACLEEND]->textureArray[0] = LoadTGA("Image//squidtentacle.tga");
+
+    meshList[GEO_PUFFER] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//puffer.obj");
+    meshList[GEO_PUFFER]->textureArray[0] = LoadTGA("Image//puffer.tga");
+
     if (SharedData::GetInstance()->SD_Down)
     {
         walkCam.Init(
@@ -38,29 +56,13 @@ void SceneCalmPlateu::Init()
             );
     }
 
-    //walkCam.Init(
-    //    Vector3(0, 500, 0),
-    //    Vector3(0, 0, 10),
-    //    Vector3(0, 1, 0),
-    //    60
-    //    );
+    walkCam.Init(
+        Vector3(0, 500, 0),
+        Vector3(0, 0, 10),
+        Vector3(0, 1, 0),
+        60
+        );
 
-
-    for (int i = 0; i < 10; i++)
-    {
-        Pufferfish *p = FetchPuffer();
-        p->active = true;
-        p->objectType = GameObject::SEACREATURE;
-        p->seaType = SeaCreature::PUFFER;
-        p->pstate = Pufferfish::IDLE;
-        p->scale.Set(5, 5, 5);
-        p->pos.Set(0, 500, 0);
-        p->vel.Set(Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10));
-        p->collision = hitbox2::generatehitbox(p->pos, 8, 8, 8);
-        p->setHealth(200);
-        p->setMoveCoolDown(0.0);
-        g_PufferfishCount++;
-    }
 
     m_travelzonedown = hitbox::generatehitbox(Vector3(1386, 295, 5.8), 200, 600, 600, 0);
     m_travelzoneup = hitbox::generatehitbox(Vector3(-1258, 389, -1221), 500, 700, 500, 0);
@@ -113,31 +115,6 @@ void SceneCalmPlateu::InitGiantSquid()
     }
 
     m_goList.push_back(giantSquid);
-}
-
-Pufferfish* SceneCalmPlateu::FetchPuffer()
-{
-    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-    {
-        GameObject *go = (GameObject *)*it;
-        if (!go->active)
-        {
-            Pufferfish *pf = (Pufferfish *)*it;
-            pf->active = true;
-            return pf;
-        }
-
-    }
-    for (unsigned i = 0; i < 10; ++i)
-    {
-        Pufferfish *pf = new Pufferfish();
-        pf->objectType = GameObject::SEACREATURE;
-        pf->seaType = SeaCreature::PUFFER;
-        m_goList.push_back(pf);
-    }
-    Pufferfish *pf = (Pufferfish *)m_goList.back();
-    pf->active = true;
-    return pf;
 }
 
 void SceneCalmPlateu::RenderGiantSquid()
@@ -473,50 +450,10 @@ void SceneCalmPlateu::RenderPassMain()
     }
     */
 
+
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     //RenderWorld();
-
-    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-    {
-        GameObject *go = (GameObject*)*it;
-
-        if (!go->active)
-            continue;
-        if (go->objectType == GameObject::SEACREATURE)
-        {
-            SeaCreature * fo = (SeaCreature*)*it;
-
-            switch (fo->seaType)
-            {
-            case SeaCreature::MINNOW:
-            {
-                Minnow * m = (Minnow*)*it;
-                RenderFO(m);
-                break;
-            }
-            case SeaCreature::PUFFER:
-            {
-                Pufferfish * p = (Pufferfish*)*it;
-                RenderPuffer(p);
-                break;
-            }
-            }
-        }
-        else if (go->objectType == GameObject::PROJECTILE)
-        {
-            Projectile *po = (Projectile*)*it;
-            if (po->active)
-            {
-                RenderPO(po);
-            }
-        }
-		else if (go->objectType == GameObject::CAPTURED)
-		{
-			SeaCreature* c = (SeaCreature*)go;
-			RenderSquad(c);
-		}
-    }
 
     RenderGiantSquid();
 
@@ -539,13 +476,15 @@ void SceneCalmPlateu::RenderPassMain()
         modelStack.PopMatrix();
     }
 
+
+    SceneSP3::RenderLoop();
+    SceneSP3::RenderParticles();
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
-    // Render the crosshair
+
     RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
 
     RenderMesh(meshList[GEO_AXES], false);
 
-    SceneSP3::RenderParticles();
     SceneSP3::RenderMinimap();
     SceneSP3::RenderHUD();
 
@@ -589,25 +528,10 @@ void SceneCalmPlateu::Render()
 
 }
 
-void SceneCalmPlateu::RenderPuffer(Pufferfish *fo)
-{
-    float rotate = 0;
-    rotate = Math::RadianToDegree(atan2(fo->vel.x, fo->vel.z));
-    modelStack.PushMatrix();
-    modelStack.Translate(fo->pos.x, fo->pos.y, fo->pos.z);
-    modelStack.Rotate(rotate, 0, 1, 0);
-    modelStack.Scale(fo->scale.x, fo->scale.y, fo->scale.z);
-    RenderMesh(meshList[GEO_PUFFER], false);
-    modelStack.PopMatrix();
-
-}
-
 void SceneCalmPlateu::Update(double dt)
 {
     SceneSP3::Update(dt);
-    //UpdatePuffer(dt);
-    //UpdateGiantSquid(dt);
-    UpdateParticles(dt);
+    UpdateGiantSquid(dt);
 
     hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
 
@@ -628,30 +552,6 @@ void SceneCalmPlateu::Update(double dt)
 
         if (!giantSquid->tentacle[i]->m_active)
             giantSquid->tentacle[i]->collision.m_position = Vector3(0, 0, 0);
-    }
-
-
-    PufferfishSpawner.CheckCount(g_PufferfishCount, g_MaxPufferfish);
-
-    if (PufferfishSpawner.getIsSpawn())
-    {
-        Vector3 tv(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(-1000.f, 1000.f));
-        if (!terraincollision(tv, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
-        {
-            pf = new Pufferfish();
-            pf->active = true;
-            pf->objectType = GameObject::SEACREATURE;
-            pf->seaType = SeaCreature::PUFFER;
-            pf->pstate = Pufferfish::IDLE;
-            pf->scale.Set(5, 5, 5);
-            pf->pos.Set(tv.x, tv.y, tv.z);
-            pf->vel.Set(Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10), Math::RandFloatMinMax(-10, 10));
-            pf->collision = hitbox2::generatehitbox(pf->pos, 8, 8, 8);
-            pf->setHealth(200);
-            pf->setMoveCoolDown(0.0);
-            g_PufferfishCount++;
-            m_goList.push_back(pf);
-        }
     }
 }
 
@@ -724,7 +624,7 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
                 po->projectileType = Projectile::INK;
                 po->active = true;
                 po->scale.Set(1, 1, 1);
-                po->setLifetime(1.0);
+                po->setLifetime(10.0);
                 po->pos.Set(Math::RandFloatMinMax(giantSquid->pos.x - g_inkSpread, giantSquid->pos.x + g_inkSpread),
                     Math::RandFloatMinMax(giantSquid->pos.y + x - g_inkSpread, giantSquid->pos.y + x + g_inkSpread),
                     Math::RandFloatMinMax(giantSquid->pos.z - g_inkSpread, giantSquid->pos.z + g_inkSpread));
@@ -739,13 +639,12 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
                 po->projectileType = Projectile::INK;
                 po->active = true;
                 po->scale.Set(1, 1, 1);
-                po->setLifetime(1.0);
                 po->pos.Set(Math::RandFloatMinMax(giantSquid->pos.x + x - g_inkSpread, giantSquid->pos.x + x + g_inkSpread),
                     Math::RandFloatMinMax(giantSquid->pos.y - g_inkSpread, giantSquid->pos.y + g_inkSpread),
                     Math::RandFloatMinMax(giantSquid->pos.z - g_inkSpread, giantSquid->pos.z + g_inkSpread));
                 Vector3 view = (playerpos - giantSquid->pos).Normalized();
                 po->vel.Set(view.x, view.y, view.z);
-                po->setLifetime(1.0);
+                po->setLifetime(10.0);
             }
         }
         break;

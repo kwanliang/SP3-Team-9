@@ -5,7 +5,8 @@
 #include <vector>
 #include "Mtx44.h"
 #include "FrilledShark.h"
-#include "Cuttlefish.h"
+
+static int g_CuttlefishCount = 0;
 
 class SceneGhastlyDepths : public SceneSP3
 {
@@ -20,11 +21,8 @@ public:
 	virtual void Render();
 	void RenderPassGPass();
 	void RenderPassMain();
-	void RenderMinimap();
 
-	Cuttlefish* FetchCuttle();
 	void RenderBoss();
-	void RenderCuttle(Cuttlefish* c);
 	void RenderWorld();
 	void RenderTerrain();
 	void RenderSkyPlane();

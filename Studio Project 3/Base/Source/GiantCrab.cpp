@@ -2,7 +2,7 @@
 #include "SharedData.h"
 
 GiantCrab::GiantCrab()
-	: state(GiantCrab::VORTEX), walkAnim(0), m_rotate (0)
+	: state(GiantCrab::IDLE), walkAnim(0), m_rotate (0)
 {
 	//float a = 200;
 	//float b = 100;
@@ -123,10 +123,10 @@ void GiantCrab::UpdateGC(double dt, std::vector<unsigned char> hmap)
 		//need collision here
 		//if player enters grabbox, grab mode
 
-		//if (P_displacement.Length() > 500)
-		//{
-		//	state = VORTEX;
-		//}
+		if (P_displacement.Length() > 500)
+		{
+			state = VORTEX;
+		}
 
 		break;
 	case GRAB:
@@ -268,7 +268,7 @@ void GiantCrab::AnimateGC(double dt)
 		{
 			if (m_leg[i].m_Urotate > -10)
 			{
-				m_leg[i].m_Urotate -= speed * dt;
+                m_leg[i].m_Urotate -= speed * (float)dt;
 			}
 			else
 			{
@@ -280,7 +280,7 @@ void GiantCrab::AnimateGC(double dt)
 		{
 			if (m_leg[i].m_Urotate < 8)
 			{
-				m_leg[i].m_Urotate += speed * dt;
+                m_leg[i].m_Urotate += speed * (float)dt;
 			}
 			else
 			{
@@ -293,7 +293,7 @@ void GiantCrab::AnimateGC(double dt)
 		{
 			if (m_leg[i].m_Lrotate < 19)
 			{
-				m_leg[i].m_Lrotate += speed * dt;
+                m_leg[i].m_Lrotate += speed * (float)dt;
 			}
 			else
 			{
@@ -305,7 +305,7 @@ void GiantCrab::AnimateGC(double dt)
 		{
 			if (m_leg[i].m_Lrotate > -15)
 			{
-				m_leg[i].m_Lrotate -= speed * dt;
+				m_leg[i].m_Lrotate -= speed * (float)dt;
 			}
 			else
 			{

@@ -16,6 +16,7 @@ public:
 
 	enum AREA
 	{
+        //A_MENU,
 		A_TUTORIAL,
 		A_CALMPLATAEU,
 		A_CREEPINGRIDGE,
@@ -23,10 +24,13 @@ public:
 		A_NIGHTMARETRENCH
 	};
 
-	unsigned SD_CurrentArea = 0;
+	unsigned SD_CurrentArea = 3;
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
 	std::vector<GameObject*> SD_CapturedList;
+    bool SD_ToMenu = false;
+    bool SD_QuitGame = false;
+    bool SD_IsImmobile = false;
 
 private:
     SharedData(){};

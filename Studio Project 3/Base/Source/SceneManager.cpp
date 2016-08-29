@@ -10,12 +10,16 @@ SceneManager::~SceneManager()
 
 }
 
+
 void SceneManager::LoadScene()
 {
-    previousScene = currentScene;
-
 	switch (SharedData::GetInstance()->SD_CurrentArea)
 	{
+    //case SharedData::A_MENU:
+    //    currentScene = new SceneMenu();
+    //    currentScene->Init();
+    //    break;
+
 	case SharedData::A_TUTORIAL:
 		currentScene = new SceneTutorial();
 		currentScene->Init();
@@ -31,12 +35,10 @@ void SceneManager::LoadScene()
         currentScene->Init();
 		break;
 
-
 	case SharedData::A_GHASTLYDEPTHS :
 		currentScene = new SceneGhastlyDepths();
 		currentScene->Init();
 		break;
-
 
 	case SharedData::A_NIGHTMARETRENCH:
 		currentScene = new SceneNightmareTrench();
@@ -63,4 +65,24 @@ void SceneManager::SetCurrentScene(SceneSP3* currentScene)
 void SceneManager::SetPreviousScene(SceneSP3* previousScene)
 {
     this->previousScene = previousScene;
+}
+
+SceneSP3 *SceneManager::GetMenuScreen()
+{
+    return this->MenuScreen;
+}
+
+void SceneManager::SetMenuScene(SceneSP3* MenuScreen)
+{
+    this->MenuScreen = MenuScreen;
+}
+
+SceneSP3 *SceneManager::GetLoadingScreen()
+{
+    return this->LoadingScreen;
+}
+
+void SceneManager::SetLoadingScene(SceneSP3* LoadingScreen)
+{
+    this->LoadingScreen = LoadingScreen;
 }

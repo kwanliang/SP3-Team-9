@@ -1,6 +1,8 @@
 #include "SceneGhastlyDepths.h"
 #include "GL\glew.h"
 #include "Application.h"
+#include "MeshBuilder.h"
+#include "LoadTGA.h"
 #include <sstream>
 
 SceneGhastlyDepths::SceneGhastlyDepths()
@@ -16,6 +18,25 @@ SceneGhastlyDepths::~SceneGhastlyDepths()
 void SceneGhastlyDepths::Init()
 {
 	SceneSP3::Init();
+    //glClearColor(0.1f, 0.2f, 0.2f, 0.0f);
+    //Color fogColor(0.1f, 0.2f, 0.2f);
+    //glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
+
+    meshList[GEO_TERRAIN3] = MeshBuilder::GenerateTerrain("terrain", "Image//Area03.raw", m_heightMap[3]);
+
+    meshList[GEO_CUTTLE] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//cuttlefish.obj");
+    meshList[GEO_CUTTLE]->textureArray[0] = LoadTGA("Image//cuttle.tga");
+
+    meshList[GEO_FSHARK_LJAW] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//frilledshark_Ljaw.obj");
+    meshList[GEO_FSHARK_LJAW]->textureArray[0] = LoadTGA("Image//frilledshark.tga");
+    meshList[GEO_FSHARK_UJAW] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//frilledshark_Ujaw.obj");
+    meshList[GEO_FSHARK_UJAW]->textureArray[0] = LoadTGA("Image//frilledshark.tga");
+    meshList[GEO_FSHARK_NODE] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//frilledshark_node.obj");
+    meshList[GEO_FSHARK_NODE]->textureArray[0] = LoadTGA("Image//frilledshark.tga");
+    meshList[GEO_FSHARK_TAIL] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//frilledshark_tail.obj");
+    meshList[GEO_FSHARK_TAIL]->textureArray[0] = LoadTGA("Image//frilledshark.tga");
+
+
 	if (SharedData::GetInstance()->SD_Down)
 	{
 	
@@ -49,56 +70,53 @@ void SceneGhastlyDepths::Init()
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, 0);
 	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
-	frilledshark = new FrilledShark;
-	//frilledshark->active = true;
-	for (unsigned i = 0; i <= 20; i++)
-	{
-		Cuttlefish* c = FetchCuttle();
-		c->pos = Vector3(Math::RandFloatMinMax(-300, 300), Math::RandFloatMinMax(200, 600), Math::RandFloatMinMax(-300, 300));
-		c->objectType = GameObject::SEACREATURE;
-		c->seaType = SeaCreature::CUTTLE;
-		c->ctstate = Cuttlefish::IDLE;
-		c->scale.Set(4, 4, 4);
-		c->collision = hitbox2::generatehitbox(c->pos, 5, 5, 5);
-		c->vel.Set(Math::RandFloatMinMax(-40, 40), Math::RandFloatMinMax(-20, 20), Math::RandFloatMinMax(-40, 40));
-	}
+	frilledshark = new FrilledShark();
+    //m_goList.push_back(frilledshark);
 
-	m_goList.push_back(frilledshark);
+	//for (unsigned i = 0; i <= 20; i++)
+	//{
+	//	Cuttlefish* c = FetchCuttle();
+	//	c->pos = Vector3(Math::RandFloatMinMax(-300, 300), Math::RandFloatMinMax(200, 600), Math::RandFloatMinMax(-300, 300));
+	//	c->objectType = GameObject::SEACREATURE;
+	//	c->seaType = SeaCreature::CUTTLE;
+	//	c->ctstate = Cuttlefish::IDLE;
+	//	c->scale.Set(4, 4, 4);
+
+	//m_goList.push_back(frilledshark);
 	SceneSP3::ReinitCaptured();
-
 }
 
 
 void SceneGhastlyDepths::RenderBoss()
 {
-	modelStack.PushMatrix();
-	modelStack.Translate(frilledshark->m_node[0].pos.x, frilledshark->m_node[0].pos.y, frilledshark->m_node[0].pos.z);
-	modelStack.Rotate(frilledshark->m_node[0].yaw,0, 1, 0);
-	modelStack.Scale(frilledshark->scale.z, frilledshark->scale.z, frilledshark->scale.z);
-	RenderMesh(meshList[GEO_FSHARK_UJAW], false);
-	
-	modelStack.PushMatrix();
-	modelStack.Translate(0,-0.2,1);
-	modelStack.Rotate(frilledshark->Ljaw_rotate,1, 0, 0);
-	RenderMesh(meshList[GEO_FSHARK_LJAW], false);
-	
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();
+    modelStack.PushMatrix();
+    modelStack.Translate(frilledshark->m_node[0].pos.x, frilledshark->m_node[0].pos.y, frilledshark->m_node[0].pos.z);
+    modelStack.Rotate(frilledshark->m_node[0].yaw, 0, 1, 0);
+    modelStack.Scale(frilledshark->scale.z, frilledshark->scale.z, frilledshark->scale.z);
+    RenderMesh(meshList[GEO_FSHARK_UJAW], false);
+
+    modelStack.PushMatrix();
+    modelStack.Translate(0, -0.2, 1);
+    modelStack.Rotate(frilledshark->Ljaw_rotate, 1, 0, 0);
+    RenderMesh(meshList[GEO_FSHARK_LJAW], false);
+
+    modelStack.PopMatrix();
+    modelStack.PopMatrix();
 
 
-	for (unsigned i = 1; i < 5; i++)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(frilledshark->m_node[i].pos.x, frilledshark->m_node[i].pos.y, frilledshark->m_node[i].pos.z);
-		modelStack.Rotate(frilledshark->m_node[i].yaw, 0, 1, 0);
-		modelStack.Scale(frilledshark->scale.z, frilledshark->scale.z, frilledshark->scale.z);
-		if (i ==4)
-			RenderMesh(meshList[GEO_FSHARK_TAIL], false);
-		else
-			RenderMesh(meshList[GEO_FSHARK_NODE], false);
-		modelStack.PopMatrix();
+    for (unsigned i = 1; i < 5; i++)
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(frilledshark->m_node[i].pos.x, frilledshark->m_node[i].pos.y, frilledshark->m_node[i].pos.z);
+        modelStack.Rotate(frilledshark->m_node[i].yaw, 0, 1, 0);
+        modelStack.Scale(frilledshark->scale.z, frilledshark->scale.z, frilledshark->scale.z);
+        if (i == 4)
+            RenderMesh(meshList[GEO_FSHARK_TAIL], false);
+        else
+            RenderMesh(meshList[GEO_FSHARK_NODE], false);
+        modelStack.PopMatrix();
 
-	}
+    }
 
 
 }
@@ -121,51 +139,11 @@ void SceneGhastlyDepths::RenderSkyPlane()
 	modelStack.PopMatrix();
 }
 
-void SceneGhastlyDepths::RenderCuttle(Cuttlefish* c)
-{
-	
-	modelStack.PushMatrix();
-	glBlendFunc(1, 1);
-	modelStack.Translate(c->pos.x, c->pos.y, c->pos.z);
-	modelStack.Rotate(c->rotate, 0, 1, 0);
-	modelStack.Scale(c->scale.z, c->scale.z, c->scale.z);
-	RenderMesh(meshList[GEO_CUTTLE], true);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	modelStack.PopMatrix();
-}
-
-Cuttlefish*  SceneGhastlyDepths::FetchCuttle()
-{
-	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-	{
-		Cuttlefish *go = (Cuttlefish *)*it;
-		if (!go->active)
-		{
-			go->active = true;
-			//++m_objectCount;
-			return go;
-		}
-
-	}
-	for (unsigned i = 0; i < 10; ++i)
-	{
-		Cuttlefish *go = new Cuttlefish();
-		go->objectType = GameObject::SEACREATURE;
-		go->seaType = SeaCreature::CUTTLE;
-		m_goList.push_back(go);
-	}
-	Cuttlefish *go = (Cuttlefish *)m_goList.back();
-	go->active = true;
-	//++m_objectCount;
-	return go;
-}
-
 void SceneGhastlyDepths::RenderWorld()
 {
 	RenderTerrain();
 	RenderSkyPlane();
 	RenderBoss();
-	
 
 	modelStack.PushMatrix();
 	modelStack.Translate(playerpos.x, playerpos.y+5, playerpos.z);
@@ -181,27 +159,6 @@ void SceneGhastlyDepths::RenderWorld()
 	RenderMesh(meshList[GEO_FISHTAIL], true);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
-
-	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-	{
-		GameObject *go = (GameObject*)*it;
-		if (!go->active)
-			continue;
-
-		if (go->objectType != GameObject::SEACREATURE)
-			continue;
-		SeaCreature *so = (SeaCreature*)*it;
-
-		if (so->seaType != SeaCreature::CUTTLE)
-			continue;
-
-		Cuttlefish *c = (Cuttlefish*)*it;
-		RenderCuttle(c);
-	}
-
-	
-	
-
 }
 
 void SceneGhastlyDepths::RenderPassGPass()
@@ -303,52 +260,31 @@ void SceneGhastlyDepths::RenderPassMain()
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	//RenderWorld();
 
-	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-	{
-		GameObject *go = (GameObject*)*it;
-		if (go->objectType == GameObject::SEACREATURE)
-		{
-			Minnow *fo = (Minnow*)*it;
-			if (fo->active)
-			{
-				RenderFO(fo);
-			}
-		}
-		else if (go->objectType == GameObject::PROJECTILE)
-		{
-			Projectile *po = (Projectile*)*it;
-			if (po->active)
-			{
-				RenderPO(po);
+    for (unsigned i = 0; i < 5; i++)
+    {
 
-			}
-		}
-		else if (go->objectType == GameObject::CAPTURED)
-		{
-			SeaCreature* c = (SeaCreature*)go;
-			RenderSquad(c);
-		}
-	}
+        modelStack.PushMatrix();
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
+        modelStack.Translate(frilledshark->m_FSbox[i].m_position.x, frilledshark->m_FSbox[i].m_position.y, frilledshark->m_FSbox[i].m_position.z);
+        modelStack.Scale(frilledshark->m_FSbox[i].m_width, frilledshark->m_FSbox[i].m_height, frilledshark->m_FSbox[i].m_length);
+        RenderMesh(meshList[GEO_CUBE], false);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
+        modelStack.PopMatrix();
 
-	for (unsigned i = 0; i < 5; i++)
-	{
-		
-		modelStack.PushMatrix();
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-		modelStack.Translate(frilledshark->m_FSbox[i].m_position.x, frilledshark->m_FSbox[i].m_position.y, frilledshark->m_FSbox[i].m_position.z);
-		modelStack.Scale(frilledshark->m_FSbox[i].m_width, frilledshark->m_FSbox[i].m_height, frilledshark->m_FSbox[i].m_length);
-		RenderMesh(meshList[GEO_CUBE], false);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-		modelStack.PopMatrix();
-
-	}
+    }
 
 
-	// Render the crosshair
-	glUniform1i(m_parameters[U_FOG_ENABLE], 0);
-	RenderMesh(meshList[GEO_AXES], false);
-	RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f);
-	SceneSP3::RenderMinimap();
+    SceneSP3::RenderLoop();
+    SceneSP3::RenderParticles();
+    glUniform1i(m_parameters[U_FOG_ENABLE], 0);
+
+    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
+
+    RenderMesh(meshList[GEO_AXES], false);
+
+    SceneSP3::RenderMinimap();
+    SceneSP3::RenderHUD();
+
 
 
 	std::ostringstream ss;
@@ -392,6 +328,12 @@ void SceneGhastlyDepths::RenderPassMain()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
 	//modelStack.PopMatrix();
 
+    for (std::vector<DamageText *>::iterator it = m_textList.begin(); it != m_textList.end(); ++it)
+    {
+        DamageText *to = (DamageText*)*it;
+        if (to->getActive())
+            RenderTO(to);
+    }
 }
 
 void SceneGhastlyDepths::Render()
@@ -404,62 +346,16 @@ void SceneGhastlyDepths::Render()
 
 }
 
-void SceneGhastlyDepths::RenderMinimap()
-{
-
-}
-
 void SceneGhastlyDepths::Update(double dt)
 {
 	SceneSP3::Update(dt);
+
 	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
-	for (unsigned i = 0; i < 5; ++i)
-	{
-		if (collision(frilledshark->m_FSbox[i], player_box))
-		{
-			std::cout << "collide" << std::endl;
-			////fishVel  += frilledshark->vel *200 * dt;
-			//fishVel = -20 * fishVel;
-			////Vector3 p = walkCam.GetPos();
-			////walkCam.SetPos(Vector3(p.x, p.y+10, p.z));
-		}
-	}
-
-
-
-
-
-
-	//frilledshark->m_node[0].yaw = val*4;
-	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-	{
-		GameObject *go = (GameObject*)*it;
-		if (!go->active)
-			continue;
-
-		if (go->objectType != GameObject::SEACREATURE)
-			continue;
-		SeaCreature *so = (SeaCreature*)*it;
-
-		if (so->seaType != SeaCreature::CUTTLE)
-			continue;
-
-		
-		Cuttlefish *c = (Cuttlefish*)*it;
-		if (terraincollision(c->collision, m_heightMap[3]))//collision with terrain
-		{
-			c->pos.y += 2;
-			c->vel = -c->vel;
-		}
-		
-		c->UpdateCuttle(dt);
-	}
-	
-	//frilledshark->m_node[0].yaw = val;
-
+	frilledshark->m_node[0].yaw = val*4;
 }
 
 void SceneGhastlyDepths::Exit()
 {
+    delete frilledshark;
 	SceneSP3::Exit();
 }

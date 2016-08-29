@@ -4,8 +4,8 @@
 #include "SceneSP3.h"
 #include <vector>
 #include "Mtx44.h"
-#include "Chimera.h"
 #include "Isopod.h"
+
 static int g_ChimeraCount = 0;
 
 class SceneNightmareTrench : public SceneSP3
@@ -21,16 +21,12 @@ public:
 	virtual void Render();
 	void RenderPassGPass();
 	void RenderPassMain();
-	void RenderMinimap();
-
-	Chimera* FetchChimera();
 
 	void RenderWorld();
 	void RenderTerrain();
 	void RenderSkyPlane();
-	void RenderChimera(Chimera*);
-	void RenderBoss();
 
+    void RenderBoss();
 
 private:
 

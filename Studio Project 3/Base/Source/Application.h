@@ -29,6 +29,7 @@ public:
 	static double GetAspectRatio();
 
 	static SceneManager *sceneManager;
+    //static SceneSP3* LoadingScreen;
 
 private:
 	Application();

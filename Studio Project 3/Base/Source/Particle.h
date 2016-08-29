@@ -3,19 +3,17 @@
 
 #include "Vector3.h"
 
+enum PARTICLEOBJECT_TYPE
+{
+    P_PARTICLE,
+    P_BUBBLE,
+    P_VACUUM,
+    P_TOTAL,
+};
 
 class ParticleObject
 {
 public:
-	enum PARTICLEOBJECT_TYPE
-	{
-		P_PARTICLE,
-		P_BUBBLE,
-		P_VACUUM,
-		P_TOTAL,
-	};
-
-
     ParticleObject(PARTICLEOBJECT_TYPE);
     ~ParticleObject();
 
@@ -27,8 +25,6 @@ public:
     float rotateSpeed;          // Rotational speed of Particle
 
     bool active;                // Activate Particle upon use
-
-
 };
 
 #endif

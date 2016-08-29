@@ -18,7 +18,6 @@ public:
 	};
 
 	Cuttlefish();
-	Cuttlefish(Vector3 pos);
 	~Cuttlefish();
 
 	void UpdateCuttle(double dt);

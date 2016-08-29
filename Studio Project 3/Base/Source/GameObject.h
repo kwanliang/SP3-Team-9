@@ -22,6 +22,7 @@ struct GameObject
     Vector3 vel;
     Vector3 scale;
     bool active;
+    bool inRange;
 
     GameObject();
     ~GameObject();

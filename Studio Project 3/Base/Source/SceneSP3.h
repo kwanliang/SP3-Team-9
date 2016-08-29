@@ -14,6 +14,10 @@
 #include "DepthFBO.h"
 #include "CollisionManager.h"
 #include "Minnow.h"
+#include "Pufferfish.h"
+#include "Fcrab.h"
+#include "Cuttlefish.h"
+#include "Chimera.h"
 #include "Projectile.h"
 #include "Capture.h"
 #include "SharedData.h"
@@ -25,7 +29,6 @@ static int g_MinnowCount = 0;
 
 class SceneSP3 : public Scene
 {
- 
 public:
     SceneSP3();
     virtual ~SceneSP3();
@@ -35,18 +38,18 @@ public:
     virtual void Render();
     virtual void Exit();
 
-	virtual void RenderPassGPass() = 0;
-    virtual void RenderPassMain() = 0;
-    virtual void RenderWorld() = 0;
+    virtual void RenderPassGPass() {};
+    virtual void RenderPassMain() {};
+    virtual void RenderWorld() {};
 	virtual void RenderMinimap();
     virtual void RenderHUD();
+    virtual void RenderDeathScreen();
 	void RenderSquad(SeaCreature *go);
 
 	void UpdateTravel();
     void UpdateLoop(double dt);
 	void UpdatePuffer(double dt);
 	void UpdateCaptured(double dt);
-	void UpdateProjectile(double dt);
 	void UpdateSquadFire(double dt);
     void UpdateSpawner(double dt);
 	void SaveCaptured();
@@ -60,14 +63,20 @@ public:
     void RenderParticles();
     void UpdateParticles(double dt);
 	void UpdateSP(ParticleObject*, double);
-	ParticleObject* GetParticle(ParticleObject::PARTICLEOBJECT_TYPE = ParticleObject::P_BUBBLE);
+    ParticleObject* GetParticle();
 
-    Minnow* FetchFO();
+    Minnow* FetchMinnow();
+    Pufferfish* FetchPuffer();
+    Fcrab* FetchFCrab();
+    Chimera* FetchChimera();
+    Cuttlefish* FetchCuttle();
     Projectile* FetchPO();
     DamageText* FetchTO();
-    void RenderFO(Minnow *fo);
+    void RenderFO(SeaCreature *fo);
     void RenderPO(Projectile *po);
     void RenderTO(DamageText *to);
+
+    void RenderLoop();
 
     float LookAtPlayer(Vector3 playerpos, Vector3 otherpos);
 
@@ -75,6 +84,14 @@ public:
 
     float fogThickness;
     float blendFactor;
+
+    enum DEATHSELECT
+    {
+        RESPAWN,
+        MENU,
+        QUIT,
+        NUM_DEATHSELECT
+    }DeathSelect;
 
 private:
 
@@ -234,6 +251,18 @@ protected:
 
         GEO_HUD_HEALTHBAR,
         GEO_HUD_BOSSHEALTH,
+
+        GEO_TTITLE,
+        GEO_TMENU,
+        GEO_TSTART,
+        GEO_TQUIT,
+        GEO_TLOADING,
+
+        GEO_TBORDER,
+        GEO_TLAYER,
+        GEO_TDIED,
+        GEO_TRESPAWN,
+        GEO_TTOMENU,
 
         SPRITE_NAME,
         GEO_LIGHT_DEPTH_QUAD,

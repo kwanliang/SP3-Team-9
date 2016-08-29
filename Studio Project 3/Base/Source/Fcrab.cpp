@@ -1,14 +1,15 @@
 #include "Fcrab.h"
+#include "SharedData.h"
 
 Fcrab::Fcrab()
 {
-	SeaCreature();
-	Crableg[1].rotate = 20;
-	Crableg[3].rotate = 30;
-	Crableg[5].rotate = 20;
-	Crableg[0].rotate = -20;
-	Crableg[2].rotate = -30;
-	Crableg[4].rotate = -20;
+    SeaCreature();
+    Crableg[1].rotate = 20;
+    Crableg[3].rotate = 30;
+    Crableg[5].rotate = 20;
+    Crableg[0].rotate = -20;
+    Crableg[2].rotate = -30;
+    Crableg[4].rotate = -20;
 }
 
 Fcrab::~Fcrab()
