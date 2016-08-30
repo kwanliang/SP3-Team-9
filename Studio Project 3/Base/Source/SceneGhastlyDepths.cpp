@@ -70,8 +70,8 @@ void SceneGhastlyDepths::Init()
 	m_static = -179;
 	m_isStatic = false;
 
-	m_travelzonedown = hitbox::generatehitbox(Vector3(-27, 288, 1890), 150, 500, 1000, 0);
-	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, 0);
+	m_travelzonedown = hitbox::generatehitbox(Vector3(-27, 388, 1490), 150, 500, 700, NULL);
+	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, NULL);
 	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
 	frilledshark = new FrilledShark();
@@ -148,6 +148,7 @@ void SceneGhastlyDepths::RenderWorld()
 {
 	RenderTerrain();
 	RenderSkyPlane();
+	if (!SharedData::GetInstance()->SD_BossDead3)
 	RenderBoss();
     SceneSP3::RenderLoop();
 

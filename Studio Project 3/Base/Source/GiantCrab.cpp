@@ -166,7 +166,11 @@ void GiantCrab::UpdateGC(double dt, std::vector<unsigned char> hmap)
 
 
 	}
-
+	if (getHealth() < 0)
+	{
+		SharedData::GetInstance()->SD_BossDead2 = true;
+		active = false;
+	}
 
 
 	if (terraincollision(m_hitbox, hmap))

@@ -98,7 +98,7 @@ void SceneCreepingRidge::Init()
     //    g_FCrabCount++;
     //}
 
-	//SceneSP3::ReinitCaptured();
+	SceneSP3::ReinitCaptured();
     
     giantCrab = new GiantCrab();
     giantCrab->active = true;
@@ -289,6 +289,8 @@ void SceneCreepingRidge::RenderWorld()
     RenderMesh(meshList[GEO_FISHTAIL], true);
     modelStack.PopMatrix();
     modelStack.PopMatrix();
+
+	if (!SharedData::GetInstance()->SD_BossDead2)
 	RenderGiantCrab();
 
 }
@@ -457,56 +459,57 @@ void SceneCreepingRidge::Update(double dt)
 
 	//giantCrab->pos.y = 350.f * ReadHeightMap(m_heightMap[2], giantCrab->pos.x / 3000.f, giantCrab->pos.z / 3000.f) + 170;
 	//giantCrab->updateGC(dt);
-	if (giantCrab->isstunned == false)
+	if (!SharedData::GetInstance()->SD_BossDead2 && giantCrab->isstunned == false)
 	{
-    giantCrab->UpdateGC(dt, m_heightMap[2]);
-    if (collision(giantCrab->grabArea, player_box))
-    {
-        giantCrab->SetState(GiantCrab::GRAB);
-    }
-
-	if (collision(giantCrab->m_hitbox, player_box))
-	{
-		giantCrab->SetState(GiantCrab::GRAB);
-	}
-
-    if (giantCrab->GetState() == GiantCrab::VORTEX)
-    {
-
-        Vector3 target = playerpos - giantCrab->grabArea.m_position;
-        for (auto it : particleList)
-        {
-            ParticleObject* p = (ParticleObject*)it;
-            if (!p->active)
-                continue;
-            if (p->type != PARTICLEOBJECT_TYPE::P_PARTICLE)
-                continue;
-
-            p->vel = -target.Normalized() * 200;
-
-        }
-
-        fishVel += -15 * giantCrab->vel;
-        fishVel.y = -target.y;
-
-    }
-	if (giantCrab->GetState() == GiantCrab::GRAB)
-	{
-		fishVel.SetZero();
-	}
-	if (collision(giantCrab->m_hitbox, player_box))
-	{
-		fishVel = -giantCrab->vel*10;
-		if (skipper->getTimerReceieveDamage() > 1.0)
+		giantCrab->UpdateGC(dt, m_heightMap[2]);
+		if (collision(giantCrab->grabArea, player_box))
 		{
-			skipper->setTimerReceieveDamage(0.0);
-			skipper->setHealth(skipper->getHealth() - 40);
-			DamageText* text = FetchTO();
-			text->setActive(true);
-			text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
-			text->setLastDamage(20);
-			text->setScaleText(Vector3(0, 0, 0));
-			text->setIsEnemy(false);
+			giantCrab->SetState(GiantCrab::GRAB);
+		}
+
+		if (collision(giantCrab->m_hitbox, player_box))
+		{
+			giantCrab->SetState(GiantCrab::GRAB);
+		}
+
+		if (giantCrab->GetState() == GiantCrab::VORTEX)
+		{
+
+			Vector3 target = playerpos - giantCrab->grabArea.m_position;
+			for (auto it : particleList)
+			{
+				ParticleObject* p = (ParticleObject*)it;
+				if (!p->active)
+					continue;
+				if (p->type != PARTICLEOBJECT_TYPE::P_PARTICLE)
+					continue;
+
+				p->vel = -target.Normalized() * 200;
+
+			}
+
+			fishVel += -5 * fishVel;
+			fishVel.y = -target.y;
+
+		}
+		if (giantCrab->GetState() == GiantCrab::GRAB)
+		{
+			fishVel.SetZero();
+		}
+		if (collision(giantCrab->m_hitbox, player_box))
+		{
+			fishVel = -giantCrab->vel * 10;
+			if (skipper->getTimerReceieveDamage() > 1.0)
+			{
+				skipper->setTimerReceieveDamage(0.0);
+				skipper->setHealth(skipper->getHealth() - 40);
+				DamageText* text = FetchTO();
+				text->setActive(true);
+				text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
+				text->setLastDamage(20);
+				text->setScaleText(Vector3(0, 0, 0));
+				text->setIsEnemy(false);
+			}
 		}
 	}
 

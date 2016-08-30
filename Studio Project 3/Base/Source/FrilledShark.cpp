@@ -45,9 +45,18 @@ FrilledShark::~FrilledShark()
 
 void FrilledShark::UpdateFrilledShark(double dt, std::vector<unsigned char> hmap)
 {
+	if (getHealth() < 0)
+	{
+		SharedData::GetInstance()->SD_BossDead3 = true;
+		active = false;
+	}
+
 	float speed = 25;
 	Vector3 P_pos = SharedData::GetInstance()->SD_PlayerPos;
 	Vector3 P_displacement = P_pos - pos;
+
+	
+
 
 	UpdateWhiskers();
 	UpdateHitboxes();

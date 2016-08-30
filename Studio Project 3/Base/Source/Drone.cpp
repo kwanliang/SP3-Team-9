@@ -27,7 +27,10 @@ void Drone::UpdateDrone(double dt, std::vector<unsigned char> hmap)
 	/*	if (P_displacement.LengthSquared() > 10 * 10)
 		{*/
 		pos += vel*dt*50;
-		//}
+		//if (P_displacement.LengthSquared() > 10 * 10)
+		//{
+		//	*/
+		////}
 		break;
 	case STRAFE:
 	{
@@ -67,6 +70,8 @@ void Drone::UpdateDrone(double dt, std::vector<unsigned char> hmap)
 		pos.y += 3;
 		
 	}
+
+	std::cout << m_state <<std::endl;
 //
 //	//vel = P_displacement.Normalized();
 	hitbox::updatehitbox(m_hitbox, pos);

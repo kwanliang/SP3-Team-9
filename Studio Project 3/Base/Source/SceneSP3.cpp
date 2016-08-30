@@ -720,7 +720,7 @@ void SceneSP3::RenderTO(DamageText *to)
         modelStack.Scale(to->getScaleText().x, to->getScaleText().y, to->getScaleText().z);
         std::ostringstream ss;
         ss << "-" << to->getLastDamage();
-        RenderText(meshList[GEO_TEXT], ss.str(), Color(0, 0, 0));
+        RenderText(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1));
         modelStack.PopMatrix();
     }
     else if (!to->getIsEnemy() && !to->getIsHeal() && !to->getIsStamina())
@@ -1371,26 +1371,52 @@ void SceneSP3::UpdateProjectile(double dt)
                                     }
                                 }
                                 break;
-                            }
-                            case Boss::GIANTCRAB:
-                            {
-                                GiantCrab *crab = (GiantCrab *)it2;
-                                // Squid head
-                                if (collision(crab->m_hitbox, po->pos))
-                                {
-                                    std::cout << "fuck" << std::endl;
+							case Boss::GIANTCRAB:
+							{
+								GiantCrab *crab = (GiantCrab *)it2;
+								// Squid head
+								if (collision(crab->m_hitbox, po->pos))
+								{
+									std::cout << "fuck" << std::endl;
 
-                                    po->active = false;
-                                    crab->setHealth(crab->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-                                    DamageText* text = FetchTO();
-                                    text->setActive(true);
-                                    text->setLastHitPos(po->pos);
-                                    text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-                                    text->setScaleText(Vector3(0, 0, 0));
-                                    text->setIsEnemy(true);
-                                }
-                            }
-                            break;
+									po->active = false;
+									crab->setHealth(crab->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									DamageText* text = FetchTO();
+									text->setActive(true);
+									text->setLastHitPos(po->pos);
+									text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									text->setScaleText(Vector3(0, 0, 0));
+									text->setIsEnemy(true);
+								}
+							}
+							break;
+
+							case Boss::FRILLEDSHARK:
+							{
+								FrilledShark *fshark = (FrilledShark *)it2;
+								// Squid head
+								for (unsigned i = 0; i < 5; ++i)
+								{
+									if (collision(fshark->m_FSbox[i], po->pos))
+									{
+										std::cout << "fuck" << std::endl;
+
+										po->active = false;
+										fshark->setHealth(fshark->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+										DamageText* text = FetchTO();
+										text->setActive(true);
+										text->setLastHitPos(po->pos);
+										text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+										text->setScaleText(Vector3(0, 0, 0));
+										text->setIsEnemy(true);
+									}
+								}
+							}
+							break;
+
+
+                            
+
 
                             }
                         }
@@ -2218,25 +2244,26 @@ void SceneSP3::UpdateSpawner(double dt)
             }
         }
 
-        if (SharedData::GetInstance()->SD_SceneLoaded)
-        {
-            if (isopod->getSpawnIsopodDrone())
-            {
-                IsopodDroneSpawner.CheckCount(g_IsopodDroneCount, g_MaxIsopodDrone);
+		if (SharedData::GetInstance()->SD_SceneLoaded)
+		{
+			if (isopod->getSpawnIsopodDrone())
+			{
+				IsopodDroneSpawner.CheckCount(g_IsopodDroneCount, g_MaxIsopodDrone);
 
-                if (IsopodDroneSpawner.getIsSpawn())
-                {
-                    Drone *d = FetchDrone();
-                    d->active = true;
-                    d->objectType = GameObject::SEACREATURE;
-                    d->seaType = SeaCreature::DRONE;
-                    d->scale.Set(10, 10, 10);
-                    d->pos.Set(isopod->pos.x, isopod->pos.y, isopod->pos.z);
-                    d->vel.Set(Math::RandFloatMinMax(-40, 40), Math::RandFloatMinMax(-20, 20), Math::RandFloatMinMax(-40, 40));
-                    g_IsopodDroneCount++;
-                }
-            }
-        }
+				if (IsopodDroneSpawner.getIsSpawn())
+				{
+					Drone *d = FetchDrone();
+					d->active = true;
+					d->objectType = GameObject::SEACREATURE;
+					d->seaType = SeaCreature::DRONE;
+					d->scale.Set(10, 10, 10);
+					d->pos.Set(isopod->pos.x, isopod->pos.y+20, isopod->pos.z);
+					d->vel  = Vector3(Math::RandFloatMinMax(-50, 50), Math::RandFloatMinMax(-20, 20), Math::RandFloatMinMax(-50, 50));
+					d->setHealth(400);
+					g_IsopodDroneCount++;
+				}
+			}
+		}
 
         break;
     }

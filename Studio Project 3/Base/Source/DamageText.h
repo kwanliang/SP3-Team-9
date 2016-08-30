@@ -1,7 +1,7 @@
 #ifndef DAMAGETEXT_H
 #define DAMAGETEXT_H
 
-static float TextScaleValue = 15.f;
+static float TextScaleValue = 30.f;
 
 #include "Vector3.h"
 
