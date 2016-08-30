@@ -6,8 +6,6 @@
 #include "Mtx44.h"
 #include "FrilledShark.h"
 
-static int g_CuttlefishCount = 0;
-
 class SceneGhastlyDepths : public SceneSP3
 {
 public:

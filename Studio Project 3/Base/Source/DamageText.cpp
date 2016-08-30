@@ -53,3 +53,13 @@ void DamageText::setActive(bool m_isActive)
 {
     this->m_isActive = m_isActive;
 }
+
+bool DamageText::getIsEnemy()
+{
+    return this->m_isEnemy;
+}
+
+void DamageText::setIsEnemy(bool m_isEnemy)
+{
+    this->m_isEnemy = m_isEnemy;
+}

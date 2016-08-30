@@ -13,6 +13,7 @@ struct GameObject
         SEACREATURE,
         BOSS,
         CAPTURED,
+        CORAL,
 
         TYPE_TOTAL
     };

@@ -109,7 +109,7 @@ void SceneCreepingRidge::Init()
     giantCrab->vel.Set(0, 0, 0);
     giantCrab->pos.Set(-445, giantCrab->pos.y = 350.f * ReadHeightMap(m_heightMap[2], giantCrab->pos.x / 3000.f, giantCrab->pos.z / 3000.f) + 170, 904);
     //giantCrab->direction.Set(1, 0, 0);
-    m_goList.push_back(giantCrab);
+    seaList.push_back(giantCrab);
 }
 
 void SceneCreepingRidge::RenderGiantCrab()

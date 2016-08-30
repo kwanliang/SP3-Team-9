@@ -29,7 +29,6 @@ public:
 
     void UpdateChimera(double dt);
 
-    //void expand();
     CHIMERA_STATE chstate;
     float rotate;
     Flipper flip[4];

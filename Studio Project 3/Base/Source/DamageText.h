@@ -1,7 +1,7 @@
 #ifndef DAMAGETEXT_H
 #define DAMAGETEXT_H
 
-static float TextScaleValue = 10.f;
+static float TextScaleValue = 15.f;
 
 #include "Vector3.h"
 
@@ -12,6 +12,7 @@ private:
     int m_LastDamage;
     Vector3 m_ScaleText;
     bool m_isActive;
+    bool m_isEnemy;
 
 public:
     DamageText();
@@ -28,6 +29,9 @@ public:
 
     bool getActive();
     void setActive(bool m_isActive);
+
+    bool getIsEnemy();
+    void setIsEnemy(bool m_isEnemy);
 };
 
 #endif

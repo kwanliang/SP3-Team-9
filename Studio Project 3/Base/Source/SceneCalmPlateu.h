@@ -6,8 +6,6 @@
 #include "Mtx44.h"
 #include "CollisionManager.h"
 
-static int g_PufferfishCount = 0;
-
 class SceneCalmPlateu : public SceneSP3
 {
 public:

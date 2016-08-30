@@ -21,13 +21,23 @@ Defines spawner and its methods
 */
 /******************************************************************************/
 
+static int g_MinnowLeaderCount = 0;
+static int g_MinnowCount = 0;
+static int g_PufferfishCount = 0;
+static int g_FCrabCount = 0;
+static int g_ChimeraCount = 0;
+static int g_CuttlefishCount = 0;
+static int g_IsopodDroneCount = 0;
+static int g_CoralCount = 0;
+
 static int g_MaxMinnowLeader = 3;
 static int g_MaxMinnow = 40;
 static int g_MaxPufferfish = 30;
 static int g_MaxFCrab = 30;
-static int g_MaxChimera = 30;
-static int g_MaxCuttlefish = 30;
+static int g_MaxChimera = 10;
+static int g_MaxCuttlefish = 20;
 static int g_MaxIsopodDrone = 8;
+static int g_MaxCoral = 50;
 
 class Spawner
 {

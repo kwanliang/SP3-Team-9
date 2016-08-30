@@ -2,6 +2,7 @@
 #define PUFFERFISH_H
 
 #include "SeaCreature.h"
+#include "SharedData.h"
 
 class Pufferfish : public SeaCreature
 {

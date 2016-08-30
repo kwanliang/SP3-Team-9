@@ -120,7 +120,7 @@ void SceneCalmPlateu::InitGiantSquid()
         giantSquid->tentacle[i]->collision = hitbox::generatehitbox(giantSquid->pos, giantSquid->tentacle[i]->getScale().x, giantSquid->tentacle[i]->getScale().y, giantSquid->tentacle[i]->getScale().z, 0);
     }
 
-    m_goList.push_back(giantSquid);
+    seaList.push_back(giantSquid);
 }
 
 void SceneCalmPlateu::RenderGiantSquid()
@@ -541,13 +541,13 @@ void SceneCalmPlateu::Update(double dt)
 
     hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
 
-    //if (collision(giantSquid->collision, playerpos))
-    //{
-    //    fishVel *= -1.f;
-    //    walkCam.Move(fishVel * (float)dt);
-    //    playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
-    //    hitbox2::updatehitbox(player_box, playerpos);
-    //}
+    if (collision(giantSquid->collision, playerpos))
+    {
+        fishVel *= -1.f;
+        walkCam.Move(fishVel * (float)dt);
+        playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+        hitbox2::updatehitbox(player_box, playerpos);
+    }
 
     for (int i = 0; i < 6; i++)
     {
@@ -581,7 +581,7 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
 
         if (giantSquid->getHealth() < 0)
         {
-            giantSquid->state = GiantSquid::DEAD;
+            giantSquid->active = false;
         }
         else if ((giantSquid->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid && random > 6 && canSpin)
         {
@@ -630,13 +630,12 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
                 po->projectileType = Projectile::INK;
                 po->active = true;
                 po->scale.Set(1, 1, 1);
-                po->setLifetime(10.0);
                 po->pos.Set(Math::RandFloatMinMax(giantSquid->pos.x - g_inkSpread, giantSquid->pos.x + g_inkSpread),
                     Math::RandFloatMinMax(giantSquid->pos.y + x - g_inkSpread, giantSquid->pos.y + x + g_inkSpread),
                     Math::RandFloatMinMax(giantSquid->pos.z - g_inkSpread, giantSquid->pos.z + g_inkSpread));
                 Vector3 view = (playerpos - giantSquid->pos).Normalized();
                 po->vel.Set(view.x, view.y, view.z);
-                po->setLifetime(1.0);
+                po->setLifetime(3.0);
             }
             for (int x = -5; x <= 5; x++)
             {
@@ -650,14 +649,9 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
                     Math::RandFloatMinMax(giantSquid->pos.z - g_inkSpread, giantSquid->pos.z + g_inkSpread));
                 Vector3 view = (playerpos - giantSquid->pos).Normalized();
                 po->vel.Set(view.x, view.y, view.z);
-                po->setLifetime(10.0);
+                po->setLifetime(3.0);
             }
         }
-        break;
-    case GiantSquid::DEAD:
-        giantSquid->AnimateDead();
-        if (giantSquid->getIsDead())
-            giantSquid->active = false;
         break;
     }
 }

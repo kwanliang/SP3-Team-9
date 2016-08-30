@@ -18,6 +18,7 @@
 #include "Fcrab.h"
 #include "Cuttlefish.h"
 #include "Chimera.h"
+#include "Corals.h"
 #include "Projectile.h"
 #include "Capture.h"
 #include "SharedData.h"
@@ -27,10 +28,6 @@
 #include "GiantSquid.h"
 #include "Isopod.h"
 #include "GiantCrab.h"
-
-
-static int g_MinnowLeaderCount = 0;
-static int g_MinnowCount = 0;
 
 class SceneSP3 : public Scene
 {
@@ -52,7 +49,8 @@ public:
 	void RenderSquad(SeaCreature *go);
 
 	void UpdateTravel();
-    void UpdateLoop(double dt);
+    void UpdateSeaCreatures(double dt);
+    void UpdateProjectile(double dt);
 	void UpdatePuffer(double dt);
 	void UpdateCaptured(double dt);
 	void UpdateSquadFire(double dt);
@@ -76,11 +74,13 @@ public:
     Chimera* FetchChimera();
     Cuttlefish* FetchCuttle();
     //Drone* FetchDrone();
+    Coral* FetchCoral();
     Projectile* FetchPO();
     DamageText* FetchTO();
     void RenderFO(SeaCreature *fo);
     void RenderPO(Projectile *po);
     void RenderTO(DamageText *to);
+    void RenderCoral(Coral *co);
 
     void RenderLoop();
 
@@ -286,7 +286,10 @@ protected:
 	};
 
 	// Game Object
-	std::vector<GameObject*> m_goList;
+	std::vector<GameObject*> seaList;
+    std::vector<GameObject*> coralList;
+    std::vector<GameObject*> projectileList;
+    std::vector<GameObject*> captureList;
 
 	CameraV2 *currentCam;
 	WalkCamera walkCam;
@@ -338,6 +341,7 @@ protected:
     Spawner ChimeraSpawner;
     Spawner CuttlefishSpawner;
     Spawner IsopodDroneSpawner;
+    Spawner CoralSpawner;
 
     //DamageText text;
     std::vector<DamageText*> m_textList;

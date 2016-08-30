@@ -5,9 +5,6 @@
 #include <vector>
 #include "Mtx44.h"
 
-static int g_ChimeraCount = 0;
-static int g_IsopodDroneCount = 0;
-
 class SceneNightmareTrench : public SceneSP3
 {
 public:

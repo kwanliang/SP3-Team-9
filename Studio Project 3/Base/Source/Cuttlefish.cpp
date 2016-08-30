@@ -6,6 +6,8 @@ Cuttlefish::Cuttlefish()
 	rotate = 0;
 	ctstate = IDLE;
 	jet = false;
+    m_IsShoot = false;
+    m_ShootBufferTime = 0.0;
 }
 
 Cuttlefish::~Cuttlefish()
@@ -17,7 +19,7 @@ void Cuttlefish::UpdateCuttle(double dt)
 {
 	switch (ctstate)
 	{
-	case (IDLE) :
+	case IDLE :
 	{
 		if (!jet)
 		{
@@ -37,16 +39,32 @@ void Cuttlefish::UpdateCuttle(double dt)
 		}
 
 		rotate = Math::RadianToDegree(atan2(vel.x, vel.z));
-		
-	}break;
 
-	case (SINK) :
-	{
-		
+        if ((SharedData::GetInstance()->SD_PlayerPos - pos).LengthSquared() < 30000)
+            ctstate = CUTTLE_STATE::ATTACKING;
+
+        break;
+	}
+	case SINK :
+	{	
 		if (pos.y < 400)
 			ctstate = IDLE;
-		
-	}break;
+        break;
+	}
+    case ATTACKING:
+    {
+        m_ShootBufferTime += dt;
+        if (m_ShootBufferTime > 2.0)
+        {
+            m_IsShoot = true;
+            m_ShootBufferTime = 0.0;
+        }
+
+        if ((SharedData::GetInstance()->SD_PlayerPos - pos).LengthSquared() >= 30000)
+            ctstate = CUTTLE_STATE::IDLE;
+
+        break;
+    }
 	}
 	
 	
@@ -59,4 +77,24 @@ void Cuttlefish::UpdateCuttle(double dt)
 	
 	hitbox2::updatehitbox(collision,pos);
 	pos += vel*dt*2;
+}
+
+bool Cuttlefish::getIsShoot()
+{
+    return this->m_IsShoot;
+}
+
+void Cuttlefish::setIsShoot(bool m_IsShoot)
+{
+    this->m_IsShoot = m_IsShoot;
+}
+
+bool Cuttlefish::getShootBufferTime()
+{
+    return this->m_ShootBufferTime;
+}
+
+void Cuttlefish::setShootBufferTime(bool m_ShootBufferTime)
+{
+    this->m_ShootBufferTime = m_ShootBufferTime;
 }

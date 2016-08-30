@@ -42,7 +42,6 @@ public:
         SPINATTACK,
         INKATTACK,
         GRABATTACK,
-        DEAD,
 
         STATE_TOTAL,
     };

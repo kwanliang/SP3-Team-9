@@ -149,6 +149,7 @@ void SceneGhastlyDepths::RenderWorld()
 	RenderTerrain();
 	RenderSkyPlane();
 	RenderBoss();
+    SceneSP3::RenderLoop();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(playerpos.x, playerpos.y+5, playerpos.z);
@@ -226,7 +227,7 @@ void SceneGhastlyDepths::RenderPassMain()
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 	RenderWorld();
-	SceneSP3::RenderParticles();
+
 	/*if (lights[0].type == Light::LIGHT_DIRECTIONAL)
 	{
 		Vector3 lightDir(lights[0].position.x, lights[0].position.y, lights[0].position.z);
@@ -278,8 +279,6 @@ void SceneGhastlyDepths::RenderPassMain()
 
     }
 
-
-    SceneSP3::RenderLoop();
     SceneSP3::RenderParticles();
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 
@@ -289,8 +288,6 @@ void SceneGhastlyDepths::RenderPassMain()
 
     SceneSP3::RenderMinimap();
     SceneSP3::RenderHUD();
-
-
 
 	std::ostringstream ss;
 	ss.precision(3);

@@ -5,8 +5,6 @@
 #include <vector>
 #include "Mtx44.h"
 
-static int g_FCrabCount = 0;
-
 class SceneCreepingRidge : public SceneSP3
 {
 public:
