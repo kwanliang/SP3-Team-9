@@ -75,7 +75,7 @@ void SceneGhastlyDepths::Init()
 	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
 	frilledshark = new FrilledShark();
-	m_goList.push_back(frilledshark);
+	seaList.push_back(frilledshark);
 	//frilledshark->active = true;
 
 	//for (unsigned i = 0; i <= 20; i++)

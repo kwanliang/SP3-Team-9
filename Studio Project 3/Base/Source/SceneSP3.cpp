@@ -541,7 +541,7 @@ Chimera* SceneSP3::FetchChimera()
 
 Drone* SceneSP3::FetchDrone()
 {
-    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	for (std::vector<GameObject *>::iterator it = seaList.begin(); it != seaList.end(); ++it)
     {
         Drone *go = (Drone *)*it;
         if (!go->active)
@@ -557,9 +557,9 @@ Drone* SceneSP3::FetchDrone()
         Drone *go = new Drone();
         go->objectType = GameObject::SEACREATURE;
         go->seaType = SeaCreature::DRONE;
-        m_goList.push_back(go);
+		seaList.push_back(go);
     }
-    Drone *go = (Drone *)m_goList.back();
+	Drone *go = (Drone *)seaList.back();
     go->active = true;
     return go;
 }
@@ -758,11 +758,9 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
                     break;
                 }
-                }
-                // PUFFERFISH
-				else if (sc->seaType == SeaCreature::DRONE)
+				case SeaCreature::DRONE:
 				{
-					Drone *d = (Drone*)*it;
+					Drone *d = (Drone*)it;
 					d->UpdateDrone(dt);
 					Vector3 I_displacement = isopod->pos - d->pos;
 					if (I_displacement.LengthSquared() > 500 * 500)
@@ -771,40 +769,13 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 						d->m_state = Drone::STRAFE;
 					}
 
-
-
-					for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-					{
-						GameObject *go = (GameObject *)*it;
-						if (!go->active || !go->inRange)
-							continue;
-							// SEA CREATURE
-						if (go->objectType != GameObject::SEACREATURE)
-							continue;
-							SeaCreature *sc = (SeaCreature *)*it;
-
-						if (sc->getHealth() <= 0)
-							sc->active = false;
-
-								
-						if (sc->seaType != SeaCreature::DRONE)
-							continue;
-						
-						Drone *d2 = (Drone *)*it;
-				/*		if (collision(d->m_hitbox, d2->m_hitbox))
-						{
-
-							d->m_state = Drone::COLLIDE;
-							d2->m_state = Drone::COLLIDE;
-						}*/
-							
-						
-					}
-					
-				
+					if (sc->getHealth() <= 0)
+						sc->active = false;
+			
+					break;
 				}
 					
-                else if (sc->seaType == SeaCreature::PUFFER)
+				case SeaCreature::PUFFER:
                 {
                     Pufferfish* puffer = (Pufferfish*)it;
 
