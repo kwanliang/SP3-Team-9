@@ -232,7 +232,7 @@ void SceneSP3::Init()
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateQuad("minimap", Color(0, 0, 0), 2);
 	meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//crosshair.tga");
     meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-    meshList[GEO_TEXT]->textureID = LoadTGA("Image//sfont.tga");
+    meshList[GEO_TEXT]->textureID = LoadTGA("Image//sfont2.tga");
     meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
 
 	meshList[GEO_MINIMAP] = MeshBuilder::GenerateQuad("minimap", Color(1, 1, 1), 2);
@@ -291,9 +291,9 @@ void SceneSP3::Init()
 
     // HUD
     meshList[GEO_HUD_HEALTHBAR] = MeshBuilder::GenerateQuad("health bar hud", Color(1, 0, 0), 2.f);
-    meshList[GEO_HUD_HEALTHBAR]->textureID = LoadTGA("Image//healthbar.tga");
+    meshList[GEO_HUD_HEALTHBAR]->textureID = LoadTGA("Image//boss_hp_back.tga");
     meshList[GEO_HUD_BOSSHEALTH] = MeshBuilder::GenerateQuad("boss health hud", Color(1, 0, 0), 2.f);
-    meshList[GEO_HUD_BOSSHEALTH]->textureID = LoadTGA("Image//bosshealth.tga");
+    meshList[GEO_HUD_BOSSHEALTH]->textureID = LoadTGA("Image//boss_hp_front.tga");
 
     // Death Screen
     meshList[GEO_TBORDER] = MeshBuilder::GenerateQuad("border", Color(1, 0, 0), 2);
@@ -410,13 +410,6 @@ void SceneSP3::Init()
  //       fo->setHealth(10);
  //       g_MinnowCount++;
  //   }
-
-    //for (int i = 0; i < 10; i++)
-    //{
-    //    Projectile* po = new Projectile();
-    //    po->active = false;
-    //    m_goList.push_back(po);
-    //}
 
     DeathSelect = DEATHSELECT::RESPAWN;
 }
@@ -546,30 +539,30 @@ Chimera* SceneSP3::FetchChimera()
     return go;
 }
 
-//Drone* SceneSP3::FetchDrone()
-//{
-//    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
-//    {
-//        Drone *go = (Drone *)*it;
-//        if (!go->active)
-//        {
-//            go->objectType = GameObject::SEACREATURE;
-//            go->seaType = SeaCreature::DRONE;
-//            go->active = true;
-//            return go;
-//        }
-//    }
-//    for (unsigned i = 0; i < 10; ++i)
-//    {
-//        Drone *go = new Drone();
-//        go->objectType = GameObject::SEACREATURE;
-//        go->seaType = SeaCreature::DRONE;
-//        m_goList.push_back(go);
-//    }
-//    Drone *go = (Drone *)m_goList.back();
-//    go->active = true;
-//    return go;
-//}
+Drone* SceneSP3::FetchDrone()
+{
+    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+    {
+        Drone *go = (Drone *)*it;
+        if (!go->active)
+        {
+            go->objectType = GameObject::SEACREATURE;
+            go->seaType = SeaCreature::DRONE;
+            go->active = true;
+            return go;
+        }
+    }
+    for (unsigned i = 0; i < 10; ++i)
+    {
+        Drone *go = new Drone();
+        go->objectType = GameObject::SEACREATURE;
+        go->seaType = SeaCreature::DRONE;
+        m_goList.push_back(go);
+    }
+    Drone *go = (Drone *)m_goList.back();
+    go->active = true;
+    return go;
+}
 
 Coral* SceneSP3::FetchCoral()
 {
@@ -765,7 +758,53 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
                     break;
                 }
-                case SeaCreature::PUFFER:
+                }
+                // PUFFERFISH
+				else if (sc->seaType == SeaCreature::DRONE)
+				{
+					Drone *d = (Drone*)*it;
+					d->UpdateDrone(dt);
+					Vector3 I_displacement = isopod->pos - d->pos;
+					if (I_displacement.LengthSquared() > 500 * 500)
+					{
+						d->vel = I_displacement.Normalized() * 5;
+						d->m_state = Drone::STRAFE;
+					}
+
+
+
+					for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+					{
+						GameObject *go = (GameObject *)*it;
+						if (!go->active || !go->inRange)
+							continue;
+							// SEA CREATURE
+						if (go->objectType != GameObject::SEACREATURE)
+							continue;
+							SeaCreature *sc = (SeaCreature *)*it;
+
+						if (sc->getHealth() <= 0)
+							sc->active = false;
+
+								
+						if (sc->seaType != SeaCreature::DRONE)
+							continue;
+						
+						Drone *d2 = (Drone *)*it;
+				/*		if (collision(d->m_hitbox, d2->m_hitbox))
+						{
+
+							d->m_state = Drone::COLLIDE;
+							d2->m_state = Drone::COLLIDE;
+						}*/
+							
+						
+					}
+					
+				
+				}
+					
+                else if (sc->seaType == SeaCreature::PUFFER)
                 {
                     Pufferfish* puffer = (Pufferfish*)it;
 
@@ -1823,25 +1862,23 @@ void SceneSP3::UpdateSpawner(double dt)
             }
         }
 
-        if (isopod->getSpawnIsopodDrone())
-        {
-            IsopodDroneSpawner.CheckCount(g_IsopodDroneCount, g_MaxIsopodDrone);
 
-            if (IsopodDroneSpawner.getIsSpawn())
-            {
-                //Drone* d = FetchDrone();
-                //d->active = true;
-                //d->objectType = GameObject::SEACREATURE;
-                //d->seaType = SeaCreature::DRONE;
-                //d->scale.Set(SCALE, SCALE, SCALE);
-                //d->pos.Set(isopod->pos.x, isopod->pos.y, isopod->pos.z);
-                //d->vel.Set(0, 0, 0);
-                //d->aabb = 
-                //d->setHealth();
+		if (isopod->getSpawnIsopodDrone())
+		{
+			IsopodDroneSpawner.CheckCount(g_IsopodDroneCount, g_MaxIsopodDrone);
 
-                g_IsopodDroneCount++;
-            }
-        }
+			if (IsopodDroneSpawner.getIsSpawn())
+			{
+				Drone *d = FetchDrone();
+				d->active = true;
+				d->objectType = GameObject::SEACREATURE;
+				d->seaType = SeaCreature::DRONE;
+				d->scale.Set(10, 10, 10);
+				d->pos.Set(isopod->pos.x, isopod->pos.y, isopod->pos.z);
+				d->vel.Set(Math::RandFloatMinMax(-40, 40), Math::RandFloatMinMax(-20, 20), Math::RandFloatMinMax(-40, 40));
+				g_IsopodDroneCount++;
+			}
+		}
 
         break;
     }
@@ -2046,7 +2083,7 @@ void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
     for (unsigned i = 0; i < text.length(); ++i)
     {
         Mtx44 characterSpacing;
-        characterSpacing.SetToTranslation(i * 0.5f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
+        characterSpacing.SetToTranslation(i * 0.3f, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
         Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
         glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
@@ -2214,7 +2251,7 @@ void SceneSP3::UpdateParticles(double dt)
     }
 
 	Vector3 c_pos = walkCam.GetPos();
-	if (m_spCount < 30)
+	if (m_spCount < 50)
 	{
 		for (unsigned i = 0; i < 5; ++i)
 		{
@@ -2275,7 +2312,7 @@ void SceneSP3::UpdateParticles(double dt)
 
 void SceneSP3::UpdateSP(ParticleObject* p, double dt)
 {
-	float range = 120;
+	float range = 130;
 	Vector3 displacment = walkCam.GetPos() - p->pos;
 
 	if (displacment.LengthSquared() > range*range)
@@ -2317,7 +2354,7 @@ void SceneSP3::RenderParticles()
     for (auto it : particleList)
     {
         ParticleObject* particle = (ParticleObject*)it;
-        if (!particle->active && PARTICLEOBJECT_TYPE::P_VACUUM && !PARTICLEOBJECT_TYPE::P_PARTICLE)
+		if (!particle->active && particle->type != PARTICLEOBJECT_TYPE::P_VACUUM && particle->type != PARTICLEOBJECT_TYPE::P_PARTICLE)
         {
             modelStack.PushMatrix();
             modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
@@ -2661,6 +2698,22 @@ void SceneSP3::RenderFO(SeaCreature *fo)
         modelStack.PopMatrix();
         break;
     }
+	case SeaCreature::DRONE:
+	{
+		Drone* c = (Drone*)fo;
+
+		float rotate = 0;
+		rotate = Math::RadianToDegree(atan2(c->vel.x, c->vel.z));
+		modelStack.PushMatrix();
+		glBlendFunc(1, 1);
+		modelStack.Translate(c->pos.x, c->pos.y, c->pos.z);
+		modelStack.Rotate(-rotate+90, 0, 1, 0);
+		modelStack.Scale(c->scale.z, c->scale.z, c->scale.z);
+		RenderMesh(meshList[GEO_ISOPOD_DRONE], false);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		modelStack.PopMatrix();
+		break;
+	}
     }
 }
 
@@ -2726,6 +2779,12 @@ void SceneSP3::RenderLoop()
                 RenderFO(c);
                 break;
             }
+			case SeaCreature::DRONE:
+			{
+				Drone * c = (Drone*)*it;
+				RenderFO(c);
+				break;
+			}
             }
         }
     }
@@ -2897,19 +2956,68 @@ void SceneSP3::RenderHUD()
         else
         {
             Boss* bo = (Boss*)*it;
+			std::ostringstream boss_name;
+
             switch (bo->bossType)
             {
             case Boss::GIANTSQUID:
             {
                 if ((bo->pos - playerpos).LengthSquared() < 400 * 400)
                 {
+					
+					
+					boss_name << "giant squid";
+					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
+
                     float percentage = (100.f / 1000.f) * (float)bo->getHealth();
                     float healthscale = (barscale / 100) * percentage;
                     float healthtranslate = (50.f / 100.f) * (100.f - percentage);
-                    RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 5.0f, 0.f, 50.0f);
-                    RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 5.0f, 0.f - healthtranslate, 50.0f);
+                    RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 12.0f, 0.f, 50.0f);
+                    RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 10.0f, 0.f - healthtranslate, 50.0f);
+
+
                 }
                 break;
+			case Boss::GIANTCRAB:
+			{
+				if ((bo->pos - playerpos).LengthSquared() < 600 * 600)
+				{
+
+
+					boss_name << "spider crab";
+					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
+
+					float percentage = (100.f / 1000.f) * (float)bo->getHealth();
+					float healthscale = (barscale / 100) * percentage;
+					float healthtranslate = (50.f / 100.f) * (100.f - percentage);
+					RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 12.0f, 0.f, 50.0f);
+					RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 10.0f, 0.f - healthtranslate, 50.0f);
+
+
+				}
+			}
+			break;
+			case Boss::FRILLEDSHARK:
+			{
+				if ((bo->pos - playerpos).LengthSquared() < 800 * 800)
+				{
+
+
+					boss_name << "frilled shark";
+					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
+
+					float percentage = (100.f / 1000.f) * (float)bo->getHealth();
+					float healthscale = (barscale / 100) * percentage;
+					float healthtranslate = (50.f / 100.f) * (100.f - percentage);
+					RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 12.0f, 0.f, 50.0f);
+					RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 10.0f, 0.f - healthtranslate, 50.0f);
+
+
+				}
+			}
+				break;
+
+
             }
             }
 

@@ -24,6 +24,8 @@
 #include "SharedData.h"
 #include "LoadHmap.h"
 #include "Skipper.h"
+#include "Drone.h"
+
 
 #include "GiantSquid.h"
 #include "Isopod.h"
@@ -77,6 +79,7 @@ public:
     Coral* FetchCoral();
     Projectile* FetchPO();
     DamageText* FetchTO();
+	Drone* FetchDrone();
     void RenderFO(SeaCreature *fo);
     void RenderPO(Projectile *po);
     void RenderTO(DamageText *to);
@@ -231,6 +234,7 @@ protected:
 		GEO_FSHARK_UJAW,
 		GEO_FSHARK_NODE,
 		GEO_FSHARK_TAIL,
+		GEO_STATIC,
 
 		GEO_ISOPOD_BODY,
 		GEO_ISOPOD_LEG,

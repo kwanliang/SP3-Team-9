@@ -25,6 +25,7 @@ public:
         FCRAB,
         CHIMERA,
         CUTTLE,
+		DRONE,
         TYPE_TOTAL,
     };
     SEACREATURE_TYPE seaType;

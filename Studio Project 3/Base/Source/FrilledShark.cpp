@@ -5,14 +5,15 @@ FrilledShark::FrilledShark()
 {
 	m_health = 1000;
 	bossType = FRILLEDSHARK;
+	objectType = GameObject::BOSS;
 	pos = Vector3(0, 300, 0);
-	vel = (0, 0, 0);
+	vel.Set(0, 0, 0);
 	scale = Vector3(50, 50, 50);
 	active = true;
 	m_node[0].pos = pos;
-	m_state = AGGRO;
+	m_state = IDLE;
 	m_strafeTime = 0;
-
+	this->setHealth(1000);
 	m_node[1].pos = m_node[0].pos;
 	m_node[1].pos.z = m_node[0].pos.z - 140;
 

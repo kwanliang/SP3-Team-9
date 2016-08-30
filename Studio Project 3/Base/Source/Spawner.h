@@ -34,8 +34,8 @@ static int g_MaxMinnowLeader = 3;
 static int g_MaxMinnow = 40;
 static int g_MaxPufferfish = 30;
 static int g_MaxFCrab = 30;
-static int g_MaxChimera = 10;
-static int g_MaxCuttlefish = 20;
+static int g_MaxChimera = 0;
+static int g_MaxCuttlefish = 30;
 static int g_MaxIsopodDrone = 8;
 static int g_MaxCoral = 50;
 

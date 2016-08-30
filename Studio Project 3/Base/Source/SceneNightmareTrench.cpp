@@ -40,8 +40,8 @@ void SceneNightmareTrench::Init()
 	meshList[GEO_ISOPOD_CLAW] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_claw.obj");
 	meshList[GEO_ISOPOD_CLAW]->textureArray[0] = LoadTGA("Image//isopod.tga");
 
-	//meshList[GEO_ISOPOD_DRONE] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_drone.obj");
-	//meshList[GEO_ISOPOD_DRONE]->textureArray[0] = LoadTGA("Image//isopod.tga");
+	meshList[GEO_ISOPOD_DRONE] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//iso_drone.obj");
+	meshList[GEO_ISOPOD_DRONE]->textureArray[0] = LoadTGA("Image//isopod.tga");
 	//currentCam = &walkCam;
 	/*walkCam.Init(
 		Vector3(980, 279, -1040),
@@ -343,6 +343,7 @@ void SceneNightmareTrench::Render()
 void SceneNightmareTrench::Update(double dt)
 {
 	SceneSP3::Update(dt);
+	SceneSP3::UpdateSpawner(dt);
 	isopod->UpdateIsopod(dt,m_heightMap[4]);
 }
 

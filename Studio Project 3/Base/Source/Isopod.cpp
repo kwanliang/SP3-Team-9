@@ -9,8 +9,9 @@ Isopod::Isopod()
 	vel = (0, 0, 0);
 	scale = Vector3(80, 80, 80);
 	active = true;
-	m_state = IDLE;
-
+	m_state = AGGRO;
+	m_SpawnIsopodDrone = false;
+	m_SpawnBufferTime = 0.0f;
 	//for (unsigned i = 0; i < 6; i++)
 	//{
 	//	m_Rleg[i].roll = i/5;
@@ -50,32 +51,36 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
 	float speed = 25;
 	Vector3 P_pos = SharedData::GetInstance()->SD_PlayerPos;
 	Vector3 P_displacement = P_pos - pos;
-	float h = 350.f * ReadHeightMap(hmap, pos.x / 3000.f, pos.z / 3000.f) + 13;//update height
+	float h = 350.f * ReadHeightMap(hmap, pos.x / 3000.f, pos.z / 3000.f) + 16;//update height
 	if (pos.y < h)
 		pos.y += dt * 10;
 	else if (pos.y > h)
 		pos.y -= dt * 10;
 
-	AnimateIsopod(dt);
-	pos += vel*dt*speed;
+	Vector3 displacement = m_targetnest->pos - pos;
+
+	vel = displacement.Normalized();
+	if (displacement.LengthSquared() < 100 * 100)
+	{
+		if (m_targetnest == &m_nest_A)
+			m_targetnest = &m_nest_B;
+		else
+			m_targetnest = &m_nest_A;
+	}
+
 
     switch (m_state)
     {
     case IDLE:
-    {
-        vel = P_displacement.Normalized();
-        if (P_displacement.LengthSquared() < 100 * 100)
-        {
-            if (m_targetnest == &m_nest_A)
-                m_targetnest = &m_nest_B;
-            else
-                m_targetnest = &m_nest_A;
-        }
+    {  
+		m_SpawnIsopodDrone = false;
+        
 
-        break;
+     break;
     }
     case AGGRO:
     {
+		speed = 30;
         /*	vel = displacement.Normalized();
         if (displacement.LengthSquared() < 100 * 100)
         {
@@ -89,7 +94,7 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
         if (m_SpawnBufferTime > 1.0)
         {
             m_SpawnIsopodDrone = true;
-            m_SpawnBufferTime = 0.f;
+            m_SpawnBufferTime = 1.f;
         }
         break;
     }
@@ -102,6 +107,10 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
         break;
     }
     }
+
+	AnimateIsopod(dt);
+	pos += vel*dt*speed;
+
 
 }
 

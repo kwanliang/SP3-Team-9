@@ -24,6 +24,7 @@ public:
 	void RenderWorld();
 	void RenderTerrain();
 	void RenderSkyPlane();
+	void StaticLoop(double);
 
 private:
 
@@ -42,6 +43,8 @@ private:
 
 	//Fish test
 	Capture fishy;
+	float m_static;
+	bool m_isStatic;
 
 	//Cuttlefish* c;
 

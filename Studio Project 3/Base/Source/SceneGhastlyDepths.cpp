@@ -41,6 +41,8 @@ void SceneGhastlyDepths::Init()
     meshList[GEO_FSHARK_TAIL] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//frilledshark_tail.obj");
     meshList[GEO_FSHARK_TAIL]->textureArray[0] = LoadTGA("Image//frilledshark.tga");
 
+	meshList[GEO_STATIC] = MeshBuilder::GenerateQuad("minimap", Color(0, 0, 0), 2);
+	meshList[GEO_STATIC]->textureID = LoadTGA("Image//static.tga");
 
 	if (SharedData::GetInstance()->SD_Down)
 	{
@@ -64,19 +66,17 @@ void SceneGhastlyDepths::Init()
 	
 	}
 
-	//walkCam.Init(
-	//	Vector3(0, 350, 0),
-	//	Vector3(0, 0, 10),
-	//	Vector3(0, 1, 0),
-	//	60
-	//	);
+	
+	m_static = -179;
+	m_isStatic = false;
 
 	m_travelzonedown = hitbox::generatehitbox(Vector3(-27, 288, 1890), 150, 500, 1000, 0);
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, 0);
 	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
 	frilledshark = new FrilledShark();
-    //m_goList.push_back(frilledshark);
+	m_goList.push_back(frilledshark);
+	//frilledshark->active = true;
 
 	//for (unsigned i = 0; i <= 20; i++)
 	//{
@@ -87,10 +87,10 @@ void SceneGhastlyDepths::Init()
 	//	c->ctstate = Cuttlefish::IDLE;
 	//	c->scale.Set(4, 4, 4);
 
-	//m_goList.push_back(frilledshark);
-	SceneSP3::ReinitCaptured();
-}
 
+	SceneSP3::ReinitCaptured();
+
+}
 
 void SceneGhastlyDepths::RenderBoss()
 {
@@ -283,11 +283,14 @@ void SceneGhastlyDepths::RenderPassMain()
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 
     RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
-
+	
     RenderMesh(meshList[GEO_AXES], false);
 
     SceneSP3::RenderMinimap();
     SceneSP3::RenderHUD();
+	if (m_isStatic)
+	RenderMeshIn2D(meshList[GEO_STATIC], false, 80.0f, 240.0f,0,m_static);
+
 
 	std::ostringstream ss;
 	ss.precision(3);
@@ -360,11 +363,31 @@ void SceneGhastlyDepths::Update(double dt)
 	SceneSP3::Update(dt);
 
 	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
+	if ((frilledshark->pos - playerpos).LengthSquared() < 200*200)
+	{
+		StaticLoop(dt);
+		m_isStatic = true;
+	}
+	else
+	m_isStatic = false;
+
 	//frilledshark->m_node[0].yaw = val*4;
+}
+
+void SceneGhastlyDepths::StaticLoop(double dt)
+{
+	//179
+	if (m_static < 179)
+		m_static += 1000 * dt;
+	else
+		m_static = -179;
+
+
+
 }
 
 void SceneGhastlyDepths::Exit()
 {
-    delete frilledshark;
+    //delete frilledshark;
 	SceneSP3::Exit();
 }
