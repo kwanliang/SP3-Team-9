@@ -414,6 +414,12 @@ void SceneSP3::Init()
  //   }
 
     DeathSelect = DEATHSELECT::RESPAWN;
+
+
+	for (unsigned i = 0; i < 4; ++i) for (unsigned j = 0; j < 255; ++j) keyStates[i][j] = false;
+
+	isGamePaused = false;
+	pauseChoice = 0;
 }
 
 Minnow* SceneSP3::FetchMinnow()
@@ -1414,41 +1420,47 @@ void SceneSP3::UpdateTravel()
 
 void SceneSP3::Update(double dt)
 {
+	fps = 1.0f / (float)dt;
     const float acceleration = 50.f;
     const float speedLimit = 50.f;
 
-    if (Application::IsKeyPressed('1'))
+	UpdateKeys();
+	UpdatePauseFunction();
+
+    /*if (GetKeyState('1', KEY_STATUS_DOWN))
         glEnable(GL_CULL_FACE);
-    if (Application::IsKeyPressed('2'))
+    if (GetKeyState('2', KEY_STATUS_DOWN))
         glDisable(GL_CULL_FACE);
-    if (Application::IsKeyPressed('3'))
+    if (GetKeyState('3', KEY_STATUS_DOWN))
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    if (Application::IsKeyPressed('4'))
+    if (GetKeyState('4', KEY_STATUS_DOWN))
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    if (Application::IsKeyPressed('I'))
+    if (GetKeyState('I', KEY_STATUS_DOWN))
         lights[0].position.z -= (float)(100.f * dt);
-    if (Application::IsKeyPressed('K'))
+    if (GetKeyState('K', KEY_STATUS_DOWN))
         lights[0].position.z += (float)(100.f * dt);
-    if (Application::IsKeyPressed('J'))
+    if (GetKeyState('J', KEY_STATUS_DOWN))
         lights[0].position.x -= (float)(100.f * dt);
-    if (Application::IsKeyPressed('L'))
+    if (GetKeyState('L', KEY_STATUS_DOWN))
         lights[0].position.x += (float)(100.f * dt);
-    if (Application::IsKeyPressed('O'))
+    if (GetKeyState('O', KEY_STATUS_DOWN))
         lights[0].position.y -= (float)(100.f * dt);
-    if (Application::IsKeyPressed('P'))
-        lights[0].position.y += (float)(100.f * dt);
-    if (Application::IsKeyPressed('C'))
+    if (GetKeyState('P', KEY_STATUS_DOWN))
+        lights[0].position.y += (float)(100.f * dt);*/
+    if (GetKeyState('C', KEY_STATUS_DOWN))
     {
         std::cout << playerpos << std::endl;
     }
 
+	if (isGamePaused) return;
+
     static bool bSPACEstate = false;
-    if (!bSPACEstate && Application::IsKeyPressed(VK_SPACE))
+    if (!bSPACEstate && GetKeyState(32))
     {
         bSPACEstate = true;
     }
-	if (bSPACEstate && !Application::IsKeyPressed(VK_SPACE))
+    else if (bSPACEstate && !GetKeyState(32))
     {
 		bSPACEstate = false;
     }
@@ -1481,19 +1493,18 @@ void SceneSP3::Update(double dt)
 
 
     //camera.Update(dt);
-    fps = 1.0f / (float)dt;
 	if (m_fireRate>0)
 	m_fireRate -= dt;
     Vector3 temp = walkCam.GetPos();
     Vector3 right = walkCam.GetDir().Cross(walkCam.GetUp());
     right.Normalize();
     float movespeed = 1000;
-    if (Application::IsKeyPressed('Z'))
+    if (GetKeyState('Z', KEY_STATUS_DOWN))
     {
         val += 20.f * (float)dt;
         cout << val << endl;
     }
-    if (Application::IsKeyPressed('X'))
+    if (GetKeyState('X', KEY_STATUS_DOWN))
     {
         val -= 20.f * (float)dt;
         cout << val << endl;
@@ -1508,20 +1519,20 @@ void SceneSP3::Update(double dt)
 
     if (!SharedData::GetInstance()->SD_IsImmobile)
     {
-        if (Application::IsKeyPressed('W'))
+        if (GetKeyState('W'))
         {
             forceApplied += walkCam.GetDir() * acceleration;
         }
-        if (Application::IsKeyPressed('S'))
+        if (GetKeyState('S'))
         {
             forceApplied -= walkCam.GetDir() * acceleration;
         }
 
-        if (Application::IsKeyPressed('A'))
+        if (GetKeyState('A'))
         {
             forceApplied -= right * acceleration;
         }
-        if (Application::IsKeyPressed('D'))
+        if (GetKeyState('D'))
         {
             forceApplied += right * acceleration;
         }
@@ -1529,15 +1540,14 @@ void SceneSP3::Update(double dt)
         for (unsigned short i = 0; i < 256; ++i)
         {
             break; //Comment this break break statement to test keys.
-            if (Application::IsKeyPressed(i))
-                std::cout << i << std::endl;
+            if (GetKeyState(i)) std::cout << i << std::endl;
         }
 
         //Correspondance:
         //Is held; Is pressed
         static bool boostKeyStatus[] = { false, false, false };
 
-        boostKeyStatus[0] = Application::IsKeyPressed('1');
+        boostKeyStatus[0] = GetKeyState('1');
         boostKeyStatus[2] = false;
 
         if (boostKeyStatus[0] && !boostKeyStatus[1])
@@ -1577,6 +1587,10 @@ void SceneSP3::Update(double dt)
             break;
         }
 
+		float velOverdrive = 0;
+		if (fishVel.LengthSquared() > speedLimit * speedLimit * staminaFactor * staminaFactor)
+			velOverdrive = fishVel.Length() - speedLimit * staminaFactor;
+
         fishVel +=
             forceApplied
             * (skipper->boostStatus == Skipper::BOOST_ACTIVE ? 2.f : 1.f)
@@ -1584,8 +1598,8 @@ void SceneSP3::Update(double dt)
 
         if (fishVel.LengthSquared() > speedLimit * speedLimit * staminaFactor * staminaFactor)
         {
-            fishVel.Normalize();
-            fishVel *= speedLimit * staminaFactor;
+			fishVel.Normalize();
+            fishVel *= speedLimit * staminaFactor + velOverdrive;
         }
 
         walkCam.Move(fishVel * (float)dt);
@@ -1659,7 +1673,7 @@ void SceneSP3::Update(double dt)
             SharedData::GetInstance()->SD_IsImmobile = true;
         }
 
-        if (Application::IsKeyPressed('H'))
+        if (GetKeyState('H', KEY_STATUS_DOWN))
             skipper->setHealth(0);
     }
 
@@ -1704,7 +1718,7 @@ void SceneSP3::Update(double dt)
 	UpdateSquadFire(dt);
     UpdateSpawner(dt);
 
-	if (Application::IsKeyPressed('M'))
+	if (GetKeyState('M', KEY_STATUS_DOWN))
 	{
         for (std::vector<GameObject *>::iterator it = seaList.begin(); it != seaList.end(); ++it)
 		{
@@ -1723,7 +1737,7 @@ void SceneSP3::Update(double dt)
 		}	
 	}
 
-	if (Application::IsKeyPressed('N'))
+	if (GetKeyState('N', KEY_STATUS_DOWN))
 	{
 		skipper->setTarget(skipper);
 	}
@@ -1731,6 +1745,47 @@ void SceneSP3::Update(double dt)
 
 
 //std::cout << m_spCount << std::endl;
+}
+
+void SceneSP3::UpdateKeys()
+{
+	for (unsigned short i = 0; i < (unsigned short)255; ++i)
+	{
+		keyStates[KEY_STATUS_CUR][i] = Application::IsKeyPressed(i);
+		keyStates[KEY_STATUS_DOWN][i] = keyStates[KEY_STATUS_CUR][i] && !keyStates[KEY_STATUS_TEMP][i];
+		keyStates[KEY_STATUS_UP][i] = !keyStates[KEY_STATUS_CUR][i] && keyStates[KEY_STATUS_TEMP][i];
+		keyStates[KEY_STATUS_TEMP][i] = keyStates[KEY_STATUS_CUR][i];
+
+		continue; //Comment out this line to test keys.
+		if (keyStates[KEY_STATUS_DOWN][i]) std::cout << i << std::endl;
+	}
+
+
+
+	//std::cout << m_spCount << std::endl;
+}
+
+void SceneSP3::UpdatePauseFunction()
+{
+	if (GetKeyState('P', KEY_STATUS_DOWN))
+	{
+		isGamePaused = !isGamePaused;
+		pauseChoice = 0;
+	}
+}
+
+void SceneSP3::UpdatePauseScreen(double dt)
+{
+	if (GetKeyState('S', KEY_STATUS_DOWN))
+		++pauseChoice;
+	if (GetKeyState(VK_DOWN, KEY_STATUS_DOWN))
+		++pauseChoice;
+	if (GetKeyState('W', KEY_STATUS_DOWN))
+		--pauseChoice;
+	if (GetKeyState(VK_UP, KEY_STATUS_DOWN))
+		--pauseChoice;
+
+	pauseChoice = min(max(pauseChoice, 0), 2);
 }
 
 void SceneSP3::UpdateSpawner(double dt)
@@ -2268,6 +2323,14 @@ void SceneSP3::RenderMesh(Mesh *mesh, bool enableLight)
     mesh->Render();
 }
 
+bool SceneSP3::GetKeyState(const unsigned char &key, const KeyStatuses &status)
+{
+	if (key >= unsigned char(255)) return false;
+	if (status < 0 || status >= KEY_STATUS_TEMP) return false;
+
+	return keyStates[status][key];
+}
+
 void SceneSP3::UpdateParticles(double dt)
 {
     if (m_particleCount < 300)
@@ -2780,12 +2843,16 @@ void SceneSP3::RenderCoral(Coral *co)
 
 void SceneSP3::RenderPO(Projectile *po)
 {
-    modelStack.PushMatrix();
+	modelStack.PushMatrix();
     modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
     modelStack.Scale(po->scale.x, po->scale.y, po->scale.z);
-	modelStack.Rotate(po->rotate.x, 1, 0, 0);
-	modelStack.Rotate(po->rotate.y,0,1,0);
-	modelStack.Rotate(po->rotate.z, 0, 0, 1);
+	
+	float angle[2];
+	angle[0] = Math::RadianToDegree(atan2(-po->vel.z, po->vel.x));
+	angle[1] = Math::RadianToDegree(asin(po->vel.y / po->vel.Length()));
+	modelStack.Rotate(angle[0], 0, 1, 0);
+	modelStack.Rotate(angle[1], 0, 0, 1);
+
     RenderMesh(meshList[GEO_LASER], false);
     modelStack.PopMatrix();
 }
@@ -2893,12 +2960,12 @@ void SceneSP3::RenderDeathScreen()
     if (skipper->getIsDead())
     {
         static bool b_DS_UPState = false;
-        if (Application::IsKeyPressed('W') && !b_DS_UPState/* ||
+        if (GetKeyState('W') && !b_DS_UPState/* ||
             Application::IsKeyPressed(VK_UP) && !b_DS_UPState*/)
         {
             b_DS_UPState = true;
         }
-        else if (!Application::IsKeyPressed('W') && b_DS_UPState/* ||
+        else if (!GetKeyState('W') && b_DS_UPState/* ||
             !Application::IsKeyPressed(VK_UP) && b_DS_UPState*/)
         {
 
@@ -2913,12 +2980,12 @@ void SceneSP3::RenderDeathScreen()
 
         static bool b_DS_DOWNState = false;
 
-        if (Application::IsKeyPressed('S') && !b_DS_DOWNState/* ||
+        if (GetKeyState('S') && !b_DS_DOWNState/* ||
             Application::IsKeyPressed(VK_DOWN) && !b_DS_DOWNState*/)
         {
             b_DS_DOWNState = true;
         }
-        else if (!Application::IsKeyPressed('S') && b_DS_DOWNState/* ||
+        else if (!GetKeyState('S') && b_DS_DOWNState/* ||
             !Application::IsKeyPressed(VK_DOWN) && b_DS_DOWNState*/)
         {
             if (DeathSelect != DEATHSELECT::QUIT)
@@ -2945,11 +3012,11 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 30.f, 5.f, 0.f, 0.0f);
             RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
-            if (Application::IsKeyPressed(VK_RETURN) && !b_DSENTERState)
+            if (GetKeyState(13) && !b_DSENTERState)
             {
                 b_DSENTERState = true;
             }
-            else if (!Application::IsKeyPressed(VK_RETURN) && b_DSENTERState)
+            else if (!GetKeyState(13) && b_DSENTERState)
             {
                 Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
                 Application::sceneManager->SetCurrentScene(Application::sceneManager->GetLoadingScreen());
@@ -2963,11 +3030,11 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TMENU], false, 30.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
-            if (Application::IsKeyPressed(VK_RETURN) && !b_DSENTERState)
+            if (GetKeyState(13) && !b_DSENTERState)
             {
                 b_DSENTERState = true;
             }
-            else if (!Application::IsKeyPressed(VK_RETURN) && b_DSENTERState)
+            else if (!GetKeyState(13) && b_DSENTERState)
             {
                 Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
                 Application::sceneManager->SetMenuScene(new SceneMenu());
@@ -2983,11 +3050,11 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 5.f, 0.f, -20.0f);
             RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
-            if (Application::IsKeyPressed(VK_RETURN) && !b_DSENTERState)
+            if (GetKeyState(13) && !b_DSENTERState)
             {
                 b_DSENTERState = true;
             }
-            else if (!Application::IsKeyPressed(VK_RETURN) && b_DSENTERState)
+            else if (!GetKeyState(13) && b_DSENTERState)
             {
                 SharedData::GetInstance()->SD_QuitGame = true;
                 b_DSENTERState = false;
@@ -3200,6 +3267,29 @@ void SceneSP3::RenderMinimap()
 
     RenderMeshIn2D(meshList[GEO_MINIMAP_AVATAR], false, 3.f, 3.f,
 		mPos.x, mPos.y);
+}
+
+void SceneSP3::RenderHUD2()
+{
+	glUniform1i(m_parameters[U_FOG_ENABLE], 0);
+	RenderMinimap();
+	SceneSP3::RenderHUD();
+
+	std::ostringstream ss;
+	ss.precision(3);
+	ss << "FPS: " << fps;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
+
+	if (isGamePaused)
+		RenderPauseScreen();
+	glUniform1i(m_parameters[U_FOG_ENABLE], 1);
+}
+
+void SceneSP3::RenderPauseScreen()
+{
+	if (!isGamePaused) return;
+	
+	RenderMeshIn2D(meshList[GEO_PAUSEMENU], false, 200, 100);
 }
 
 void SceneSP3::Exit()

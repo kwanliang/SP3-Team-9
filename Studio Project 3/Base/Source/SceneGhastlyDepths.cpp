@@ -366,10 +366,27 @@ void SceneGhastlyDepths::Update(double dt)
 	if ((frilledshark->pos - playerpos).LengthSquared() < 200*200)
 	{
 		StaticLoop(dt);
-		m_isStatic = true;
+		//m_isStatic = true;
 	}
 	else
 	m_isStatic = false;
+
+	static double collisionCD = 0;
+
+	collisionCD -= dt;
+	collisionCD = max(collisionCD, 0.);
+	if (collisionCD <= 0)
+	for (unsigned i = 0; i < 5; i++)
+	{
+		if (collision(frilledshark->m_FSbox[i], player_box))
+		{
+			std::cout << "test" << std::endl;
+			//if (frilledshark->m_state == FrilledShark::FSstate::CHARGE)
+			fishVel += frilledshark->vel * 150.f;
+			collisionCD = 0.75;
+			break;
+		}
+	}
 
 	//frilledshark->m_node[0].yaw = val*4;
 }

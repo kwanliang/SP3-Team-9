@@ -33,6 +33,15 @@
 
 class SceneSP3 : public Scene
 {
+protected:
+	enum KeyStatuses
+	{
+		KEY_STATUS_CUR = 0,
+		KEY_STATUS_DOWN,
+		KEY_STATUS_UP,
+		KEY_STATUS_TEMP,
+	};
+
 public:
     SceneSP3();
     virtual ~SceneSP3();
@@ -105,7 +114,19 @@ public:
         NUM_DEATHSELECT
     }DeathSelect;
 
+	bool GetKeyState(const unsigned char &key, const KeyStatuses &status = KEY_STATUS_CUR);
+
 private:
+
+	//Information for storing keystates. (State; Pressed; Released; Temp) 
+	bool keyStates[4][255];
+
+	void UpdateKeys();
+	void UpdatePauseFunction();
+	void UpdatePauseScreen(double dt);
+
+	void RenderPauseScreen();
+	void RenderHUD2();
 
     // Shadow
     //DepthFBO m_lightDepthFBO;
@@ -198,6 +219,7 @@ protected:
 
 		U_TOTAL,
 	};
+
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES,
@@ -222,6 +244,10 @@ protected:
 		GEO_MINIMAP_PUFFER,
 		GEO_MINIMAP_BOSS,
 
+		GEO_PAUSEMENU,
+
+		GEO_STATIC,
+
 		GEO_FISHMODEL,
 		GEO_FISHTAIL,
 		GEO_LASER,
@@ -234,7 +260,6 @@ protected:
 		GEO_FSHARK_UJAW,
 		GEO_FSHARK_NODE,
 		GEO_FSHARK_TAIL,
-		GEO_STATIC,
 
 		GEO_ISOPOD_BODY,
 		GEO_ISOPOD_LEG,
@@ -245,7 +270,7 @@ protected:
 		GEO_CHIMERA_BODY,
 		GEO_CHIMERA_FFLIP,
 		GEO_CHIMERA_BFLIP,
-		
+
 		GEO_MINNOW,
 		GEO_PUFFER,
 		GEO_CUTTLE,
@@ -261,26 +286,26 @@ protected:
 		GEO_CRAB_LEG_UPPER,
 		GEO_CRAB_LEG_LOWER,
 
-        GEO_BUBBLE,
-        GEO_VACUUM,
+		GEO_BUBBLE,
+		GEO_VACUUM,
 
-        GEO_HUD_HEALTHBAR,
-        GEO_HUD_BOSSHEALTH,
+		GEO_HUD_HEALTHBAR,
+		GEO_HUD_BOSSHEALTH,
 
-        GEO_TTITLE,
-        GEO_TMENU,
-        GEO_TSTART,
-        GEO_TQUIT,
-        GEO_TLOADING,
+		GEO_TTITLE,
+		GEO_TMENU,
+		GEO_TSTART,
+		GEO_TQUIT,
+		GEO_TLOADING,
 
-        GEO_TBORDER,
-        GEO_TLAYER,
-        GEO_TDIED,
-        GEO_TRESPAWN,
-        GEO_TTOMENU,
+		GEO_TBORDER,
+		GEO_TLAYER,
+		GEO_TDIED,
+		GEO_TRESPAWN,
+		GEO_TTOMENU,
 
-        SPRITE_NAME,
-        GEO_LIGHT_DEPTH_QUAD,
+		SPRITE_NAME,
+		GEO_LIGHT_DEPTH_QUAD,
 		NUM_GEOMETRY,
 	};
 	enum RENDER_PASS
@@ -336,6 +361,9 @@ protected:
 
     Skipper* skipper;
     Minnow* minnowLeader;
+
+	bool isGamePaused;
+	int pauseChoice;
 
     // Spawner
     Spawner MinnowLeaderSpawner;

@@ -57,7 +57,7 @@ void FrilledShark::UpdateFrilledShark(double dt, std::vector<unsigned char> hmap
 
 		Ljaw_rotate = -10;
 
-		std::cout << "IDLE" << std::endl;
+		//std::cout << "IDLE" << std::endl;
 
 
 		if (P_displacement.LengthSquared() < 500 * 500)
@@ -86,14 +86,14 @@ void FrilledShark::UpdateFrilledShark(double dt, std::vector<unsigned char> hmap
 			m_state = CHARGE;
 		}
 
-		std::cout << "AGGRO" << std::endl;
+		//std::cout << "AGGRO" << std::endl;
 	}	break;
 	case CHARGE:
 		Ljaw_rotate = 15;
 
 		vel.y = P_displacement.y * 4;
 		speed = 120;
-		std::cout << "CHARGE" << std::endl;
+		//std::cout << "CHARGE" << std::endl;
 		if (P_displacement.LengthSquared() > 500 * 500)
 			m_state = AGGRO;
 		break;
@@ -106,11 +106,11 @@ void FrilledShark::UpdateFrilledShark(double dt, std::vector<unsigned char> hmap
 			m_strafeTime = 0;
 			m_state = AGGRO;
 		}
-		std::cout << "STRAFE" << std::endl;
+		//std::cout << "STRAFE" << std::endl;
 		break;
 
 	case COLLIDING:
-		std::cout << "COLLDIING" << std::endl;
+		//std::cout << "COLLDIING" << std::endl;
 		break;
 	}
 
