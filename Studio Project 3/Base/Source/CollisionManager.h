@@ -143,4 +143,16 @@ static bool collision(const hitbox& lhsBox, const hitbox2& rhsBox){
 
 }
 
+static bool collision(const hitbox2& hitbox, const Vector3& vecPoint)
+{
+	//Check if the point is less than max and greater than min
+	if (vecPoint.x > hitbox.m_point[0].x && vecPoint.x < hitbox.m_point[6].x &&
+		vecPoint.y > hitbox.m_point[0].y && vecPoint.y < hitbox.m_point[6].y &&
+		vecPoint.z > hitbox.m_point[0].z && vecPoint.z < hitbox.m_point[6].z){
+		return true;
+	}
+	else
+		return false;
+}
+
 #endif;

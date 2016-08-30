@@ -5,11 +5,12 @@ Isopod::Isopod()
 {
 	m_health = 1000;
 	bossType = ISOPOD;
+	objectType = BOSS;
 	pos = Vector3(0, 0, 0);
 	vel = (0, 0, 0);
 	scale = Vector3(80, 80, 80);
 	active = true;
-	m_state = AGGRO;
+	m_state = IDLE;
 	m_SpawnIsopodDrone = false;
 	m_SpawnBufferTime = 0.0f;
 	//for (unsigned i = 0; i < 6; i++)
@@ -74,6 +75,9 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
     case IDLE:
     {  
 		m_SpawnIsopodDrone = false;
+		if (P_displacement.LengthSquared() < 400 * 400)
+			m_state = AGGRO;
+
         
 
      break;

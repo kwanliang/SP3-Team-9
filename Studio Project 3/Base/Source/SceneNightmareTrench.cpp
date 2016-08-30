@@ -57,24 +57,26 @@ void SceneNightmareTrench::Init()
 		60);
 
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1173,372,-1230),300,500,300,0);
-	for (unsigned i = 0; i < 20; i++)
-	{
-		Chimera*c = FetchChimera();
-		c->active = true;
-		c->objectType = GameObject::SEACREATURE;
-		c->seaType = SeaCreature::CHIMERA;
-		//p->pstate = Pufferfish::IDLE;
-		c->scale.Set(20, 20, 20);
-		c->pos.Set(Math::RandFloatMinMax(-1000, 1000), Math::RandFloatMinMax(100, 500), Math::RandFloatMinMax(-1000, 1000));
-		c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
-		c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10,NULL);
-		c->setHealth(200);
-	}
+	//for (unsigned i = 0; i < 20; i++)
+	//{
+	//	Chimera*c = FetchChimera();
+	//	c->active = true;
+	//	c->objectType = GameObject::SEACREATURE;
+	//	c->seaType = SeaCreature::CHIMERA;
+	//	//p->pstate = Pufferfish::IDLE;
+	//	c->scale.Set(20, 20, 20);
+	//	c->pos.Set(Math::RandFloatMinMax(-1000, 1000), Math::RandFloatMinMax(100, 500), Math::RandFloatMinMax(-1000, 1000));
+	//	c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
+	//	c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10,NULL);
+	//	c->setHealth(200);
+	//}
 	SceneSP3::ReinitCaptured();
-	isopod = new Isopod;
+	isopod = new Isopod();
+
 	isopod->pos.y = 350.f * ReadHeightMap(m_heightMap[4], isopod->pos.x / 3000.f, isopod->pos.z / 3000.f) + 13;
 	isopod->m_nest_A.pos.Set(845, ReadHeightMap(m_heightMap[4], 845 / 3000.f, 820 / 3000.f)+10, 820);
 	isopod->m_nest_B.pos.Set(-688, ReadHeightMap(m_heightMap[4], -688 / 3000.f, -887 / 3000.f)+10, -887);
+	seaList.push_back(isopod);
 }
 
 void SceneNightmareTrench::RenderTerrain()

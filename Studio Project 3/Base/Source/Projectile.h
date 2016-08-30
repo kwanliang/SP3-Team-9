@@ -20,7 +20,7 @@ public:
 
     Projectile();
     ~Projectile();
-
+	Vector3 rotate;
     double getLifetime();
     void setLifetime(double m_lifetime);
 };

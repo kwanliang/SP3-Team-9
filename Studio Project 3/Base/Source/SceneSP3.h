@@ -75,11 +75,10 @@ public:
     Fcrab* FetchFCrab();
     Chimera* FetchChimera();
     Cuttlefish* FetchCuttle();
-    //Drone* FetchDrone();
+	Drone* FetchDrone();
     Coral* FetchCoral();
     Projectile* FetchPO();
     DamageText* FetchTO();
-	Drone* FetchDrone();
     void RenderFO(SeaCreature *fo);
     void RenderPO(Projectile *po);
     void RenderTO(DamageText *to);
@@ -114,7 +113,7 @@ private:
     //Mtx44 m_lightDepthView;
  
     bool bLightEnabled;
-
+	float m_fireRate;
     //Terrain
  
 	//Fish test
@@ -225,6 +224,7 @@ protected:
 
 		GEO_FISHMODEL,
 		GEO_FISHTAIL,
+		GEO_LASER,
 
 		GEO_SQUIDBODY,
 		GEO_SQUIDTENTACLENODE,

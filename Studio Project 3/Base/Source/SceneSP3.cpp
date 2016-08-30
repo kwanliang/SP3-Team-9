@@ -275,6 +275,7 @@ void SceneSP3::Init()
     meshList[GEO_MINNOW] = MeshBuilder::GenerateOBJ("minnow", "Models//OBJ//minnow.obj");
 	meshList[GEO_MINNOW]->textureArray[0] = LoadTGA("Image//minnow.tga");
 
+	meshList[GEO_LASER] = MeshBuilder::GenerateOBJ("beam", "Models//OBJ//laser.obj");
     meshList[GEO_BALL] = MeshBuilder::GenerateSphere("ball", Color(0, 0, 0), 16, 16, 1.f);
     meshList[GEO_BALL2] = MeshBuilder::GenerateSphere("ball", Color(1, 0, 0), 16, 16, 1.f);
 
@@ -328,6 +329,7 @@ void SceneSP3::Init()
 	fish_tailrot = 0;
 	fish_tailmax = false;
 	m_spCount = 0;
+	m_fireRate = 0;
     //if (SPRITENAME)
     //{
     //    SPRITENAME->m_anim = new Animation();
@@ -544,7 +546,7 @@ Drone* SceneSP3::FetchDrone()
 	for (std::vector<GameObject *>::iterator it = seaList.begin(); it != seaList.end(); ++it)
     {
         Drone *go = (Drone *)*it;
-        if (!go->active)
+		if (!go->active && go->seaType == SeaCreature::DRONE)
         {
             go->objectType = GameObject::SEACREATURE;
             go->seaType = SeaCreature::DRONE;
@@ -673,8 +675,22 @@ void SceneSP3::UpdateSeaCreatures(double dt)
             {
                 SeaCreature* sc = (SeaCreature*)it;
 
-                if (sc->getHealth() <= 0)
-                    sc->active = false;
+				if (sc->getHealth() <= 0)
+				{
+					sc->active = false;
+					if (sc->seaType == SeaCreature::MINNOW)
+						g_MinnowCount--;
+					if (sc->seaType == SeaCreature::PUFFER)
+						g_PufferfishCount--;
+					if (sc->seaType == SeaCreature::FCRAB)
+						g_FCrabCount--;
+					if (sc->seaType == SeaCreature::CUTTLE)
+						g_CuttlefishCount--;
+					if (sc->seaType == SeaCreature::CHIMERA)
+						g_ChimeraCount--;
+					if (sc->seaType == SeaCreature::DRONE)
+						g_IsopodDroneCount--;
+				}
 
                 switch (sc->seaType)
                 {
@@ -711,25 +727,34 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
                     for (auto it2 : seaList)
                     {
-                        Minnow *other = (Minnow *)it2;
-                        if (other->active && minnow != other)
-                        {
-                            if (other->seaType == SeaCreature::MINNOW && other->getisLeader())
-                            {
-                                if (minnow->state == Minnow::FLOCK && !minnow->getisLeader() && (other->pos - minnow->pos).LengthSquared() < g_MinnowAttractRange * 2)
-                                    minnow->vel += minnow->cohesion(other) + minnow->alignment(tempForceVector);
-                                else if (minnow->state == Minnow::FLEE && !minnow->getisLeader())
-                                    minnow->vel += minnow->seperation(tempCentreOfMass) * 2;
-                            }
-                            else if (other->active && minnow != other && minnow->seaType == SeaCreature::MINNOW && minnow->state == Minnow::FLOCK)
-                            {
-                                if ((minnow->pos - other->pos).LengthSquared() < g_distFromSeperation)
-                                {
-                                    tempRepelVector = other->pos - minnow->pos;
-                                    other->vel += other->seperation(tempRepelVector);
-                                }
-                            }
-                        }
+						GameObject* go2 = (GameObject*)it2;
+						if (go2->active && minnow != go2)
+						{
+							if (go2->objectType == GameObject::SEACREATURE)
+							{
+								SeaCreature* sc = (SeaCreature*)it2;
+								if (sc->seaType == SeaCreature::MINNOW)
+								{
+									Minnow *other = (Minnow *)it2;
+
+									if (other->seaType == SeaCreature::MINNOW && other->getisLeader())
+									{
+										if (minnow->state == Minnow::FLOCK && !minnow->getisLeader() && (other->pos - minnow->pos).LengthSquared() < g_MinnowAttractRange * 2)
+											minnow->vel += minnow->cohesion(other) + minnow->alignment(tempForceVector);
+										else if (minnow->state == Minnow::FLEE && !minnow->getisLeader())
+											minnow->vel += minnow->seperation(tempCentreOfMass) * 2;
+									}
+									else if (other->active && minnow != other && minnow->seaType == SeaCreature::MINNOW && minnow->state == Minnow::FLOCK)
+									{
+										if ((minnow->pos - other->pos).LengthSquared() < g_distFromSeperation)
+										{
+											tempRepelVector = other->pos - minnow->pos;
+											other->vel += other->seperation(tempRepelVector);
+										}
+									}
+								}
+							}
+						}
                     }
 
                     // Cap velocity
@@ -761,9 +786,35 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 				case SeaCreature::DRONE:
 				{
 					Drone *d = (Drone*)it;
-					d->UpdateDrone(dt);
-					Vector3 I_displacement = isopod->pos - d->pos;
-					if (I_displacement.LengthSquared() > 500 * 500)
+					d->m_location = isopod->pos;
+					d->UpdateDrone(dt, m_heightMap[4]);
+					if (collision(d->m_hitbox, player_box))
+					{
+						fishVel = -d->vel;
+						d->m_state = Drone::RETREAT;
+						if (skipper->getTimerReceieveDamage() > 1.0)
+						{
+							
+							
+
+
+							skipper->setTimerReceieveDamage(0.0);
+
+							
+
+							skipper->setHealth(skipper->getHealth() - 20);
+
+							DamageText* text = FetchTO();
+							text->setActive(true);
+							text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
+							text->setLastDamage(20);
+							text->setScaleText(Vector3(0, 0, 0));
+							text->setIsEnemy(false);
+						}
+					}
+
+
+					/*if (I_displacement.LengthSquared() > 500 * 500)
 					{
 						d->vel = I_displacement.Normalized() * 5;
 						d->m_state = Drone::STRAFE;
@@ -771,7 +822,7 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
 					if (sc->getHealth() <= 0)
 						sc->active = false;
-			
+			*/
 					break;
 				}
 					
@@ -1147,44 +1198,66 @@ void SceneSP3::UpdateProjectile(double dt)
                             Boss* boss = (Boss*)it2;
                             switch (boss->bossType)
                             {
-                            case Boss::GIANTSQUID:
-                            {
-                                GiantSquid *squid = (GiantSquid *)it2;
-                                // Squid head
-                                if (collision(squid->collision, po->pos))
-                                {
-                                    po->active = false;
-                                    squid->setHealth(squid->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+							case Boss::GIANTSQUID:
+							{
+								GiantSquid *squid = (GiantSquid *)it2;
+								// Squid head
+								if (collision(squid->collision, po->pos))
+								{
+									po->active = false;
+									squid->setHealth(squid->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 
-                                    DamageText* text = FetchTO();
-                                    text->setActive(true);
-                                    text->setLastHitPos(po->pos);
-                                    text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-                                    text->setScaleText(Vector3(0, 0, 0));
-                                    text->setIsEnemy(true);
-                                }
-                                // Tentacle
-                                for (int i = 0; i < 6; ++i)
-                                {
-                                    if (collision(squid->tentacle[i]->collision, po->pos))
-                                    {
-                                        po->active = false;
-                                        squid->tentacle[i]->setHealth(squid->tentacle[i]->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									DamageText* text = FetchTO();
+									text->setActive(true);
+									text->setLastHitPos(po->pos);
+									text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									text->setScaleText(Vector3(0, 0, 0));
+									text->setIsEnemy(true);
+								}
+								// Tentacle
+								for (int i = 0; i < 6; ++i)
+								{
+									if (collision(squid->tentacle[i]->collision, po->pos))
+									{
+										po->active = false;
+										squid->tentacle[i]->setHealth(squid->tentacle[i]->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 
-                                        DamageText* text = FetchTO();
-                                        text->setActive(true);
-                                        text->setLastHitPos(po->pos);
-                                        text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-                                        text->setScaleText(Vector3(0, 0, 0));
-                                        text->setIsEnemy(true);
-                                    }
-                                }
+										DamageText* text = FetchTO();
+										text->setActive(true);
+										text->setLastHitPos(po->pos);
+										text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+										text->setScaleText(Vector3(0, 0, 0));
+										text->setIsEnemy(true);
+									}
+								}
+							}
                                 break;
+							case Boss::GIANTCRAB:
+							{
+								GiantCrab *crab = (GiantCrab *)it2;
+								// Squid head
+								if (collision(crab->m_hitbox, po->pos))
+								{
+									std::cout << "fuck" << std::endl;
+
+									po->active = false;
+									crab->setHealth(crab->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									DamageText* text = FetchTO();
+									text->setActive(true);
+									text->setLastHitPos(po->pos);
+									text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									text->setScaleText(Vector3(0, 0, 0));
+									text->setIsEnemy(true);
+								}
+							}
+							break;
+
                             }
                             }
                         }
                     }
-                }
+                
+
                 else if (po->projectileType == Projectile::INK)
                 {
                     po->pos += po->vel * dt * 50;
@@ -1375,34 +1448,42 @@ void SceneSP3::Update(double dt)
     {
         bSPACEstate = true;
     }
-    else if (bSPACEstate && !Application::IsKeyPressed(VK_SPACE))
+	if (bSPACEstate && !Application::IsKeyPressed(VK_SPACE))
     {
-        Projectile *po = FetchPO();
-
-        static const float focusLength = 300.f;
-
-        static const float projectileSpeed = 150.f;
-
-        Vector3 focusPoint = walkCam.GetPos() + Vector3(0, walkCam.yOffset, 0) + walkCam.GetDir() * (focusLength - walkCam.distance);
-
-        po->objectType = GameObject::PROJECTILE;
-        po->projectileType = Projectile::BULLET;
-        po->active = true;
-        po->scale.Set(1, 1, 1);
-        po->pos = playerpos;
-
-        //po->vel = (focusPoint - playerpos).Normalized();
-        //po->vel += fishVel;
-        po->setLifetime(3.0);
-        Vector3 bulletDirection = focusPoint - playerpos;
-        bulletDirection.Normalize();
-        po->vel = bulletDirection * projectileSpeed + fishVel;
-        bSPACEstate = false;
+		bSPACEstate = false;
     }
+	if (bSPACEstate && m_fireRate <= 0)
+	{
+		Projectile *po = FetchPO();
+
+		static const float focusLength = 300.f;
+
+		static const float projectileSpeed = 400.f;
+
+		Vector3 focusPoint = walkCam.GetPos() + Vector3(0, walkCam.yOffset, 0) + walkCam.GetDir() * (focusLength - walkCam.distance);
+
+		po->objectType = GameObject::PROJECTILE;
+		po->projectileType = Projectile::BULLET;
+		po->active = true;
+		po->scale.Set(10, 10, 10);
+		po->pos = playerpos;
+
+		//po->vel = (focusPoint - playerpos).Normalized();
+		//po->vel += fishVel;
+		po->setLifetime(3.0);
+		Vector3 bulletDirection = focusPoint - playerpos;
+		bulletDirection.Normalize();
+		po->vel = bulletDirection * projectileSpeed + fishVel;
+		m_fireRate = 0.15;
+	}
+
+
+
 
     //camera.Update(dt);
     fps = 1.0f / (float)dt;
-
+	if (m_fireRate>0)
+	m_fireRate -= dt;
     Vector3 temp = walkCam.GetPos();
     Vector3 right = walkCam.GetDir().Cross(walkCam.GetUp());
     right.Normalize();
@@ -2678,7 +2759,7 @@ void SceneSP3::RenderFO(SeaCreature *fo)
 		modelStack.PushMatrix();
 		glBlendFunc(1, 1);
 		modelStack.Translate(c->pos.x, c->pos.y, c->pos.z);
-		modelStack.Rotate(-rotate+90, 0, 1, 0);
+		modelStack.Rotate(rotate+180, 0, 1, 0);
 		modelStack.Scale(c->scale.z, c->scale.z, c->scale.z);
 		RenderMesh(meshList[GEO_ISOPOD_DRONE], false);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -2702,7 +2783,10 @@ void SceneSP3::RenderPO(Projectile *po)
     modelStack.PushMatrix();
     modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
     modelStack.Scale(po->scale.x, po->scale.y, po->scale.z);
-    RenderMesh(meshList[GEO_BALL], false);
+	modelStack.Rotate(po->rotate.x, 1, 0, 0);
+	modelStack.Rotate(po->rotate.y,0,1,0);
+	modelStack.Rotate(po->rotate.z, 0, 0, 1);
+    RenderMesh(meshList[GEO_LASER], false);
     modelStack.PopMatrix();
 }
 
@@ -2987,6 +3071,26 @@ void SceneSP3::RenderHUD()
 				}
 			}
 				break;
+
+			case Boss::ISOPOD:
+			{
+				if ((bo->pos - playerpos).LengthSquared() < 800 * 800)
+				{
+
+
+					boss_name << "great isopod";
+					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
+
+					float percentage = (100.f / 1000.f) * (float)bo->getHealth();
+					float healthscale = (barscale / 100) * percentage;
+					float healthtranslate = (50.f / 100.f) * (100.f - percentage);
+					RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 12.0f, 0.f, 50.0f);
+					RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 10.0f, 0.f - healthtranslate, 50.0f);
+
+
+				}
+			}
+			break;
 
 
             }
