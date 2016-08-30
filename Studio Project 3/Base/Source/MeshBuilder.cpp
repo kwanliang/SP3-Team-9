@@ -65,15 +65,15 @@ Mesh* MeshBuilder::GenerateAxes(const std::string &meshName, float lengthX, floa
 	return mesh;
 }
 
-Mesh* MeshBuilder::GenerateLine(const std::string &meshName, Vector3 p1, Vector3 p2)
+Mesh* MeshBuilder::GenerateLine(const std::string &meshName, Color color, Vector3 p1, Vector3 p2)
 {
     Vertex v;
     std::vector<Vertex> vertex_buffer_data;
     v.pos.Set(p1.x, p1.y, p1.z);
-    v.color.Set(1, 1, 1);
+    v.color.Set(color.r, color.g, color.b);
     vertex_buffer_data.push_back(v);
     v.pos.Set(p2.x, p2.y, p2.z);
-    v.color.Set(1, 1, 1);
+    v.color.Set(color.r, color.g, color.b);
     vertex_buffer_data.push_back(v);
 
     std::vector<GLuint> index_buffer_data;

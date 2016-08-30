@@ -63,3 +63,23 @@ void DamageText::setIsEnemy(bool m_isEnemy)
 {
     this->m_isEnemy = m_isEnemy;
 }
+
+bool DamageText::getIsHeal()
+{
+    return this->m_isHeal;
+}
+
+void DamageText::setIsHeal(bool m_isHeal)
+{
+    this->m_isHeal = m_isHeal;
+}
+
+bool DamageText::getIsStamina()
+{
+    return this->m_isStamina;
+}
+
+void DamageText::setIsStamina(bool m_isStamina)
+{
+    this->m_isStamina = m_isStamina;
+}

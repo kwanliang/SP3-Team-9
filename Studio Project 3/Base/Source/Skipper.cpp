@@ -25,6 +25,8 @@ int Skipper::getHealth()
 void Skipper::setHealth(int m_health)
 {
     this->m_health = m_health;
+    if (this->m_health > g_MaxSkipperHealth)
+        this->m_health = g_MaxSkipperHealth;
 }
 
 int Skipper::getDamage()
@@ -80,4 +82,28 @@ bool Skipper::getIsDead()
 void Skipper::setIsDead(bool m_isDead)
 {
     this->m_isDead = m_isDead;
+}
+
+int Skipper::getHealthPackCount()
+{
+    return this->m_HealthPackCount;
+}
+
+void Skipper::setHealthPackCount(int m_HealthPackCount)
+{
+    this->m_HealthPackCount = m_HealthPackCount;
+    if (this->m_HealthPackCount > 3)
+        this->m_HealthPackCount = 3;
+}
+
+int Skipper::getStaminaPackCount()
+{
+    return this->m_StaminaPackCount;
+}
+
+void Skipper::setStaminaPackCount(int m_StaminaPackCount)
+{
+    this->m_StaminaPackCount = m_StaminaPackCount;
+    if (this->m_StaminaPackCount > 3)
+        this->m_StaminaPackCount = 3;
 }

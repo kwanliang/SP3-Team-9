@@ -14,7 +14,6 @@ Capture::~Capture()
 
 Vector3 Capture::Vacuum(SeaCreature creature, Vector3 playerpos, bool check)
 {
-	
 	if (check == true)
 	{
 		float distance = fabs(playerpos.x - creature.pos.x) + fabs(playerpos.y - creature.pos.y) + fabs(playerpos.z - creature.pos.z);

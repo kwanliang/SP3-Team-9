@@ -3,6 +3,8 @@
 
 #include "GameObject.h"
 
+static int g_MaxSkipperHealth = 500;
+
 class Skipper : public GameObject
 {
 private:
@@ -12,6 +14,8 @@ private:
 	GameObject* target;
     double m_TimerReceieveDamage;
     bool m_isDead;
+    int m_HealthPackCount;
+    int m_StaminaPackCount;
 
 public:
 	enum BoostStatus
@@ -43,6 +47,12 @@ public:
 
     bool getIsDead();
     void setIsDead(bool m_isDead);
+
+    int getHealthPackCount();
+    void setHealthPackCount(int m_HealthPackCount);
+
+    int getStaminaPackCount();
+    void setStaminaPackCount(int m_StaminaPackCount);
 
 	float stamina;
 	BoostStatus boostStatus;

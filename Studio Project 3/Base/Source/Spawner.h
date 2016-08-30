@@ -28,7 +28,8 @@ static int g_FCrabCount = 0;
 static int g_ChimeraCount = 0;
 static int g_CuttlefishCount = 0;
 static int g_IsopodDroneCount = 0;
-static int g_CoralCount = 0;
+static int g_CoralHealthCount = 0;
+static int g_CoralStaminaCount = 0;
 
 static int g_MaxMinnowLeader = 3;
 static int g_MaxMinnow = 40;
@@ -37,7 +38,8 @@ static int g_MaxFCrab = 30;
 static int g_MaxChimera = 0;
 static int g_MaxCuttlefish = 30;
 static int g_MaxIsopodDrone = 8;
-static int g_MaxCoral = 50;
+static int g_MaxCoralHealth = 50;
+static int g_MaxCoralStamina = 50;
 
 class Spawner
 {

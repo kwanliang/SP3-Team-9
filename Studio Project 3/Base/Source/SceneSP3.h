@@ -304,8 +304,13 @@ protected:
 		GEO_TRESPAWN,
 		GEO_TTOMENU,
 
-		SPRITE_NAME,
-		GEO_LIGHT_DEPTH_QUAD,
+        GEO_CORAL,
+        GEO_CORAL2,
+
+        GEO_PLAEYRHEALTH,
+
+        SPRITE_NAME,
+        GEO_LIGHT_DEPTH_QUAD,
 		NUM_GEOMETRY,
 	};
 	enum RENDER_PASS

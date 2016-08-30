@@ -13,6 +13,8 @@ private:
     Vector3 m_ScaleText;
     bool m_isActive;
     bool m_isEnemy;
+    bool m_isHeal;
+    bool m_isStamina;
 
 public:
     DamageText();
@@ -32,6 +34,12 @@ public:
 
     bool getIsEnemy();
     void setIsEnemy(bool m_isEnemy);
+
+    bool getIsHeal();
+    void setIsHeal(bool m_isHeal);
+
+    bool getIsStamina();
+    void setIsStamina(bool m_isStamina);
 };
 
 #endif

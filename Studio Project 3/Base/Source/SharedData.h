@@ -8,6 +8,8 @@
 class SharedData
 {
 public:
+    ~SharedData(){};
+
     static SharedData* GetInstance()
     {
         static SharedData data;
@@ -28,9 +30,13 @@ public:
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
 	std::vector<GameObject*> SD_CapturedList;
-    bool SD_ToMenu = false;
     bool SD_QuitGame = false;
     bool SD_IsImmobile = false;
+    bool SD_BossDead1 = false;
+    bool SD_BossDead2 = false;
+    bool SD_BossDead3 = false;
+    bool SD_BossDead4 = false;
+    bool SD_SceneLoaded = false;
 
 private:
     SharedData(){};

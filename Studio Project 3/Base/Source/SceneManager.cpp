@@ -45,6 +45,8 @@ void SceneManager::LoadScene()
 		currentScene->Init();
 		break;
 	}
+
+    SharedData::GetInstance()->SD_SceneLoaded = true;
 }
 
 SceneSP3 *SceneManager::GetCurrentScene()

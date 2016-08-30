@@ -125,7 +125,7 @@ void SceneCalmPlateu::InitGiantSquid()
 
 void SceneCalmPlateu::RenderGiantSquid()
 {
-    if (giantSquid)
+    if (giantSquid->active)
     {
         modelStack.PushMatrix();
         modelStack.Translate(giantSquid->pos.x, giantSquid->pos.y, giantSquid->pos.z);
@@ -537,32 +537,41 @@ void SceneCalmPlateu::Render()
 void SceneCalmPlateu::Update(double dt)
 {
     SceneSP3::Update(dt);
-    UpdateGiantSquid(dt);
-
-    hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
-
-    if (collision(giantSquid->collision, playerpos))
+    if (giantSquid->active)
     {
-        fishVel *= -1.f;
-        walkCam.Move(fishVel * (float)dt);
-        playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
-        hitbox2::updatehitbox(player_box, playerpos);
-    }
+        UpdateGiantSquid(dt);
 
-    for (int i = 0; i < 6; i++)
-    {
-        hitbox::updatehitbox(giantSquid->tentacle[i]->collision, giantSquid->tentacle[i]->collision.m_position);
+        hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
 
-        if (giantSquid->tentacle[i]->getHealth() < 0)
-            giantSquid->tentacle[i]->m_active = false;
+        if (collision(giantSquid->collision, playerpos))
+        {
+            fishVel *= -1.f;
+            walkCam.Move(fishVel * (float)dt);
+            playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+            hitbox2::updatehitbox(player_box, playerpos);
+        }
 
-        if (!giantSquid->tentacle[i]->m_active)
-            giantSquid->tentacle[i]->collision.m_position = Vector3(0, 0, 0);
+        for (int i = 0; i < 6; i++)
+        {
+            hitbox::updatehitbox(giantSquid->tentacle[i]->collision, giantSquid->tentacle[i]->collision.m_position);
+
+            if (giantSquid->tentacle[i]->getHealth() < 0)
+                giantSquid->tentacle[i]->m_active = false;
+
+            if (!giantSquid->tentacle[i]->m_active)
+                giantSquid->tentacle[i]->collision.m_position = Vector3(0, 0, 0);
+        }
     }
 }
 
 void SceneCalmPlateu::UpdateGiantSquid(double dt)
 {
+    if (giantSquid->getHealth() <= 0)
+    {
+        giantSquid->active = false;
+        SharedData::GetInstance()->SD_BossDead1 = true;
+    }
+
     if (giantSquid->m_ChangeState)
     {
         int random = 0;
@@ -578,12 +587,7 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
                 break;
             }
         }
-
-        if (giantSquid->getHealth() < 0)
-        {
-            giantSquid->active = false;
-        }
-        else if ((giantSquid->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid && random > 6 && canSpin)
+        if ((giantSquid->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid && random > 6 && canSpin)
         {
             giantSquid->state = GiantSquid::SPINATTACK;
             isPlayerHit = false;
