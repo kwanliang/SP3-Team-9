@@ -333,19 +333,9 @@ void SceneCalmPlateu::RenderTerrain()
 
 }
 
-void SceneCalmPlateu::RenderSkyPlane()
-{
-    modelStack.PushMatrix();
-    modelStack.Translate(0, 2000, 0);
-    modelStack.Rotate(rotateSky, 0, 1, 0);
-    RenderMesh(meshList[GEO_SKYPLANE], true);
-    modelStack.PopMatrix();
-}
-
 void SceneCalmPlateu::RenderWorld()
 {
     RenderTerrain();
-    //RenderSkyPlane();
     modelStack.PushMatrix();
     modelStack.Translate(playerpos.x, playerpos.y + 5, playerpos.z);
     modelStack.Rotate(90 + fishRot.y, 0, 1, 0);
@@ -536,34 +526,31 @@ void SceneCalmPlateu::Render()
 void SceneCalmPlateu::Update(double dt)
 {
     SceneSP3::Update(dt);
-	if (giantSquid->isstunned == false)
-	{
-		if (giantSquid->active)
-		{
-			UpdateGiantSquid(dt);
+    if (!isGamePaused && giantSquid->active && !giantSquid->isstunned)
+    {
+        UpdateGiantSquid(dt);
 
-			hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
+        hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
 
-			if (collision(giantSquid->collision, playerpos))
-			{
-				fishVel *= -1.f;
-				walkCam.Move(fishVel * (float)dt);
-				playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
-				hitbox2::updatehitbox(player_box, playerpos);
-			}
+        if (collision(giantSquid->collision, playerpos))
+        {
+            fishVel *= -1.f;
+            walkCam.Move(fishVel * (float)dt);
+            playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+            hitbox2::updatehitbox(player_box, playerpos);
+        }
 
-			for (int i = 0; i < 6; i++)
-			{
-				hitbox::updatehitbox(giantSquid->tentacle[i]->collision, giantSquid->tentacle[i]->collision.m_position);
+        for (int i = 0; i < 6; i++)
+        {
+            hitbox::updatehitbox(giantSquid->tentacle[i]->collision, giantSquid->tentacle[i]->collision.m_position);
 
-				if (giantSquid->tentacle[i]->getHealth() < 0)
-					giantSquid->tentacle[i]->m_active = false;
+            if (giantSquid->tentacle[i]->getHealth() < 0)
+                giantSquid->tentacle[i]->m_active = false;
 
-				if (!giantSquid->tentacle[i]->m_active)
-					giantSquid->tentacle[i]->collision.m_position = Vector3(0, 0, 0);
-			}
-		}
-	}
+            if (!giantSquid->tentacle[i]->m_active)
+                giantSquid->tentacle[i]->collision.m_position = Vector3(0, 0, 0);
+        }
+    }
 }
 
 void SceneCalmPlateu::UpdateGiantSquid(double dt)
@@ -589,12 +576,13 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
                 break;
             }
         }
-        if ((giantSquid->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid && random > 6 && canSpin)
+
+        if ((giantSquid->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid && random > 5 && canSpin)
         {
             giantSquid->state = GiantSquid::SPINATTACK;
             isPlayerHit = false;
         }
-        else if ((giantSquid->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid && random < 7)
+        else if ((giantSquid->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid && random < 6)
         {
             giantSquid->state = GiantSquid::INKATTACK;
         }
@@ -610,6 +598,7 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
     {
     case GiantSquid::IDLE:
         giantSquid->AnimateIdle();
+        giantSquid->setHealth(1000);
         break;
     case GiantSquid::SPINATTACK:
         giantSquid->AnimateSpinAttack();
@@ -617,10 +606,18 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
         giantSquid->ChasePlayer(playerpos);
         if ((giantSquid->pos - playerpos).LengthSquared() < 10000 && giantSquid->m_isSpinning && !isPlayerHit)
         {
-            fishVel *= -10;
+            fishVel = (playerpos - giantSquid->pos);
             walkCam.Move(fishVel * (float)dt);
-            playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
-            skipper->setHealth(skipper->getHealth() - 50);
+            skipper->setHealth(skipper->getHealth() - 100);
+
+            DamageText* text = FetchTO();
+            text->setActive(true);
+            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 10 + Vector3(0, 3.f, 0));
+            text->setLastDamage(100);
+            text->setScaleText(Vector3(0, 0, 0));
+            text->setIsEnemy(false);
+            text->setIsHeal(false);
+            text->setIsStamina(false);
             isPlayerHit = true;
         }
         break;

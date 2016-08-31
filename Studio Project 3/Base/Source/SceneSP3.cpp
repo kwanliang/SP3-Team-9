@@ -249,10 +249,6 @@ void SceneSP3::Init()
 	meshList[GEO_MINIMAP_PUFFER] = MeshBuilder::GenerateSphere("minimap_puffer", Color(0.9f, 0.9f, 0.2f), 16, 16);
 	meshList[GEO_MINIMAP_BOSS] = MeshBuilder::GenerateSphere("minimap_boss", Color(1, 0.25f, 0.25f), 16, 16);
 
-    meshList[GEO_SKYPLANE] = MeshBuilder::GenerateSkyPlane("skyplane", Color(1, 1, 1), 128, 200.0f, 2000.0f, 1.0f, 1.0f);
-    meshList[GEO_SKYPLANE]->textureArray[0] = LoadTGA("Image//sky.tga");
-    meshList[GEO_SKYPLANE]->textureArray[1] = LoadTGA("Image//night.tga");
-
  //   meshList[GEO_TERRAIN0] = MeshBuilder::GenerateTerrain("terrain", "Image//Area0.raw", m_heightMap[0]);
 
 	//meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("terrain", "Image//Area02.raw", m_heightMap[2]);
@@ -348,6 +344,18 @@ void SceneSP3::Init()
 
 	fontData = LoadFontData("Image//FontData.csv");
 
+    // Instruction Screen
+    meshList[GEO_INSTRUCTION] = MeshBuilder::GenerateQuad("instructions", Color(1, 0, 0), 2.f);
+    meshList[GEO_INSTRUCTION]->textureID = LoadTGA("Image//instructions.tga");
+    meshList[GEO_INSTRUCTION2] = MeshBuilder::GenerateQuad("instructions 2", Color(1, 0, 0), 2.f);
+    meshList[GEO_INSTRUCTION2]->textureID = LoadTGA("Image//instructions2.tga");
+
+    // Pause Screen
+    meshList[GEO_TPAUSE] = MeshBuilder::GenerateQuad("pause", Color(1, 0, 0), 2.f);
+    meshList[GEO_TPAUSE]->textureID = LoadTGA("Image//pause.tga");
+    meshList[GEO_TRESUME] = MeshBuilder::GenerateQuad("resume", Color(1, 0, 0), 2.f);
+    meshList[GEO_TRESUME]->textureID = LoadTGA("Image//resume.tga");
+
     // Shadow
     //meshList[GEO_LIGHT_DEPTH_QUAD] = MeshBuilder::GenerateQuad("Shadow Test", 1, 1);
     //meshList[GEO_LIGHT_DEPTH_QUAD]->textureArray[0] = m_lightDepthFBO.GetTexture();
@@ -382,7 +390,7 @@ void SceneSP3::Init()
     //perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
     // projectionStack.LoadMatrix(perspective);
 
-    rotateSky = 0.f;
+    sliderTranslate = -100.f;
     fogThickness = 0.f;
     blendFactor = 0.f;
 
@@ -453,8 +461,9 @@ void SceneSP3::Init()
  //       g_MinnowCount++;
  //   }
 
-    DeathSelect = DEATHSELECT::RESPAWN;
+    t_stuckPrevention = 0.0;
 
+    DeathSelect = DEATHSELECT::RESPAWN;
 
 	for (unsigned i = 0; i < 4; ++i) for (unsigned j = 0; j < 255; ++j) keyStates[i][j] = false;
 
@@ -728,7 +737,7 @@ void SceneSP3::RenderTO(DamageText *to)
     {
         modelStack.PushMatrix();
         modelStack.Translate(to->getLastHitPos().x, to->getLastHitPos().y, to->getLastHitPos().z);
-        modelStack.Rotate(LookAtPlayer(playerpos, to->getLastHitPos()), 0, 1, 0);
+        modelStack.Rotate(LookAtPlayer(walkCam.GetPos(), to->getLastHitPos()), 0, 1, 0);
         modelStack.Scale(to->getScaleText().x, to->getScaleText().y, to->getScaleText().z);
         std::ostringstream ss;
         ss << "-" << to->getLastDamage();
@@ -739,7 +748,7 @@ void SceneSP3::RenderTO(DamageText *to)
     {
         modelStack.PushMatrix();
         modelStack.Translate(to->getLastHitPos().x, to->getLastHitPos().y, to->getLastHitPos().z);
-        modelStack.Rotate(LookAtPlayer(playerpos, to->getLastHitPos()), 0, 1, 0);
+        modelStack.Rotate(LookAtPlayer(walkCam.GetPos(), to->getLastHitPos()), 0, 1, 0);
         modelStack.Scale(to->getScaleText().x, to->getScaleText().y, to->getScaleText().z);
         std::ostringstream ss;
         ss << "+" << to->getLastDamage();
@@ -750,7 +759,7 @@ void SceneSP3::RenderTO(DamageText *to)
     {
         modelStack.PushMatrix();
         modelStack.Translate(to->getLastHitPos().x, to->getLastHitPos().y, to->getLastHitPos().z);
-        modelStack.Rotate(LookAtPlayer(playerpos, to->getLastHitPos()), 0, 1, 0);
+        modelStack.Rotate(LookAtPlayer(walkCam.GetPos(), to->getLastHitPos()), 0, 1, 0);
         modelStack.Scale(to->getScaleText().x, to->getScaleText().y, to->getScaleText().z);
         std::ostringstream ss;
         ss << "+" << to->getLastDamage();
@@ -767,6 +776,7 @@ void SceneSP3::RenderTO(DamageText *to)
 
 void SceneSP3::UpdateSeaCreatures(double dt)
 {
+    t_stuckPrevention += dt;
     for (auto it : seaList)
     {
         GameObject* go = (GameObject*)it;
@@ -797,18 +807,34 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 						g_IsopodDroneCount--;
 				}
 
+                if (sc->pos.x < -1000 && t_stuckPrevention > 1.0 || sc->pos.x > 1000 && t_stuckPrevention > 1.0)
+                {
+                    sc->vel.x *= -1;
+                    t_stuckPrevention = 0.0;
+                }
+                if (sc->pos.y < 0 && t_stuckPrevention > 1.0 || sc->pos.y > 700 && t_stuckPrevention > 1.0)
+                {
+                    sc->vel.y *= -1;
+                    t_stuckPrevention = 0.0;
+                }
+                if (sc->pos.z < -1000 && t_stuckPrevention > 1.0 || sc->pos.z > 1000 && t_stuckPrevention > 1.0)
+                {
+                    sc->vel.z *= -1;
+                    t_stuckPrevention = 0.0;
+                }
+
                 switch (sc->seaType)
                 {
                 case SeaCreature::MINNOW:
                 {
                     Minnow* minnow = (Minnow*)it;
 
-						if (minnow->getisLeader())
-							minnow->pos += minnow->vel * dt * 2;
-						else if (minnow->state == Minnow::FLOCK)
-							minnow->pos += minnow->vel * dt;
-						else
-							minnow->pos += minnow->vel * dt * 10;
+                    if (minnow->getisLeader())
+                        minnow->pos += minnow->vel * dt * 3;
+                    else if (minnow->state == Minnow::FLOCK)
+                        minnow->pos += minnow->vel * dt;
+                    else
+                        minnow->pos += minnow->vel * dt * 10;
 
 						hitbox2::updatehitbox(minnow->collision, minnow->pos);
 
@@ -820,15 +846,15 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 						if (!minnow->vel.IsZero())
 							ahead = minnow->pos + minnow->vel.Normalized() * 5;
 
-						if (terraincollision(ahead, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
-						{
-							minnow->state = Minnow::COLLIDING;
-							minnow->vel *= -5;
-						}
-						else if (minnow->state != Minnow::FLEE)
-						{
-							minnow->state = Minnow::FLOCK;
-						}
+                    if (terraincollision(ahead, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
+                    {
+                        minnow->state = Minnow::COLLIDING;
+                        minnow->vel *= -1;
+                    }
+                    else if (minnow->state != Minnow::FLEE)
+                    {
+                        minnow->state = Minnow::FLOCK;
+                    }
 
                     for (auto it2 : seaList)
                     {
@@ -899,13 +925,7 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 						d->m_state = Drone::RETREAT;
 						if (skipper->getTimerReceieveDamage() > 1.0)
 						{
-							
-							
-
-
 							skipper->setTimerReceieveDamage(0.0);
-
-							
 
 							skipper->setHealth(skipper->getHealth() - 20);
 
@@ -938,21 +958,20 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 						hitbox2::updatehitbox(puffer->collision, puffer->pos);
 						Vector3 displacement = playerpos - puffer->pos;
 
-						switch (puffer->pstate)
-						{
-						case Pufferfish::IDLE:
-						{
-							if (collision(puffer->collision, player_box))
-							{
-								puffer->setMoveCoolDown(0.0);
-								puffer->vel *= -2;
+                    switch (puffer->pstate)
+                    {
+                    case Pufferfish::IDLE:
+                    {
+                        if (collision(puffer->collision, player_box))
+                        {
+                            puffer->setMoveCoolDown(0.0);
+                            puffer->vel *= -1.f;
 
 								if (fishVel.Length() < 3)
 									fishVel = Vector3(5, 5, 5);
 
-								fishVel *= -2.f;
-								walkCam.Move(fishVel * (float)dt);
-								playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+                            fishVel *= -1.f;
+                            walkCam.Move(fishVel * (float)dt);
 
 								//skipper->setHealth(skipper->getHealth() - 10);
 								UpdateCapturedPuff(10);
@@ -987,22 +1006,21 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 							{
 								skipper->setTimerReceieveDamage(0.0);
 
-								puffer->setMoveCoolDown(0.0);
-								puffer->vel *= -2;
+                            puffer->setMoveCoolDown(0.0);
+                            puffer->vel *= -1.f;
 
 								if (fishVel.Length() < 3)
 									fishVel = Vector3(5, 5, 5);
 
-								fishVel *= -2.f;
-								walkCam.Move(fishVel * (float)dt);
-								playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+                            fishVel *= -1.f;
+                            walkCam.Move(fishVel * (float)dt);
 
 								//skipper->setHealth(skipper->getHealth() - 20);
 								UpdateCapturedPuff(20);
 
                             DamageText* text = FetchTO();
                             text->setActive(true);
-                            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
+                            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 10 + Vector3(0, 10, 0));
                             text->setLastDamage(20);
                             text->setScaleText(Vector3(0, 0, 0));
                             text->setIsEnemy(false);
@@ -1035,12 +1053,12 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 						}
 						}
 
-						// terrain collision
-						if (terraincollision(puffer->collision, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
-						{
-							puffer->vel *= -5.f;
-							puffer->pos.y += 4;
-						}
+                    // terrain collision
+                    if (terraincollision(puffer->collision, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
+                    {
+                        puffer->vel *= -1.f;
+                        puffer->pos.y += 4;
+                    }
 
 						// height limit
 						if (puffer->pos.y > 1000)
@@ -1094,8 +1112,7 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 							if (collision(crab->aabb, player_box) && skipper->getTimerReceieveDamage() > 1.0)
 							{
 								skipper->setTimerReceieveDamage(0.0);
-
-								fishVel = -crab->vel;
+                            	fishVel *= -1.f;
 
 								//skipper->setHealth(skipper->getHealth() - 20);
 								UpdateCapturedPuff(20);
@@ -1139,7 +1156,7 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 						{
 							skipper->setTimerReceieveDamage(0.0);
 
-							fishVel = -cuttle->vel;
+                        	fishVel *= -1.f;
 
 							//skipper->setHealth(skipper->getHealth() - 20);
 							UpdateCapturedPuff(20);
@@ -1192,7 +1209,7 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
 							skipper->setTimerReceieveDamage(0.0);
 
-							fishVel = -chimera->vel;
+                        	fishVel *= -1.f;
 
                         skipper->setHealth(skipper->getHealth() - 20);
 
@@ -1611,28 +1628,29 @@ void SceneSP3::Update(double dt)
 
 	UpdateKeys();
 	UpdatePauseFunction();
+    UpdatePauseScreen(dt);
 
-    /*if (GetKeyState('1', KEY_STATUS_DOWN))
+    if (GetKeyState('1', KEY_STATUS_DOWN))
         glEnable(GL_CULL_FACE);
     if (GetKeyState('2', KEY_STATUS_DOWN))
         glDisable(GL_CULL_FACE);
     if (GetKeyState('3', KEY_STATUS_DOWN))
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    if (GetKeyState('4', KEY_STATUS_DOWN))
+    if (GetKeyState('4', KEY_STATUS_CUR))
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    if (GetKeyState('I', KEY_STATUS_DOWN))
-        lights[0].position.z -= (float)(100.f * dt);
-    if (GetKeyState('K', KEY_STATUS_DOWN))
-        lights[0].position.z += (float)(100.f * dt);
-    if (GetKeyState('J', KEY_STATUS_DOWN))
-        lights[0].position.x -= (float)(100.f * dt);
-    if (GetKeyState('L', KEY_STATUS_DOWN))
-        lights[0].position.x += (float)(100.f * dt);
-    if (GetKeyState('O', KEY_STATUS_DOWN))
-        lights[0].position.y -= (float)(100.f * dt);
-    if (GetKeyState('P', KEY_STATUS_DOWN))
-        lights[0].position.y += (float)(100.f * dt);*/
+    //if (GetKeyState('I', KEY_STATUS_DOWN))
+    //    lights[0].position.z -= (float)(100.f * dt);
+    //if (GetKeyState('K', KEY_STATUS_DOWN))
+    //    lights[0].position.z += (float)(100.f * dt);
+    //if (GetKeyState('J', KEY_STATUS_DOWN))
+    //    lights[0].position.x -= (float)(100.f * dt);
+    //if (GetKeyState('L', KEY_STATUS_DOWN))
+    //    lights[0].position.x += (float)(100.f * dt);
+    //if (GetKeyState('O', KEY_STATUS_DOWN))
+    //    lights[0].position.y -= (float)(100.f * dt);
+    //if (GetKeyState('P', KEY_STATUS_DOWN))
+    //    lights[0].position.y += (float)(100.f * dt);
     if (GetKeyState('C', KEY_STATUS_DOWN))
     {
         std::cout << playerpos << std::endl;
@@ -1640,46 +1658,34 @@ void SceneSP3::Update(double dt)
 
 	if (isGamePaused) return;
 
-    static bool bSPACEstate = false;
-    if (!bSPACEstate && GetKeyState(32))
+
+    if (Application::IsMousePressed(0) && m_fireRate > 0.25f)
     {
-        bSPACEstate = true;
-    }
-    else if (bSPACEstate && !GetKeyState(32))
-    {
-		bSPACEstate = false;
-    }
-	if (bSPACEstate && m_fireRate <= 0)
-	{
-		Projectile *po = FetchPO();
+        Projectile *po = FetchPO();
 
-		static const float focusLength = 300.f;
+        static const float focusLength = 300.f;
 
-		static const float projectileSpeed = 400.f;
+        static const float projectileSpeed = 400.f;
 
-		Vector3 focusPoint = walkCam.GetPos() + Vector3(0, walkCam.yOffset, 0) + walkCam.GetDir() * (focusLength - walkCam.distance);
+        Vector3 focusPoint = walkCam.GetPos() + Vector3(0, walkCam.yOffset, 0) + walkCam.GetDir() * (focusLength - walkCam.distance);
 
-		po->objectType = GameObject::PROJECTILE;
+        po->objectType = GameObject::PROJECTILE;
         po->projectileType = Projectile::PBULLET;
-		po->active = true;
-		po->scale.Set(10, 10, 10);
-		po->pos = playerpos;
+        po->active = true;
+        po->scale.Set(10, 10, 10);
+        po->pos = playerpos;
 
-		//po->vel = (focusPoint - playerpos).Normalized();
-		//po->vel += fishVel;
-		po->setLifetime(3.0);
-		Vector3 bulletDirection = focusPoint - playerpos;
-		bulletDirection.Normalize();
-		po->vel = bulletDirection * projectileSpeed + fishVel;
-		m_fireRate = 0.15;
-	}
-
-
-
-
+        //po->vel = (focusPoint - playerpos).Normalized();
+        //po->vel += fishVel;
+        po->setLifetime(3.0);
+        Vector3 bulletDirection = focusPoint - playerpos;
+        bulletDirection.Normalize();
+        po->vel = bulletDirection * projectileSpeed + fishVel;
+        m_fireRate = 0.f;
+    }
+    
     //camera.Update(dt);
-	if (m_fireRate>0)
-	m_fireRate -= dt;
+	m_fireRate += dt;
     Vector3 temp = walkCam.GetPos();
     Vector3 right = walkCam.GetDir().Cross(walkCam.GetUp());
     right.Normalize();
@@ -1732,7 +1738,7 @@ void SceneSP3::Update(double dt)
         //Is held; Is pressed
         static bool boostKeyStatus[] = { false, false, false };
 
-        boostKeyStatus[0] = GetKeyState('1');
+        boostKeyStatus[0] = GetKeyState(VK_SHIFT);
         boostKeyStatus[2] = false;
 
         if (boostKeyStatus[0] && !boostKeyStatus[1])
@@ -1858,8 +1864,6 @@ void SceneSP3::Update(double dt)
             skipper->setHealth(0);
     }
 
-    rotateSky += .05f;
-
  //   // Fog & Blending
 	//if (blendFactor < 1.0f)
 	//	blendFactor = 1.f;
@@ -1901,7 +1905,7 @@ void SceneSP3::Update(double dt)
 	UpdateStunned(dt);
 
 
-	if (GetKeyState('M', KEY_STATUS_CUR))
+	if (Application::IsMousePressed(1))
 	{
         for (std::vector<GameObject *>::iterator it = seaList.begin(); it != seaList.end(); ++it)
 		{
@@ -1959,18 +1963,9 @@ void SceneSP3::Update(double dt)
 				}
 			}
 		}
-		}	
+	}		
 
-        
-	
-	
-
-    static bool b_1State = false;
-    if (Application::IsKeyPressed('1') && !b_1State)
-    {
-        b_1State = true;
-    }
-    else if (!Application::IsKeyPressed('1') && b_1State)
+    if (GetKeyState('1', KEY_STATUS_DOWN))
     {
         if (!skipper->getIsDead() && skipper->getHealthPackCount() > 0 && skipper->getHealth() < g_MaxSkipperHealth)
         {
@@ -1986,15 +1981,9 @@ void SceneSP3::Update(double dt)
             text->setIsHeal(true);
             text->setIsStamina(false);
         }
-        b_1State = false;
     }
 
-    static bool b_2State = false;
-    if (Application::IsKeyPressed('2') && !b_2State)
-    {
-        b_2State = true;
-    }
-    else if (!Application::IsKeyPressed('2') && b_2State)
+    if (GetKeyState('2', KEY_STATUS_DOWN))
     {
         if (!skipper->getIsDead() && skipper->getStaminaPackCount() > 0 && skipper->stamina < 100)
         {
@@ -2012,17 +2001,20 @@ void SceneSP3::Update(double dt)
             text->setIsHeal(false);
             text->setIsStamina(true);
         }
-        b_2State = false;
+    }
+
+    if (GetKeyState('Q', KEY_STATUS_DOWN))
+    {
+        if (!SharedData::GetInstance()->SD_ObjectiveTabOn)
+            SharedData::GetInstance()->SD_ObjectiveTabOn = true;
+        else if (SharedData::GetInstance()->SD_ObjectiveTabOn)
+            SharedData::GetInstance()->SD_ObjectiveTabOn = false;
     }
 
 	if (GetKeyState('N', KEY_STATUS_DOWN))
 	{
 		skipper->setTarget(skipper);
 	}
-
-
-
-//std::cout << m_spCount << std::endl;
 }
 
 void SceneSP3::UpdateKeys()
@@ -2037,15 +2029,11 @@ void SceneSP3::UpdateKeys()
 		continue; //Comment out this line to test keys.
 		if (keyStates[KEY_STATUS_DOWN][i]) std::cout << i << std::endl;
 	}
-
-
-
-	//std::cout << m_spCount << std::endl;
 }
 
 void SceneSP3::UpdatePauseFunction()
 {
-	if (GetKeyState('P', KEY_STATUS_DOWN))
+	if (GetKeyState(VK_ESCAPE, KEY_STATUS_DOWN) && !skipper->getIsDead())
 	{
 		isGamePaused = !isGamePaused;
 		pauseChoice = 0;
@@ -2054,16 +2042,31 @@ void SceneSP3::UpdatePauseFunction()
 
 void SceneSP3::UpdatePauseScreen(double dt)
 {
-	if (GetKeyState('S', KEY_STATUS_DOWN))
-		++pauseChoice;
-	if (GetKeyState(VK_DOWN, KEY_STATUS_DOWN))
-		++pauseChoice;
-	if (GetKeyState('W', KEY_STATUS_DOWN))
-		--pauseChoice;
-	if (GetKeyState(VK_UP, KEY_STATUS_DOWN))
-		--pauseChoice;
+    if (isGamePaused)
+    {
+	    if (GetKeyState('S', KEY_STATUS_DOWN))
+		    ++pauseChoice;
+	    if (GetKeyState(VK_DOWN, KEY_STATUS_DOWN))
+		    ++pauseChoice;
+	    if (GetKeyState('W', KEY_STATUS_DOWN))
+		    --pauseChoice;
+	    if (GetKeyState(VK_UP, KEY_STATUS_DOWN))
+		    --pauseChoice;
 
-	pauseChoice = min(max(pauseChoice, 0), 2);
+        if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 0)
+            isGamePaused = !isGamePaused;
+        else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 1)
+        {
+            Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
+            Application::sceneManager->SetMenuScene(new SceneMenu());
+            Application::sceneManager->GetMenuScreen()->Init();
+            Application::sceneManager->SetCurrentScene(Application::sceneManager->GetMenuScreen());
+        }
+        else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 2)
+            SharedData::GetInstance()->SD_QuitGame = true;
+
+        pauseChoice = min(max(pauseChoice, 0), 2);
+    }
 }
 
 void SceneSP3::UpdateSpawner(double dt)
@@ -2111,7 +2114,7 @@ void SceneSP3::UpdateSpawner(double dt)
 
     if (MinnowLeaderSpawner.getIsSpawn())
     {
-        Vector3 tv1(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(-1000.f, 1000.f));
+        Vector3 tv1(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(200.f, 600.f), Math::RandFloatMinMax(-1000.f, 1000.f));
         if (!terraincollision(tv1, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
         {
             Minnow* minnowLeader = FetchMinnow();
@@ -2149,7 +2152,7 @@ void SceneSP3::UpdateSpawner(double dt)
 
     if (MinnowSpawner.getIsSpawn())
     {
-        Vector3 tv2(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(-1000.f, 1000.f));
+        Vector3 tv2(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(200.f, 600.f), Math::RandFloatMinMax(-1000.f, 1000.f));
         if (!terraincollision(tv2, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
         {
             Minnow* minnow = FetchMinnow();
@@ -2175,7 +2178,7 @@ void SceneSP3::UpdateSpawner(double dt)
 
         if (PufferfishSpawner.getIsSpawn())
         {
-            Vector3 tv(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(-1000.f, 1000.f));
+            Vector3 tv(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(200.f, 600.f), Math::RandFloatMinMax(-1000.f, 1000.f));
             if (!terraincollision(tv, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
             {
                 Pufferfish* pf = FetchPuffer();
@@ -2200,7 +2203,7 @@ void SceneSP3::UpdateSpawner(double dt)
 
         if (FCrabSpawner.getIsSpawn())
         {
-            Vector3 tv(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(-1000.f, 1000.f));
+            Vector3 tv(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(200.f, 600.f), Math::RandFloatMinMax(-1000.f, 1000.f));
             if (!terraincollision(tv, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
             {
                 Fcrab *c = FetchFCrab();
@@ -2224,7 +2227,7 @@ void SceneSP3::UpdateSpawner(double dt)
 
         if (CuttlefishSpawner.getIsSpawn())
         {
-            Vector3 tv(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(-1000.f, 1000.f));
+            Vector3 tv(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(200.f, 600.f), Math::RandFloatMinMax(-1000.f, 1000.f));
             if (!terraincollision(tv, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
             {
                 Cuttlefish* cf = FetchCuttle();
@@ -2250,7 +2253,7 @@ void SceneSP3::UpdateSpawner(double dt)
 
         if (ChimeraSpawner.getIsSpawn())
         {
-            Vector3 tv(Math::RandFloatMinMax(0.f, 1000.f), Math::RandFloatMinMax(0, 1000.f), Math::RandFloatMinMax(0.f, 1000.f));
+            Vector3 tv(Math::RandFloatMinMax(-1000.f, 1000.f), Math::RandFloatMinMax(200.f, 600.f), Math::RandFloatMinMax(-1000.f, 1000.f));
             if (!terraincollision(tv, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
             {
                 Chimera*c = FetchChimera();
@@ -3336,18 +3339,37 @@ void SceneSP3::RenderCoral(Coral *co)
 
 void SceneSP3::RenderPO(Projectile *po)
 {
-	modelStack.PushMatrix();
-    modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
-    modelStack.Scale(po->scale.x, po->scale.y, po->scale.z);
-	
-	float angle[2];
-	angle[0] = Math::RadianToDegree(atan2(-po->vel.z, po->vel.x));
-	angle[1] = Math::RadianToDegree(asin(po->vel.y / po->vel.Length()));
-	modelStack.Rotate(angle[0], 0, 1, 0);
-	modelStack.Rotate(angle[1], 0, 0, 1);
+    if (po->projectileType == Projectile::PBULLET)
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
+        modelStack.Scale(po->scale.x, po->scale.y, po->scale.z);
 
-    RenderMesh(meshList[GEO_LASER], false);
-    modelStack.PopMatrix();
+        float angle[2];
+        angle[0] = Math::RadianToDegree(atan2(-po->vel.z, po->vel.x));
+        angle[1] = Math::RadianToDegree(asin(po->vel.y / po->vel.Length()));
+        modelStack.Rotate(angle[0], 0, 1, 0);
+        modelStack.Rotate(angle[1], 0, 0, 1);
+
+        RenderMesh(meshList[GEO_LASER], false);
+        modelStack.PopMatrix();
+    }
+    else if (po->projectileType == Projectile::INK)
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
+        modelStack.Scale(po->scale.x, po->scale.y, po->scale.z);
+        RenderMesh(meshList[GEO_BALL], false);
+        modelStack.PopMatrix();
+    }
+    else if (po->projectileType == Projectile::SBULLET)
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
+        modelStack.Scale(po->scale.x, po->scale.y, po->scale.z);
+        RenderMesh(meshList[GEO_BALL2], false);
+        modelStack.PopMatrix();
+    }
 }
 
 void SceneSP3::RenderLoop()
@@ -3448,8 +3470,6 @@ void SceneSP3::Render()
 
 	// MAIN RENDER PASS
 	RenderPassMain();
-
-	RenderHUD2();
 }
 
 void SceneSP3::RenderDeathScreen()
@@ -3457,33 +3477,21 @@ void SceneSP3::RenderDeathScreen()
     if (skipper->getIsDead())
     {
         static bool b_DS_UPState = false;
-        if (GetKeyState('W') && !b_DS_UPState/* ||
-            Application::IsKeyPressed(VK_UP) && !b_DS_UPState*/)
+        if (GetKeyState('W', KEY_STATUS_DOWN) ||
+            GetKeyState(VK_UP, KEY_STATUS_DOWN))
         {
-            b_DS_UPState = true;
-        }
-        else if (!GetKeyState('W') && b_DS_UPState/* ||
-            !Application::IsKeyPressed(VK_UP) && b_DS_UPState*/)
-        {
-
             if (DeathSelect != DEATHSELECT::RESPAWN)
             {
                 int currentDeathSelect = static_cast<int>(DeathSelect);
                 currentDeathSelect--;
                 DeathSelect = static_cast<DEATHSELECT>(currentDeathSelect);
             }
-            b_DS_UPState = false;
         }
 
         static bool b_DS_DOWNState = false;
 
-        if (GetKeyState('S') && !b_DS_DOWNState/* ||
-            Application::IsKeyPressed(VK_DOWN) && !b_DS_DOWNState*/)
-        {
-            b_DS_DOWNState = true;
-        }
-        else if (!GetKeyState('S') && b_DS_DOWNState/* ||
-            !Application::IsKeyPressed(VK_DOWN) && b_DS_DOWNState*/)
+        if (GetKeyState('S', KEY_STATUS_DOWN) ||
+            GetKeyState(VK_DOWN, KEY_STATUS_DOWN))
         {
             if (DeathSelect != DEATHSELECT::QUIT)
             {
@@ -3491,7 +3499,6 @@ void SceneSP3::RenderDeathScreen()
                 currentDeathSelect++;
                 DeathSelect = static_cast<DEATHSELECT>(currentDeathSelect);
             }
-            b_DS_DOWNState = false;
         }
 
         glBlendFunc(GL_ONE, GL_ONE);
@@ -3500,7 +3507,6 @@ void SceneSP3::RenderDeathScreen()
         glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
         RenderMeshIn2D(meshList[GEO_TDIED], false, 30.f, 5.f, 0.f, 20.0f);
 
-        static bool b_DSENTERState = false;
         switch (DeathSelect)
         {
         case RESPAWN:
@@ -3509,15 +3515,10 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 30.f, 5.f, 0.f, 0.0f);
             RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
-            if (GetKeyState(13) && !b_DSENTERState)
-            {
-                b_DSENTERState = true;
-            }
-            else if (!GetKeyState(13) && b_DSENTERState)
+            if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
                 Application::sceneManager->SetCurrentScene(Application::sceneManager->GetLoadingScreen());
-                b_DSENTERState = false;
             }
             break;
         }
@@ -3527,17 +3528,12 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TMENU], false, 30.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
-            if (GetKeyState(13) && !b_DSENTERState)
-            {
-                b_DSENTERState = true;
-            }
-            else if (!GetKeyState(13) && b_DSENTERState)
+            if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
                 Application::sceneManager->SetMenuScene(new SceneMenu());
                 Application::sceneManager->GetMenuScreen()->Init();
                 Application::sceneManager->SetCurrentScene(Application::sceneManager->GetMenuScreen());
-                b_DSENTERState = false;
             }
             break;
         }
@@ -3547,14 +3543,9 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 5.f, 0.f, -20.0f);
             RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
-            if (GetKeyState(13) && !b_DSENTERState)
-            {
-                b_DSENTERState = true;
-            }
-            else if (!GetKeyState(13) && b_DSENTERState)
+            if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 SharedData::GetInstance()->SD_QuitGame = true;
-                b_DSENTERState = false;
             }
             break;
         }
@@ -3582,10 +3573,8 @@ void SceneSP3::RenderHUD()
             {
             case Boss::GIANTSQUID:
             {
-                if ((bo->pos - playerpos).LengthSquared() < 400 * 400)
-                {
-					
-					
+                if ((bo->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid)
+                {				
 					boss_name << "giant squid";
 					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
 
@@ -3594,16 +3583,12 @@ void SceneSP3::RenderHUD()
                     float healthtranslate = (50.f / 100.f) * (100.f - percentage);
                     RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 12.0f, 0.f, 50.0f);
                     RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 10.0f, 0.f - healthtranslate, 50.0f);
-
-
                 }
                 break;
 			case Boss::GIANTCRAB:
 			{
 				if ((bo->pos - playerpos).LengthSquared() < 600 * 600)
 				{
-
-
 					boss_name << "spider crab";
 					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
 
@@ -3612,8 +3597,6 @@ void SceneSP3::RenderHUD()
 					float healthtranslate = (50.f / 100.f) * (100.f - percentage);
 					RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 12.0f, 0.f, 50.0f);
 					RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 10.0f, 0.f - healthtranslate, 50.0f);
-
-
 				}
 			}
 			break;
@@ -3621,8 +3604,6 @@ void SceneSP3::RenderHUD()
 			{
 				if ((bo->pos - playerpos).LengthSquared() < 800 * 800)
 				{
-
-
 					boss_name << "frilled shark";
 					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
 
@@ -3631,18 +3612,13 @@ void SceneSP3::RenderHUD()
 					float healthtranslate = (50.f / 100.f) * (100.f - percentage);
 					RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 12.0f, 0.f, 50.0f);
 					RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 10.0f, 0.f - healthtranslate, 50.0f);
-
-
 				}
 			}
-				break;
-
+			break;
 			case Boss::ISOPOD:
 			{
 				if ((bo->pos - playerpos).LengthSquared() < 800 * 800)
 				{
-
-
 					boss_name << "great isopod";
 					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
 
@@ -3651,28 +3627,67 @@ void SceneSP3::RenderHUD()
 					float healthtranslate = (50.f / 100.f) * (100.f - percentage);
 					RenderMeshIn2D(meshList[GEO_HUD_HEALTHBAR], false, 50.0f, 12.0f, 0.f, 50.0f);
 					RenderMeshIn2D(meshList[GEO_HUD_BOSSHEALTH], false, healthscale, 10.0f, 0.f - healthtranslate, 50.0f);
-
-
 				}
 			}
 			break;
-
-
             }
             }
-
         }
     }
 
+    if (SharedData::GetInstance()->SD_ObjectiveTabOn)
+    {
+        if (sliderTranslate <= -65)
+            sliderTranslate += 1.f;
+    }
+    else
+    {
+        if (sliderTranslate >= -100)
+            sliderTranslate -= 1.f;
+    }
+
+    glBlendFunc(GL_ONE, GL_ONE);
+    RenderMeshIn2D(meshList[GEO_TLAYER], false, 20, 20, sliderTranslate);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    if (!SharedData::GetInstance()->SD_DoneTutorial)
+    {
+        if (SharedData::GetInstance()->SD_SceneLoaded && SharedData::GetInstance()->SD_ContinueInstruction1 && SharedData::GetInstance()->SD_ContinueInstruction2)
+        {
+            SharedData::GetInstance()->SD_DoneTutorial = true;
+        }
+        else
+        {
+            glBlendFunc(GL_ONE, GL_ONE);
+            RenderMeshIn2D(meshList[GEO_TLAYER], false, 45, 50);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+
+        if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && !SharedData::GetInstance()->SD_ContinueInstruction1)
+            SharedData::GetInstance()->SD_ContinueInstruction1 = true;
+        else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && SharedData::GetInstance()->SD_ContinueInstruction1 && !SharedData::GetInstance()->SD_ContinueInstruction2)
+            SharedData::GetInstance()->SD_ContinueInstruction2 = true;
+
+        if (!SharedData::GetInstance()->SD_ContinueInstruction1)
+            RenderMeshIn2D(meshList[GEO_INSTRUCTION], false, 45, 50);
+
+        if (SharedData::GetInstance()->SD_ContinueInstruction1 && !SharedData::GetInstance()->SD_ContinueInstruction2)
+            RenderMeshIn2D(meshList[GEO_INSTRUCTION2], false, 45, 50);
+
+    }
+
+    RenderMinimap();
+
+    std::ostringstream ss;
+    ss.precision(3);
+    ss << "FPS: " << fps;
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
+
+    if (isGamePaused && !skipper->getIsDead())
+        RenderPauseScreen();
+
     RenderDeathScreen();
 
-	std::ostringstream ss;
-	ss.precision(3);
-	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3, fontData);
-
-	if (isGamePaused)
-		RenderPauseScreen();
 	glUniform1i(m_parameters[U_FOG_ENABLE], 1);
 }
 
@@ -3789,15 +3804,40 @@ void SceneSP3::RenderMinimap()
 		mPos.x, mPos.y);
 }
 
-void SceneSP3::RenderHUD2()
-{
-}
-
 void SceneSP3::RenderPauseScreen()
 {
-	if (!isGamePaused) return;
-	
-	RenderMeshIn2D(meshList[GEO_PAUSEMENU], false, 200, 100);
+    glBlendFunc(GL_ONE, GL_ONE);
+    RenderMeshIn2D(meshList[GEO_TLAYER], false, 35.f, 30.f);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    RenderMeshIn2D(meshList[GEO_TPAUSE], false, 30.f, 5.f, 0.f, 20.0f);
+
+    switch (pauseChoice)
+    {
+    case 0:
+    {
+        RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, 1.0f);
+        RenderMeshIn2D(meshList[GEO_TRESUME], false, 25.f, 4.f, 0.f, 1.0f);
+        RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
+        RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
+        break;
+    }
+    case 1:
+    {
+        RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -11.0f);
+        RenderMeshIn2D(meshList[GEO_TMENU], false, 30.f, 5.f, 0.f, -10.0f);
+        RenderMeshIn2D(meshList[GEO_TRESUME], false, 20.f, 4.f, 0.f, 1.0f);
+        RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
+        break;
+    }
+    case 2:
+    {
+        RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -21.0f);
+        RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 5.f, 0.f, -20.0f);
+        RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
+        RenderMeshIn2D(meshList[GEO_TRESUME], false, 20.f, 4.f, 0.f, 1.0f);
+        break;
+    }
+    }
 }
 
 void SceneSP3::Exit()

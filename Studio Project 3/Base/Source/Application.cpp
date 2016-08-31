@@ -62,6 +62,11 @@ bool Application::IsKeyPressed(unsigned short key)
     return ((GetAsyncKeyState(key) & 0x8001) != 0);
 }
 
+bool Application::IsMousePressed(unsigned short key) //0 - Left, 1 - Right, 2 - Middle
+{
+    return glfwGetMouseButton(m_window, key) != 0;
+}
+
 bool Application::GetMouseUpdate()
 {
     glfwGetCursorPos(m_window, &mouse_current_x, &mouse_current_y);
@@ -168,7 +173,7 @@ void Application::Run()
 
 	//scene
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
-    while (!glfwWindowShouldClose(m_window) && !SharedData::GetInstance()->SD_QuitGame && !Application::IsKeyPressed(VK_ESCAPE))
+    while (!glfwWindowShouldClose(m_window) && !SharedData::GetInstance()->SD_QuitGame)
 	{
         GetMouseUpdate();
         sceneManager->GetCurrentScene()->Update(m_timer.getElapsedTime());

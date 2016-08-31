@@ -22,7 +22,6 @@ public:
 
     void RenderWorld();
     void RenderTerrain();
-    void RenderSkyPlane();
 
 private:
 

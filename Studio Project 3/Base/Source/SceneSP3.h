@@ -99,7 +99,8 @@ public:
 
     float LookAtPlayer(Vector3 playerpos, Vector3 otherpos);
 
-    float rotateSky;
+    float sliderTranslate;
+    double t_stuckPrevention;
 
     float fogThickness;
     float blendFactor;
@@ -128,7 +129,6 @@ private:
 	void UpdatePauseScreen(double dt);
 
 	void RenderPauseScreen();
-	void RenderHUD2();
 
     // Shadow
     //DepthFBO m_lightDepthFBO;
@@ -230,7 +230,6 @@ protected:
 		GEO_TEXT,
 		GEO_BALL,
 		GEO_BALL2,
-		GEO_SKYPLANE,
 		GEO_TERRAIN0,
 		GEO_TERRAIN1,
 		GEO_TERRAIN2,
@@ -318,6 +317,12 @@ protected:
 		GEO_TDIED,
 		GEO_TRESPAWN,
 		GEO_TTOMENU,
+
+        GEO_TPAUSE,
+        GEO_TRESUME,
+        
+        GEO_INSTRUCTION,
+        GEO_INSTRUCTION2,
 
         GEO_CORAL,
         GEO_CORAL2,

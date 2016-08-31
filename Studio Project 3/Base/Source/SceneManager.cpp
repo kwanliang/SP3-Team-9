@@ -15,11 +15,6 @@ void SceneManager::LoadScene()
 {
 	switch (SharedData::GetInstance()->SD_CurrentArea)
 	{
-    //case SharedData::A_MENU:
-    //    currentScene = new SceneMenu();
-    //    currentScene->Init();
-    //    break;
-
 	case SharedData::A_TUTORIAL:
 		currentScene = new SceneTutorial();
 		currentScene->Init();

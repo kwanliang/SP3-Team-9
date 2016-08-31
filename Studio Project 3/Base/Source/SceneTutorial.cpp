@@ -35,6 +35,24 @@ void SceneTutorial::Init()
 	
 }
 
+void SceneTutorial::RenderDescription()
+{
+    glBlendFunc(GL_ONE, GL_ONE);
+    RenderMeshIn2D(meshList[GEO_TLAYER], false, 20, 20);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+}
+
+void SceneTutorial::RenderControls()
+{
+    glBlendFunc(GL_ONE, GL_ONE);
+    RenderMeshIn2D(meshList[GEO_TLAYER], false, 20, 20);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+}
+
 void SceneTutorial::RenderTerrain()
 {
     modelStack.PushMatrix();
@@ -43,39 +61,9 @@ void SceneTutorial::RenderTerrain()
     modelStack.PopMatrix();
 }
 
-void SceneTutorial::RenderSkyPlane()
-{
-    modelStack.PushMatrix();
-    modelStack.Translate(0, 2000, 0);
-    modelStack.Rotate(rotateSky, 0, 1, 0);
-    RenderMesh(meshList[GEO_SKYPLANE], true);
-    modelStack.PopMatrix();
-}
-
-void SceneTutorial::RenderParticles()
-{
-    //for (auto it : particleList)
-    //{
-    //    ParticleObject* particle = (ParticleObject*)it;
-    //    if (particle->active)
-    //    {
-    //        if (particle->type == PARTICLEOBJECT_TYPE::P_NAME)
-    //        {
-    //            modelStack.PushMatrix();
-    //            modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
-    //            modelStack.Rotate(particle->rotation, 0, 1, 0);
-    //            modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
-    //            RenderMesh(meshList[PARTICLE_NAME], false);
-    //            modelStack.PopMatrix();
-    //        }
-    //    }
-    //}
-}
-
 void SceneTutorial::RenderWorld()
 {
     RenderTerrain();
-    RenderSkyPlane();
     modelStack.PushMatrix();
     modelStack.Translate(playerpos.x, playerpos.y + 5, playerpos.z);
     modelStack.Rotate(90 + fishRot.y, 0, 1, 0);

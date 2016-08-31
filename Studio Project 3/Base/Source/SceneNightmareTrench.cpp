@@ -86,15 +86,6 @@ void SceneNightmareTrench::RenderTerrain()
 
 }
 
-void SceneNightmareTrench::RenderSkyPlane()
-{
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 2000, 0);
-	modelStack.Rotate(rotateSky, 0, 1, 0);
-	RenderMesh(meshList[GEO_SKYPLANE], true);
-	modelStack.PopMatrix();
-}
-
 void SceneNightmareTrench::RenderBoss()
 {
 	float rotate = 0;
@@ -152,7 +143,6 @@ void SceneNightmareTrench::RenderBoss()
 void SceneNightmareTrench::RenderWorld()
 {
 	RenderTerrain();
-	RenderSkyPlane();
 	if (!SharedData::GetInstance()->SD_BossDead4)
 	RenderBoss();
 
@@ -345,8 +335,9 @@ void SceneNightmareTrench::Render()
 void SceneNightmareTrench::Update(double dt)
 {
 	SceneSP3::Update(dt);
+
 	SceneSP3::UpdateSpawner(dt);
-	if(!SharedData::GetInstance()->SD_BossDead4  && isopod->isstunned == false)
+	if(!SharedData::GetInstance()->SD_BossDead4 && !isopod->isstunned && !isGamePaused)
 	isopod->UpdateIsopod(dt,m_heightMap[4]);
 
 	if (collision(isopod->m_hitbox, player_box))

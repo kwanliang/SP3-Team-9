@@ -259,8 +259,8 @@ void GiantSquid::ChasePlayer(Vector3 playerPos)
 
                 for (int i = 0; i < 6; ++i)
                     this->tentacle[i]->collision.m_position += DirVec * m_moveSpeed;
-                if (m_moveSpeed < 1.5f)
-                    m_moveSpeed += .05f;
+                if (m_moveSpeed < 2.0f)
+                    m_moveSpeed += .1f;
             }
             else if (!m_isSpinning)
             {
@@ -277,37 +277,6 @@ void GiantSquid::ChasePlayer(Vector3 playerPos)
         }
     }
 }
-
-/******************************************************************************/
-/*!
-\brief
-Function for GiantSquid to shoot ink at player
-
-\param playerPos
-Vector3 of player's position
-*/
-/******************************************************************************/
-
-//void GiantSquid::ShootInk(Vector3 playerPos)
-//{
-//    bool InkShotState = false;
-//    if (!InkShotState)
-//    {
-//        InkShotState = true;
-//    }
-//    else if (InkShotState)
-//    {
-//        Projectile *po = FetchPO();
-//        po->objectType = GameObject::PROJECTILE;
-//        po->projectileType = Projectile::BULLET;
-//        po->active = true;
-//        po->scale.Set(1, 1, 1);
-//        po->pos.Set(playerpos.x, playerpos.y, playerpos.z);
-//        Vector3 view = (walkCam.GetDir()).Normalized();
-//        po->vel.Set(view.x, view.y, view.z);
-//        bSPACEstate = false;
-//    }
-//}
 
 float GiantSquid::getSquidLookAt()
 {

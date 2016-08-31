@@ -18,7 +18,6 @@ public:
 
 	enum AREA
 	{
-        //A_MENU,
 		A_TUTORIAL,
 		A_CALMPLATAEU,
 		A_CREEPINGRIDGE,
@@ -26,7 +25,7 @@ public:
 		A_NIGHTMARETRENCH
 	};
 
-	unsigned SD_CurrentArea = 2;
+	unsigned SD_CurrentArea = 1;
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
 	std::vector<GameObject*> SD_CapturedList;
@@ -38,6 +37,12 @@ public:
     bool SD_BossDead4 = false;
     bool SD_SceneLoaded = false;
 	float SD_Lrotate = 0;
+
+    //TUTORIAL & OBJECTIVES
+    bool SD_DoneTutorial = false;
+    bool SD_ContinueInstruction1 = false;
+    bool SD_ContinueInstruction2 = false;
+    bool SD_ObjectiveTabOn = false;
 
 private:
     SharedData(){};

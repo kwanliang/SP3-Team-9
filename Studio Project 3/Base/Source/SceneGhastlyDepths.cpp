@@ -135,19 +135,9 @@ void SceneGhastlyDepths::RenderTerrain()
 
 }
 
-void SceneGhastlyDepths::RenderSkyPlane()
-{
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 2000, 0);
-	modelStack.Rotate(rotateSky, 0, 1, 0);
-	RenderMesh(meshList[GEO_SKYPLANE], true);
-	modelStack.PopMatrix();
-}
-
 void SceneGhastlyDepths::RenderWorld()
 {
 	RenderTerrain();
-	RenderSkyPlane();
 	if (!SharedData::GetInstance()->SD_BossDead3)
 	RenderBoss();
     SceneSP3::RenderLoop();
@@ -358,7 +348,7 @@ void SceneGhastlyDepths::Update(double dt)
 {
 	SceneSP3::Update(dt);
 
-	if (SharedData::GetInstance()->SD_BossDead3 || frilledshark->isstunned)
+	if (SharedData::GetInstance()->SD_BossDead3 || frilledshark->isstunned || isGamePaused)
 	return;
 
 	

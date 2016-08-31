@@ -17,6 +17,7 @@ public:
 	void Run();
 	void Exit();
 	static bool IsKeyPressed(unsigned short key);
+    static bool IsMousePressed(unsigned short key);
 	static bool GetMouseUpdate();
 	//Declare variables to store the last and current mouse position
 	static double mouse_last_x, mouse_last_y, mouse_current_x, mouse_current_y, mouse_diff_x, mouse_diff_y;

@@ -24,7 +24,6 @@ public:
 
     void RenderWorld();
     void RenderTerrain();
-    void RenderSkyPlane();
 
     void RenderGiantSquid();
 

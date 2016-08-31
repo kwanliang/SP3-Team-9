@@ -23,7 +23,6 @@ public:
 	void RenderBoss();
 	void RenderWorld();
 	void RenderTerrain();
-	void RenderSkyPlane();
 	void StaticLoop(double);
 
 private:

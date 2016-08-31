@@ -7,7 +7,7 @@
 #include "GiantSquid.h"
 #include "Vector2.h"
 
-static float g_distFromGiantSquid = 400;
+static float g_distFromGiantSquid = 800.f;
 
 class SceneTutorial : public SceneSP3
 {
@@ -28,8 +28,9 @@ public:
 	void RenderPassMain();
 	void RenderWorld();
 	void RenderTerrain();
-	void RenderSkyPlane();
-	void RenderParticles();
+    void RenderDescription();
+    void RenderControls();
+    
 
 private:
 
