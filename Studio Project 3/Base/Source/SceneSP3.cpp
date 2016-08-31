@@ -775,7 +775,7 @@ void SceneSP3::UpdateSeaCreatures(double dt)
             if (go->objectType == GameObject::SEACREATURE)
             {
                 SeaCreature* sc = (SeaCreature*)it;
-				if (sc->isstunned = false)
+				if (sc->isstunned == false)
 				{
 					if (sc->getHealth() <= 0)
 						sc->active = false;
@@ -1330,47 +1330,48 @@ void SceneSP3::UpdateProjectile(double dt)
                             Boss* boss = (Boss*)it2;
                             switch (boss->bossType)
                             {
-                            case Boss::GIANTSQUID:
-                            {
-                                GiantSquid *squid = (GiantSquid *)it2;
-                                // Squid head
-                                if (collision(squid->collision, po->pos))
-                                {
-                                    po->active = false;
-                                    squid->setHealth(squid->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+							case Boss::GIANTSQUID:
+							{
+								GiantSquid *squid = (GiantSquid *)it2;
+								// Squid head
+								if (collision(squid->collision, po->pos))
+								{
+									po->active = false;
+									squid->setHealth(squid->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 
-                                    DamageText* text = FetchTO();
-                                    text->setActive(true);
-                                    text->setLastHitPos(po->pos);
-                                    text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-                                    text->setScaleText(Vector3(0, 0, 0));
-                                    text->setIsEnemy(true);
-                                    text->setIsHeal(false);
-                                    text->setIsStamina(false);
+									DamageText* text = FetchTO();
+									text->setActive(true);
+									text->setLastHitPos(po->pos);
+									text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									text->setScaleText(Vector3(0, 0, 0));
+									text->setIsEnemy(true);
+									text->setIsHeal(false);
+									text->setIsStamina(false);
 									if (po->projectileType == Projectile::PBULLET)
 									{
 										skipper->setTarget(boss);
 									}
-									
-                                }
-                                // Tentacle
-                                for (int i = 0; i < 6; ++i)
-                                {
-                                    if (collision(squid->tentacle[i]->collision, po->pos))
-                                    {
-                                        po->active = false;
-                                        squid->tentacle[i]->setHealth(squid->tentacle[i]->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 
-                                        DamageText* text = FetchTO();
-                                        text->setActive(true);
-                                        text->setLastHitPos(po->pos);
-                                        text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-                                        text->setScaleText(Vector3(0, 0, 0));
-                                        text->setIsEnemy(true);
-                                        text->setIsHeal(false);
-                                        text->setIsStamina(false);
-                                    }
-                                }
+								}
+								// Tentacle
+								for (int i = 0; i < 6; ++i)
+								{
+									if (collision(squid->tentacle[i]->collision, po->pos))
+									{
+										po->active = false;
+										squid->tentacle[i]->setHealth(squid->tentacle[i]->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+										DamageText* text = FetchTO();
+										text->setActive(true);
+										text->setLastHitPos(po->pos);
+										text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+										text->setScaleText(Vector3(0, 0, 0));
+										text->setIsEnemy(true);
+										text->setIsHeal(false);
+										text->setIsStamina(false);
+									}
+								}
+							}
                                 break;
 							case Boss::GIANTCRAB:
 							{
@@ -1388,6 +1389,8 @@ void SceneSP3::UpdateProjectile(double dt)
 									text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 									text->setScaleText(Vector3(0, 0, 0));
 									text->setIsEnemy(true);
+									text->setIsHeal(false);
+									text->setIsStamina(false);
 								}
 							}
 							break;
@@ -2377,12 +2380,16 @@ void SceneSP3::UpdateSquadFire(double dt)
 							float dist = (skipper->getTarget()->pos - other->pos).LengthSquared();
 							if (!(skipper->getTarget()->pos - other->pos).IsZero() && dist > 1000)
 							{
-								Vector3 Dir = (skipper->getTarget()->pos - other->pos).Normalize();
+								Vector3 Dir(0, 0, 0);
+								if (!(skipper->getTarget()->pos - other->pos).IsZero())
+									Dir = (skipper->getTarget()->pos - other->pos).Normalize();
 								other->vel += other->cohesion(skipper->getTarget()->pos, Dir) + other->alignment(0);
 							}
 							else
 							{
-								Vector3 Dir = (skipper->getTarget()->pos - other->pos).Normalize();
+								Vector3 Dir(0, 0, 0);
+								if (!(skipper->getTarget()->pos - other->pos).IsZero())
+									Dir = (skipper->getTarget()->pos - other->pos).Normalize();
 								other->vel = Dir * 30;
 
 							}

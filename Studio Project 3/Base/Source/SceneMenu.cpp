@@ -162,6 +162,7 @@ void SceneMenu::Exit()
     delete meshList[GEO_TMENU];
     delete meshList[GEO_TSTART];
     delete meshList[GEO_TQUIT];
+	delete meshList[GEO_MFISH];
 
     glDeleteProgram(m_programID);
     glDeleteVertexArrays(1, &m_vertexArrayID);

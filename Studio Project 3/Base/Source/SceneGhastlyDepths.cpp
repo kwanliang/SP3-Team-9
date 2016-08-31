@@ -358,18 +358,20 @@ void SceneGhastlyDepths::Update(double dt)
 {
 	SceneSP3::Update(dt);
 
-	if (SharedData::GetInstance()->SD_BossDead3)
+	if (SharedData::GetInstance()->SD_BossDead3 || frilledshark->isstunned)
 	return;
 
-	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
+	
+	
+	frilledshark->UpdateFrilledShark(dt, m_heightMap[3]);
 
-	if ((frilledshark->pos - playerpos).LengthSquared() < 200*200)
+	if ((frilledshark->pos - playerpos).LengthSquared() < 200 * 200)
 	{
 		StaticLoop(dt);
 		m_isStatic = true;
 	}
 	else
-	m_isStatic = false;
+		m_isStatic = false;
 
 	static double collisionCD = 0;
 
@@ -377,50 +379,35 @@ void SceneGhastlyDepths::Update(double dt)
 	collisionCD -= dt;
 	collisionCD = max(collisionCD, 0.);
 	if (collisionCD <= 0)
-	for (unsigned i = 0; i < 5; i++)
-	{
-		if (collision(frilledshark->m_FSbox[i], player_box))
-	{
-		frilledshark->UpdateFrilledShark(dt, m_heightMap[3]);
-		if ((frilledshark->pos - playerpos).LengthSquared() < 200 * 200)
+		for (unsigned i = 0; i < 5; i++)
 		{
-			//std::cout << "test" << std::endl;
-			if (frilledshark->m_state == FrilledShark::CHARGE && frilledshark->isstunned == false)
+			if (collision(frilledshark->m_FSbox[i], player_box))
 			{
-				fishVel = ((frilledshark->m_FSbox[i].m_position - playerpos).Normalize() * -20);
-		}
-		else
-			m_isStatic = false;
-
-		static double collisionCD = 0;
-
-		collisionCD -= dt;
-		collisionCD = max(collisionCD, 0.);
-		if (collisionCD <= 0)
-			for (unsigned i = 0; i < 5; i++)
-			{
-				if (collision(frilledshark->m_FSbox[i], player_box))
+				//std::cout << "test" << std::endl;
+				if (frilledshark->m_state == FrilledShark::CHARGE)
 				{
-					std::cout << "test" << std::endl;
-					//if (frilledshark->m_state == FrilledShark::FSstate::CHARGE)
-					fishVel += frilledshark->vel * 150.f;
-					collisionCD = 0.75;
-					break;
+					fishVel = ((frilledshark->m_FSbox[i].m_position - playerpos).Normalize() * -20);
+					walkCam.SetPos(Vector3(walkCam.GetPos().x, walkCam.GetPos().y + 5, walkCam.GetPos().z));
 				}
+				else
+					fishVel = ((frilledshark->m_FSbox[i].m_position - playerpos).Normalize() * -20);
+
+				if (skipper->getTimerReceieveDamage() > 1.0)
+				{
+					skipper->setTimerReceieveDamage(0.0);
+					skipper->setHealth(skipper->getHealth() - 60);
+					DamageText* text = FetchTO();
+					text->setActive(true);
+					text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
+					text->setLastDamage(60);
+					text->setScaleText(Vector3(0, 0, 0));
+					text->setIsEnemy(false);
+				}
+
+				break;
 			}
-
-		//frilledshark->m_node[0].yaw = val*4;
-		frilledshark->UpdateFrilledShark(dt, m_heightMap[3]);
-		if ((frilledshark->pos - playerpos).LengthSquared() < 200 * 200)
-		{
-			StaticLoop(dt);
-			m_isStatic = true;
 		}
-		else
-			m_isStatic = false;
 
-		//frilledshark->m_node[0].yaw = val*4;
-	}
 }
 
 void SceneGhastlyDepths::StaticLoop(double dt)

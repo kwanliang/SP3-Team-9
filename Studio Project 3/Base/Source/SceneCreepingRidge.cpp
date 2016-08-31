@@ -98,7 +98,7 @@ void SceneCreepingRidge::Init()
     //    g_FCrabCount++;
     //}
 
-	SceneSP3::ReinitCaptured();
+	//SceneSP3::ReinitCaptured();
     
     giantCrab = new GiantCrab();
     giantCrab->active = true;
@@ -462,15 +462,10 @@ void SceneCreepingRidge::Update(double dt)
 	if (!SharedData::GetInstance()->SD_BossDead2 && giantCrab->isstunned == false)
 	{
 		giantCrab->UpdateGC(dt, m_heightMap[2]);
-		if (collision(giantCrab->grabArea, player_box))
+		if (collision(giantCrab->grabArea, player_box) && giantCrab->GetState()!=GiantCrab::STRAFE)
 		{
 			giantCrab->SetState(GiantCrab::GRAB);
 		}
-
-	/*	if (collision(giantCrab->m_hitbox, player_box))
-		{
-			giantCrab->SetState(GiantCrab::GRAB);
-		}*/
 
 		if (giantCrab->GetState() == GiantCrab::VORTEX)
 		{
@@ -516,8 +511,8 @@ void SceneCreepingRidge::Update(double dt)
 	}
 
 
-	}
 }
+
 
 void SceneCreepingRidge::Exit()
 {

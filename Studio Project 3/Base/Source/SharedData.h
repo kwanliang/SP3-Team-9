@@ -26,7 +26,7 @@ public:
 		A_NIGHTMARETRENCH
 	};
 
-	unsigned SD_CurrentArea = 1;
+	unsigned SD_CurrentArea = 2;
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
 	std::vector<GameObject*> SD_CapturedList;

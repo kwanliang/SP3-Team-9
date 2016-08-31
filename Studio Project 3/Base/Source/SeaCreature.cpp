@@ -51,9 +51,11 @@ Vector3 SeaCreature::cohesion(Vector3 playerpos, Vector3 playertarget)
 {
     if (!playerpos.IsZero() || !playertarget.IsZero())
     {
-
-        Vector3 tv = (playertarget * -1).Normalized() * 30;
+		Vector3 tv(0, 0, 0);
+		if (!(playertarget * -1).IsZero())
+        tv = (playertarget * -1).Normalized() * 30;
         Vector3 behindPos = playerpos + tv;
+		if (!(behindPos - this->pos).IsZero())
         behindPos = (behindPos - this->pos).Normalized();
 
         return behindPos;
