@@ -1236,6 +1236,9 @@ void SceneSP3::UpdateProjectile(double dt)
                 {
                     po->pos += po->vel * dt;
 
+					if (po->projectileType == Projectile::SBULLET)
+						po->pos += po->vel * dt * 50;
+
                     for (auto it2 : seaList)
                     {
                         GameObject* go2 = (GameObject*)it2;
@@ -2274,7 +2277,7 @@ void SceneSP3::UpdateSquadFire(double dt)
 									view = (another->collision.m_position - other->pos).Normalized();
 								}
 
-								po->vel.Set(view.x / 10, view.y / 10, view.z / 10);
+								po->vel.Set(view.x * 10, view.y * 10, view.z * 10);
 								other->setDebounceTimer(0);
 							}
 						}

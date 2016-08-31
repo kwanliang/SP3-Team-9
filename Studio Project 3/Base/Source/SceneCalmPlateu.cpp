@@ -536,31 +536,34 @@ void SceneCalmPlateu::Render()
 void SceneCalmPlateu::Update(double dt)
 {
     SceneSP3::Update(dt);
-    if (giantSquid->active)
-    {
-        UpdateGiantSquid(dt);
+	if (giantSquid->isstunned == false)
+	{
+		if (giantSquid->active)
+		{
+			UpdateGiantSquid(dt);
 
-        hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
+			hitbox::updatehitbox(giantSquid->collision, giantSquid->collision.m_position);
 
-        if (collision(giantSquid->collision, playerpos))
-        {
-            fishVel *= -1.f;
-            walkCam.Move(fishVel * (float)dt);
-            playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
-            hitbox2::updatehitbox(player_box, playerpos);
-        }
+			if (collision(giantSquid->collision, playerpos))
+			{
+				fishVel *= -1.f;
+				walkCam.Move(fishVel * (float)dt);
+				playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+				hitbox2::updatehitbox(player_box, playerpos);
+			}
 
-        for (int i = 0; i < 6; i++)
-        {
-            hitbox::updatehitbox(giantSquid->tentacle[i]->collision, giantSquid->tentacle[i]->collision.m_position);
+			for (int i = 0; i < 6; i++)
+			{
+				hitbox::updatehitbox(giantSquid->tentacle[i]->collision, giantSquid->tentacle[i]->collision.m_position);
 
-            if (giantSquid->tentacle[i]->getHealth() < 0)
-                giantSquid->tentacle[i]->m_active = false;
+				if (giantSquid->tentacle[i]->getHealth() < 0)
+					giantSquid->tentacle[i]->m_active = false;
 
-            if (!giantSquid->tentacle[i]->m_active)
-                giantSquid->tentacle[i]->collision.m_position = Vector3(0, 0, 0);
-        }
-    }
+				if (!giantSquid->tentacle[i]->m_active)
+					giantSquid->tentacle[i]->collision.m_position = Vector3(0, 0, 0);
+			}
+		}
+	}
 }
 
 void SceneCalmPlateu::UpdateGiantSquid(double dt)
