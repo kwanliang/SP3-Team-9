@@ -25,6 +25,7 @@
 #include "LoadHmap.h"
 #include "Skipper.h"
 #include "Drone.h"
+#include "FontData.h"
 
 
 #include "GiantSquid.h"
@@ -48,7 +49,7 @@ public:
 
     virtual void Init();
     virtual void Update(double dt);
-    virtual void Render();
+	void Render();
     virtual void Exit();
 
     virtual void RenderPassGPass() {};
@@ -71,6 +72,7 @@ public:
 
     void RenderText(Mesh* mesh, std::string text, Color color);
     void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
+	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, const FontData &fd);
     void RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex = 5.0f, float sizey = 5.0f, float x = 0.0f, float y = 0.0f, float rot = 0.f);
     void RenderMesh(Mesh *mesh, bool enableLight);
 
@@ -381,6 +383,8 @@ protected:
 
 	bool isGamePaused;
 	int pauseChoice;
+
+	FontData fontData;
 
     // Spawner
     Spawner MinnowLeaderSpawner;

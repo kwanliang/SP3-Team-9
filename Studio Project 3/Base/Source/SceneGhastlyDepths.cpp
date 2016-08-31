@@ -291,12 +291,6 @@ void SceneGhastlyDepths::RenderPassMain()
 	if (m_isStatic)
 	RenderMeshIn2D(meshList[GEO_STATIC], false, 80.0f, 240.0f,0,m_static);
 
-
-	std::ostringstream ss;
-	ss.precision(3);
-	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
-
 	modelStack.PushMatrix();
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
 	modelStack.Translate(m_travelzonedown.m_position.x, m_travelzonedown.m_position.y, m_travelzonedown.m_position.z);

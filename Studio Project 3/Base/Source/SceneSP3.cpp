@@ -8,6 +8,7 @@
 #include "Application.h"
 #include "Utility.h"
 #include "LoadTGA.h"
+#include "LoadFontData.h"
 
 using std::cout;
 using std::endl;
@@ -343,6 +344,8 @@ void SceneSP3::Init()
     meshList[GEO_TMENU]->textureID = LoadTGA("Image//tomenu.tga");
     meshList[GEO_TQUIT] = MeshBuilder::GenerateQuad("quit select", Color(1, 0, 0), 2);
     meshList[GEO_TQUIT]->textureID = LoadTGA("Image//quit2.tga");
+
+	fontData = LoadFontData("Image//FontData.csv");
 
     // Shadow
     //meshList[GEO_LIGHT_DEPTH_QUAD] = MeshBuilder::GenerateQuad("Shadow Test", 1, 1);
@@ -687,7 +690,33 @@ void SceneSP3::RenderTO(DamageText *to)
     {
         modelStack.PushMatrix();
         modelStack.Translate(to->getLastHitPos().x, to->getLastHitPos().y, to->getLastHitPos().z);
-        modelStack.Rotate(LookAtPlayer(playerpos, to->getLastHitPos()), 0, 1, 0);
+
+		float angle;
+		Vector3 v = walkCam.GetDir();
+		v.y = 0;
+
+		if (!v.IsZero())
+		{
+			v.Normalize();
+			angle = acos(v.Dot(Vector3(0, 0, -1)));
+			angle = Math::RadianToDegree(angle);
+			if (v.Cross(Vector3(0, 0, -1)).y > 0) angle *= -1.f;
+		}
+		else angle = 0.f;
+		modelStack.Rotate(angle, 0, 1, 0);
+
+		v = walkCam.GetDir();
+		if (!v.IsZero())
+		{
+			v.Normalize();
+
+			angle = asin(v.y);
+			angle = Math::RadianToDegree(angle);
+		}
+		else angle = 0.f;
+
+		modelStack.Rotate(angle, 1, 0, 0);
+
         modelStack.Scale(to->getScaleText().x, to->getScaleText().y, to->getScaleText().z);
         std::ostringstream ss;
         ss << "-" << to->getLastDamage();
@@ -1637,7 +1666,7 @@ void SceneSP3::Update(double dt)
             forceApplied += right * acceleration;
         }
 
-        for (unsigned short i = 0; i < 256; ++i)
+        for (unsigned char i = 0; i < 256u; ++i)
         {
             break; //Comment this break break statement to test keys.
             if (GetKeyState(i)) std::cout << i << std::endl;
@@ -2535,6 +2564,55 @@ void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
     glEnable(GL_DEPTH_TEST);
 }
 
+void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y, const FontData &fd)
+{
+	if (!mesh || mesh->textureID <= 0)
+		return;
+
+	glDisable(GL_DEPTH_TEST);
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 80, 0, 60, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, size);
+	glUniform1i(m_parameters[U_IS_GUI], 1);
+	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+
+	float currentOffset = 0;
+
+	for (unsigned i = 0; i < text.length(); ++i)
+	{
+		currentOffset -= fd.GetWORatio((unsigned)text[i]);
+
+		Mtx44 characterSpacing;
+		characterSpacing.SetToTranslation(currentOffset, 0.5f, 0); //1.0f is the spacing of each character, you may change this value
+		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+
+		//cout << text[i] << endl;
+		mesh->Render((unsigned)text[i] * 6, 6);
+
+		currentOffset += fd.GetBWRatio((unsigned)text[i]);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_IS_GUI], 0);
+	modelStack.PopMatrix();
+	viewStack.PopMatrix();
+	projectionStack.PopMatrix();
+	glEnable(GL_DEPTH_TEST);
+}
+
 void SceneSP3::RenderMeshIn2D(Mesh *mesh, bool enableLight, float sizex , float sizey , float x, float y, float rot)
 {
     glDisable(GL_DEPTH_TEST);
@@ -3313,6 +3391,8 @@ void SceneSP3::Render()
 
 	// MAIN RENDER PASS
 	RenderPassMain();
+
+	RenderHUD2();
 }
 
 void SceneSP3::RenderDeathScreen()
@@ -3429,6 +3509,7 @@ void SceneSP3::RenderDeathScreen()
 void SceneSP3::RenderHUD()
 {
     float barscale = 50.f;
+	glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 
     for (std::vector<GameObject *>::iterator it = seaList.begin(); it != seaList.end(); ++it)
     {
@@ -3449,7 +3530,7 @@ void SceneSP3::RenderHUD()
 					
 					
 					boss_name << "giant squid";
-					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
+					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
 
                     float percentage = (100.f / 1000.f) * (float)bo->getHealth();
                     float healthscale = (barscale / 100) * percentage;
@@ -3467,7 +3548,7 @@ void SceneSP3::RenderHUD()
 
 
 					boss_name << "spider crab";
-					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
+					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
 
 					float percentage = (100.f / 1000.f) * (float)bo->getHealth();
 					float healthscale = (barscale / 100) * percentage;
@@ -3486,7 +3567,7 @@ void SceneSP3::RenderHUD()
 
 
 					boss_name << "frilled shark";
-					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
+					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
 
 					float percentage = (100.f / 1000.f) * (float)bo->getHealth();
 					float healthscale = (barscale / 100) * percentage;
@@ -3527,6 +3608,15 @@ void SceneSP3::RenderHUD()
     }
 
     RenderDeathScreen();
+
+	std::ostringstream ss;
+	ss.precision(3);
+	ss << "FPS: " << fps;
+	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3, fontData);
+
+	if (isGamePaused)
+		RenderPauseScreen();
+	glUniform1i(m_parameters[U_FOG_ENABLE], 1);
 }
 
 void SceneSP3::RenderMinimap()
@@ -3637,18 +3727,6 @@ void SceneSP3::RenderMinimap()
 
 void SceneSP3::RenderHUD2()
 {
-	glUniform1i(m_parameters[U_FOG_ENABLE], 0);
-	RenderMinimap();
-	SceneSP3::RenderHUD();
-
-	std::ostringstream ss;
-	ss.precision(3);
-	ss << "FPS: " << fps;
-	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
-
-	if (isGamePaused)
-		RenderPauseScreen();
-	glUniform1i(m_parameters[U_FOG_ENABLE], 1);
 }
 
 void SceneSP3::RenderPauseScreen()
