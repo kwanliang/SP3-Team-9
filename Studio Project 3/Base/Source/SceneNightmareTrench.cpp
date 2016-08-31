@@ -70,7 +70,6 @@ void SceneNightmareTrench::Init()
 	//	c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10,NULL);
 	//	c->setHealth(200);
 	//}
-	SceneSP3::ReinitCaptured();
 	isopod = new Isopod();
 	isopod->pos.y = 350.f * ReadHeightMap(m_heightMap[4], isopod->pos.x / 3000.f, isopod->pos.z / 3000.f) + 13;
 	isopod->m_nest_A.pos.Set(845, ReadHeightMap(m_heightMap[4], 845 / 3000.f, 820 / 3000.f)+10, 820);
@@ -345,7 +344,11 @@ void SceneNightmareTrench::Update(double dt)
 {
 	SceneSP3::Update(dt);
 	SceneSP3::UpdateSpawner(dt);
-	isopod->UpdateIsopod(dt,m_heightMap[4]);
+	if (isopod->isstunned == false)
+	{
+		isopod->UpdateIsopod(dt, m_heightMap[4]);
+
+	}
 }
 
 void SceneNightmareTrench::Exit()

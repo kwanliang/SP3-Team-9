@@ -78,17 +78,17 @@ void SceneGhastlyDepths::Init()
 	seaList.push_back(frilledshark);
 	//frilledshark->active = true;
 
-	//for (unsigned i = 0; i <= 20; i++)
-	//{
-	//	Cuttlefish* c = FetchCuttle();
-	//	c->pos = Vector3(Math::RandFloatMinMax(-300, 300), Math::RandFloatMinMax(200, 600), Math::RandFloatMinMax(-300, 300));
-	//	c->objectType = GameObject::SEACREATURE;
-	//	c->seaType = SeaCreature::CUTTLE;
-	//	c->ctstate = Cuttlefish::IDLE;
-	//	c->scale.Set(4, 4, 4);
+	/*for (unsigned i = 0; i <= 20; i++)
+	{
+		Cuttlefish* c = FetchCuttle();
+		c->pos = Vector3(Math::RandFloatMinMax(-300, 300), Math::RandFloatMinMax(200, 600), Math::RandFloatMinMax(-300, 300));
+		c->objectType = GameObject::SEACREATURE;
+		c->seaType = SeaCreature::CUTTLE;
+		c->ctstate = Cuttlefish::IDLE;
+		c->scale.Set(4, 4, 4);
+		c->setHealth(10);
+	}*/
 
-
-	SceneSP3::ReinitCaptured();
 
 }
 
@@ -361,34 +361,46 @@ void SceneGhastlyDepths::Render()
 void SceneGhastlyDepths::Update(double dt)
 {
 	SceneSP3::Update(dt);
-
-	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
-	if ((frilledshark->pos - playerpos).LengthSquared() < 200*200)
+	if (frilledshark->isstunned == false)
 	{
-		StaticLoop(dt);
-		//m_isStatic = true;
-	}
-	else
-	m_isStatic = false;
-
-	static double collisionCD = 0;
-
-	collisionCD -= dt;
-	collisionCD = max(collisionCD, 0.);
-	if (collisionCD <= 0)
-	for (unsigned i = 0; i < 5; i++)
-	{
-		if (collision(frilledshark->m_FSbox[i], player_box))
+		frilledshark->UpdateFrilledShark(dt, m_heightMap[3]);
+		if ((frilledshark->pos - playerpos).LengthSquared() < 200 * 200)
 		{
-			std::cout << "test" << std::endl;
-			//if (frilledshark->m_state == FrilledShark::FSstate::CHARGE)
-			fishVel += frilledshark->vel * 150.f;
-			collisionCD = 0.75;
-			break;
+			StaticLoop(dt);
+			//m_isStatic = true;
 		}
-	}
+		else
+			m_isStatic = false;
 
-	//frilledshark->m_node[0].yaw = val*4;
+		static double collisionCD = 0;
+
+		collisionCD -= dt;
+		collisionCD = max(collisionCD, 0.);
+		if (collisionCD <= 0)
+			for (unsigned i = 0; i < 5; i++)
+			{
+				if (collision(frilledshark->m_FSbox[i], player_box))
+				{
+					std::cout << "test" << std::endl;
+					//if (frilledshark->m_state == FrilledShark::FSstate::CHARGE)
+					fishVel += frilledshark->vel * 150.f;
+					collisionCD = 0.75;
+					break;
+				}
+			}
+
+		//frilledshark->m_node[0].yaw = val*4;
+		frilledshark->UpdateFrilledShark(dt, m_heightMap[3]);
+		if ((frilledshark->pos - playerpos).LengthSquared() < 200 * 200)
+		{
+			StaticLoop(dt);
+			m_isStatic = true;
+		}
+		else
+			m_isStatic = false;
+
+		//frilledshark->m_node[0].yaw = val*4;
+	}
 }
 
 void SceneGhastlyDepths::StaticLoop(double dt)

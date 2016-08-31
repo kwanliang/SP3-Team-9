@@ -40,6 +40,7 @@ public:
     int getHealth();
     float getDebounceTimer();
     bool getCanVacuum();
+	bool isstunned = false;
 
     void setHealth(int m_health);
     void setDebounceTimer(float timer);

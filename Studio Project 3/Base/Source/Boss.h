@@ -28,6 +28,7 @@ public:
     int getHealth();
     void setHealth(int m_health);
     bool isdead;
+	bool isstunned = false;
     hitbox collision;
 };
 

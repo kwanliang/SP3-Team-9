@@ -57,17 +57,17 @@ public:
 	virtual void RenderMinimap();
     virtual void RenderHUD();
     virtual void RenderDeathScreen();
-	void RenderSquad(SeaCreature *go);
+	void RenderSquad();
 
 	void UpdateTravel();
     void UpdateSeaCreatures(double dt);
     void UpdateProjectile(double dt);
 	void UpdatePuffer(double dt);
 	void UpdateCaptured(double dt);
+	void UpdateCapturedPuff(int damage);
 	void UpdateSquadFire(double dt);
     void UpdateSpawner(double dt);
-	void SaveCaptured();
-	void ReinitCaptured();
+	void UpdateStunned(double dt);
 
     void RenderText(Mesh* mesh, std::string text, Color color);
     void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
@@ -278,6 +278,18 @@ protected:
 		GEO_FCRABBODY,
 		GEO_FCRABLEG,
 		GEO_FCRABCLAW,
+
+		GEO_CAP_CHIMERA_BODY,
+		GEO_CAP_CHIMERA_FFLIP,
+		GEO_CAP_CHIMERA_BFLIP,
+			
+		GEO_CAP_MINNOW,
+		GEO_CAP_PUFFER,
+		GEO_CAP_CUTTLE,
+
+		GEO_CAP_FCRABBODY,
+		GEO_CAP_FCRABLEG,
+		GEO_CAP_FCRABCLAW,
 
 		GEO_CRAB_BODY,
 		GEO_CRAB_ARM_UPPER,

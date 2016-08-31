@@ -22,6 +22,9 @@ struct GameObject
     Vector3 pos;
     Vector3 vel;
     Vector3 scale;
+
+	float StunDuration;
+
     bool active;
     bool inRange;
 

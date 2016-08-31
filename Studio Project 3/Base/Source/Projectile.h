@@ -11,7 +11,8 @@ private:
 public:
     enum PROJECTILE_TYPE
     {
-        BULLET,
+		PBULLET,
+        SBULLET,
         INK,
 
         TYPE_TOTAL

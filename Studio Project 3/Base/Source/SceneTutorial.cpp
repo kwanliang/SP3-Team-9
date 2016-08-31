@@ -32,7 +32,6 @@ void SceneTutorial::Init()
         );
 
     m_travelzonedown = hitbox::generatehitbox(Vector3(52, 579, 1310), 600, 500, 600, 0);
-	SceneSP3::ReinitCaptured();
 	
 }
 

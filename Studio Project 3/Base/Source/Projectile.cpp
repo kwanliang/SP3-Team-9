@@ -2,7 +2,7 @@
 
 Projectile::Projectile()
     : m_lifetime(0.0)
-    , projectileType(BULLET)
+    , projectileType(SBULLET)
     , GameObject()
 {
 

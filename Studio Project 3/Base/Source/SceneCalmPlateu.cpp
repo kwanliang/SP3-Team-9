@@ -34,7 +34,7 @@ void SceneCalmPlateu::Init()
     meshList[GEO_SQUIDTENTACLEEND] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//tentacle_end.obj");
     meshList[GEO_SQUIDTENTACLEEND]->textureArray[0] = LoadTGA("Image//squidtentacle.tga");
 
-    meshList[GEO_PUFFER] = MeshBuilder::GenerateOBJ("squidModel", "Models//OBJ//puffer.obj");
+    meshList[GEO_PUFFER] = MeshBuilder::GenerateOBJ("puffer", "Models//OBJ//puffer.obj");
     meshList[GEO_PUFFER]->textureArray[0] = LoadTGA("Image//puffer.tga");
 
     if (SharedData::GetInstance()->SD_Down)
@@ -76,7 +76,6 @@ void SceneCalmPlateu::Init()
     InitGiantSquid();
 
     isPlayerHit = false;
-	SceneSP3::ReinitCaptured();
 	
 }
 

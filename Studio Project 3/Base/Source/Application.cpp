@@ -186,6 +186,12 @@ void Application::Run()
 		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
 	}
 	//Check if the ESC key had been pressed or if the window had been closed
+	while (SharedData::GetInstance()->SD_CapturedList.size() > 0)
+	{
+		GameObject *Data = SharedData::GetInstance()->SD_CapturedList.back();
+		delete Data;
+		SharedData::GetInstance()->SD_CapturedList.pop_back();
+	}
     sceneManager->GetLoadingScreen()->Exit();
     delete sceneManager->GetLoadingScreen();
     sceneManager->GetCurrentScene()->Exit();
