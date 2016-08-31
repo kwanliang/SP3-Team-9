@@ -329,7 +329,8 @@ void SceneSP3::Init()
     meshList[GEO_HUD_BOSSHEALTH] = MeshBuilder::GenerateQuad("boss health hud", Color(1, 0, 0), 2.f);
     meshList[GEO_HUD_BOSSHEALTH]->textureID = LoadTGA("Image//boss_hp_front.tga");
 
-    meshList[GEO_PLAEYRHEALTH] = MeshBuilder::GenerateLine("player health", Color(1.f, 0.5f, 1.f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
+    meshList[GEO_PLAYERHEALTH] = MeshBuilder::GenerateLine("player health", Color(1.f, 0.7f, 0.7f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
+	meshList[GEO_PLAYERSTAMINA] = MeshBuilder::GenerateLine("player Stamina", Color(0.7f, 0.7f, 1.f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
 
     // Death Screen
     meshList[GEO_TBORDER] = MeshBuilder::GenerateQuad("border", Color(1, 0, 0), 2);
@@ -1218,19 +1219,19 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
 void SceneSP3::UpdateProjectile(double dt)
 {
-    for (auto it : projectileList)
-    {
-        GameObject* go = (GameObject*)it;
-        if (go->active)
-        {
-            if (go->objectType == GameObject::PROJECTILE)
-            {
-                Projectile* po = (Projectile*)it;
+	for (auto it : projectileList)
+	{
+		GameObject* go = (GameObject*)it;
+		if (go->active)
+		{
+			if (go->objectType == GameObject::PROJECTILE)
+			{
+				Projectile* po = (Projectile*)it;
 
-                po->setLifetime(po->getLifetime() - dt);
+				po->setLifetime(po->getLifetime() - dt);
 
-                if (po->getLifetime() <= 0.0)
-                    po->active = false;
+				if (po->getLifetime() <= 0.0)
+					po->active = false;
 
 				if (po->projectileType == Projectile::SBULLET || po->projectileType == Projectile::PBULLET)
                 {
@@ -1246,7 +1247,7 @@ void SceneSP3::UpdateProjectile(double dt)
                         {
                             SeaCreature* sc = (SeaCreature*)it2;
 
-                            bool hit = false;
+							bool hit = false;
 
                             if ((po->pos - sc->pos).LengthSquared() < sc->scale.z + sc->scale.z + 50)
                             {
@@ -1399,8 +1400,6 @@ void SceneSP3::UpdateProjectile(double dt)
 								{
 									if (collision(fshark->m_FSbox[i], po->pos))
 									{
-										std::cout << "fuck" << std::endl;
-
 										po->active = false;
 										fshark->setHealth(fshark->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 										DamageText* text = FetchTO();
@@ -1408,43 +1407,68 @@ void SceneSP3::UpdateProjectile(double dt)
 										text->setLastHitPos(po->pos);
 										text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 										text->setScaleText(Vector3(0, 0, 0));
+										text->setIsHeal(false);
+										text->setIsStamina(false);
 										text->setIsEnemy(true);
 									}
 								}
 							}
 							break;
+							case Boss::ISOPOD:
+							{
+								Isopod *ipod = (Isopod *)it2;
+								// Squid head
+
+								if (collision(ipod->m_hitbox, po->pos))
+								{
+
+									po->active = false;
+									ipod->setHealth(ipod->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									DamageText* text = FetchTO();
+									text->setActive(true);
+									text->setLastHitPos(po->pos);
+									text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									text->setScaleText(Vector3(0, 0, 0));
+									text->setIsHeal(false);
+									text->setIsStamina(false);
+									text->setIsEnemy(true);
+								}
+
+							}
+							break;
+							}
 
 
-                            
 
+							}
+						}
+					}
+				
 
-                            }
-                        }
-                    }
-                }
-                else if (po->projectileType == Projectile::INK)
-                {
-                    po->pos += po->vel * dt * 50;
-                    if ((po->pos - playerpos).LengthSquared() < (po->scale.x * po->scale.x) + (skipper->scale.x * skipper->scale.x))
-                    {
-                        po->active = false;
+				else if (po->projectileType == Projectile::INK)
+				{
+					po->pos += po->vel * dt * 50;
+					if ((po->pos - playerpos).LengthSquared() < (po->scale.x * po->scale.x) + (skipper->scale.x * skipper->scale.x))
+					{
+						po->active = false;
 
-                        //skipper->setHealth(skipper->getHealth() - 20);
+						skipper->setHealth(skipper->getHealth() - 20);
 						UpdateCapturedPuff(20);
 
-                        DamageText* text = FetchTO();
-                        text->setActive(true);
-                        text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() + Vector3(0, 10, 0));
-                        text->setLastDamage(20);
-                        text->setScaleText(Vector3(0, 0, 0));
-                        text->setIsEnemy(false);
-                        text->setIsHeal(false);
-                        text->setIsStamina(false);
-                    }
-                }
-            }
-        }
-    }
+						DamageText* text = FetchTO();
+						text->setActive(true);
+						text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() + Vector3(0, 10, 0));
+						text->setLastDamage(20);
+						text->setScaleText(Vector3(0, 0, 0));
+						text->setIsEnemy(false);
+						text->setIsHeal(false);
+						text->setIsStamina(false);
+					}
+				}
+			}
+		}
+
+	}
 }
 void SceneSP3::UpdateCapturedPuff(int hp)
 {
@@ -1745,10 +1769,6 @@ void SceneSP3::Update(double dt)
             break;
         }
 
-		float velOverdrive = 0;
-		if (fishVel.LengthSquared() > speedLimit * speedLimit * staminaFactor * staminaFactor)
-			velOverdrive = fishVel.Length() - speedLimit * staminaFactor;
-
         fishVel +=
             forceApplied
             * (skipper->boostStatus == Skipper::BOOST_ACTIVE ? 2.f : 1.f)
@@ -1757,7 +1777,7 @@ void SceneSP3::Update(double dt)
         if (fishVel.LengthSquared() > speedLimit * speedLimit * staminaFactor * staminaFactor)
         {
 			fishVel.Normalize();
-            fishVel *= speedLimit * staminaFactor + velOverdrive;
+			fishVel *= speedLimit * staminaFactor;
         }
 
         walkCam.Move(fishVel * (float)dt);
@@ -3659,14 +3679,21 @@ void SceneSP3::RenderMinimap()
 	float angle = 90 + Math::RadianToDegree(atan2(walkCam.GetDir().z, walkCam.GetDir().x));
 
     float HealthPercentage = (100.f / 500.f) * (float)skipper->getHealth();
-    float degree = 360.f * ((float)HealthPercentage / 100.f);
+    float degree = 180.f * ((float)HealthPercentage / 100.f);
 
     for (int i = 0; i < degree; i += 2)
-        RenderMeshIn2D(meshList[GEO_PLAEYRHEALTH], false, 20, 20, mPos.x, mPos.y, -90 + i);
+        RenderMeshIn2D(meshList[GEO_PLAYERHEALTH], false, 20, 20, mPos.x, mPos.y, -90 + i);
+
+	float degree2 = 180.f * float(skipper->stamina/100.f);
+
+	for (int i = 0; i < degree2; i += 2)
+		RenderMeshIn2D(meshList[GEO_PLAYERSTAMINA], false, 20, 20, mPos.x, mPos.y, -90 - i);
 
 	RenderMeshIn2D(meshList[GEO_MINIMAP], false, 20, 20,
 		mPos.x, mPos.y, angle);
 
+
+	std::cout << skipper->stamina << std::endl;
     for (auto it : seaList)
 	{
 		if (!it->active) continue;

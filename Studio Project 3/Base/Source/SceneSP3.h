@@ -311,6 +311,7 @@ protected:
 		GEO_TSTART,
 		GEO_TQUIT,
 		GEO_TLOADING,
+		GEO_MFISH,
 
 		GEO_TBORDER,
 		GEO_TLAYER,
@@ -321,7 +322,8 @@ protected:
         GEO_CORAL,
         GEO_CORAL2,
 
-        GEO_PLAEYRHEALTH,
+        GEO_PLAYERHEALTH,
+		GEO_PLAYERSTAMINA,
 
         SPRITE_NAME,
         GEO_LIGHT_DEPTH_QUAD,

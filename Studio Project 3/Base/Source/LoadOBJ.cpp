@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <map>
-
+#include "SharedData.h"
 #include "LoadOBJ.h"
 
 bool LoadOBJ(
@@ -120,6 +120,7 @@ bool LoadOBJ(
 		out_normals.push_back(normal);
 	}
 
+	SharedData::GetInstance()->SD_Lrotate += 10;
 	std::cout << " done." << std::endl;
 
 	return true;

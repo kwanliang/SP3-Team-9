@@ -37,6 +37,7 @@ public:
     bool SD_BossDead3 = false;
     bool SD_BossDead4 = false;
     bool SD_SceneLoaded = false;
+	float SD_Lrotate = 0;
 
 private:
     SharedData(){};

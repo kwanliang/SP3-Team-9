@@ -7,7 +7,7 @@
 #include "Application.h"
 #include "Utility.h"
 #include "LoadTGA.h"
-
+#include <iostream>
 SceneMenu::SceneMenu()
 {
 
@@ -66,7 +66,7 @@ void SceneMenu::Init()
     meshList[GEO_TTITLE]->textureID = LoadTGA("Image//title.tga");
 
     meshList[GEO_TMENU] = MeshBuilder::GenerateQuad("menu screen", Color(1, 0, 0), 2);
-    meshList[GEO_TMENU]->textureID = LoadTGA("Image//menu.tga");
+    meshList[GEO_TMENU]->textureID = LoadTGA("Image//long_title.tga");
 
     meshList[GEO_TSTART] = MeshBuilder::GenerateQuad("start", Color(1, 0, 0), 2);
     meshList[GEO_TSTART]->textureID = LoadTGA("Image//start.tga");
@@ -74,28 +74,35 @@ void SceneMenu::Init()
     meshList[GEO_TQUIT] = MeshBuilder::GenerateQuad("quit", Color(1, 0, 0), 2);
     meshList[GEO_TQUIT]->textureID = LoadTGA("Image//quit.tga");
 
+	meshList[GEO_MFISH] = MeshBuilder::GenerateQuad("fish", Color(1, 0, 0), 2);
+	meshList[GEO_MFISH]->textureID = LoadTGA("Image//menu_fish.tga");
+
     select = START;
+	xscroll = 170;
+	mfish_x = -81;
 }
 
 void SceneMenu::Render()
 {
-    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    RenderMeshIn2D(meshList[GEO_TMENU], false, 80, 60);
-    RenderMeshIn2D(meshList[GEO_TTITLE], false, 60, 20, 0, 30);
-    switch (select)
-    {
-    case START:
-    {
-        RenderMeshIn2D(meshList[GEO_TSTART], false, 35, 15, 0, -15);
-        RenderMeshIn2D(meshList[GEO_TQUIT], false, 30, 10, 0, -40);
-        break;
-    }
-    case QUIT:
-    {
-        RenderMeshIn2D(meshList[GEO_TSTART], false, 30, 10, 0, -15);
-        RenderMeshIn2D(meshList[GEO_TQUIT], false, 35, 15, 0, -40);
-        break;
-    }
+	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+	
+
+	RenderMeshIn2D(meshList[GEO_TMENU], false, 250, 75, xscroll, 0, 0);RenderMeshIn2D(meshList[GEO_MFISH], false, 30, 30, mfish_x, 0, 0);
+	RenderMeshIn2D(meshList[GEO_TTITLE], false, 30, 30, 0, 30);
+	switch (select)
+	{
+	case START:
+	{
+		RenderMeshIn2D(meshList[GEO_TSTART], false, 40, 8, 0, -15);
+		RenderMeshIn2D(meshList[GEO_TQUIT], false, 20, 4, 0, -40);
+		break;
+	}
+	case QUIT:
+	{
+		RenderMeshIn2D(meshList[GEO_TSTART], false, 20, 4, 0, -15);
+		RenderMeshIn2D(meshList[GEO_TQUIT], false, 40, 8, 0, -40);
+		break;
+	}
     }
 
 }
@@ -116,7 +123,38 @@ void SceneMenu::Update(double dt)
     {
         SharedData::GetInstance()->SD_QuitGame = true;
     }
+
+
+	if (Application::IsKeyPressed('Z'))
+	{
+		val += 10.f * (float)dt;
+		std::cout << val << std::endl;
+	}
+	if (Application::IsKeyPressed('X'))
+	{
+		val -= 10.f * (float)dt;
+		std::cout << val << std::endl;
+	}
+	//xscroll = val;
+
+	if (xscroll > -81)
+		xscroll -= dt * 40;
+	else
+		xscroll = 170;
+
+
+
+	mfish_x -= dt*80;
+
+	if (mfish_x < -170)
+		mfish_x = 100;
+
+
+
+	std::cout << mfish_x << std::endl;
+
 }
+
 
 void SceneMenu::Exit()
 {

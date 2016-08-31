@@ -16,7 +16,7 @@ public:
     {
         START,
         QUIT,
-
+		
         NUM_SELECT
     }select;
 
@@ -26,7 +26,9 @@ public:
     virtual void Init();
     virtual void Update(double dt);
     virtual void Exit();
-
+	float val = 0;
+	float xscroll;
+	float mfish_x = 100;
     virtual void Render();
 };
 

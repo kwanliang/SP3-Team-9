@@ -467,10 +467,10 @@ void SceneCreepingRidge::Update(double dt)
 			giantCrab->SetState(GiantCrab::GRAB);
 		}
 
-		if (collision(giantCrab->m_hitbox, player_box))
+	/*	if (collision(giantCrab->m_hitbox, player_box))
 		{
 			giantCrab->SetState(GiantCrab::GRAB);
-		}
+		}*/
 
 		if (giantCrab->GetState() == GiantCrab::VORTEX)
 		{
@@ -488,7 +488,7 @@ void SceneCreepingRidge::Update(double dt)
 
 			}
 
-			fishVel += -5 * fishVel;
+			fishVel += -5 *target;
 			fishVel.y = -target.y;
 
 		}
@@ -496,9 +496,11 @@ void SceneCreepingRidge::Update(double dt)
 		{
 			fishVel.SetZero();
 		}
+
+
 		if (collision(giantCrab->m_hitbox, player_box))
 		{
-			fishVel = -giantCrab->vel * 10;
+			fishVel = ((giantCrab->pos-playerpos).Normalize() * -20);
 			if (skipper->getTimerReceieveDamage() > 1.0)
 			{
 				skipper->setTimerReceieveDamage(0.0);

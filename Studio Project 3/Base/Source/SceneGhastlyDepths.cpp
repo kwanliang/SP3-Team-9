@@ -70,7 +70,7 @@ void SceneGhastlyDepths::Init()
 	m_static = -179;
 	m_isStatic = false;
 
-	m_travelzonedown = hitbox::generatehitbox(Vector3(-27, 388, 1490), 150, 500, 700, NULL);
+	m_travelzonedown = hitbox::generatehitbox(Vector3(327, 188, 1750), 150, 500, 700, NULL);
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, NULL);
 	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
@@ -289,6 +289,7 @@ void SceneGhastlyDepths::RenderPassMain()
 
     SceneSP3::RenderMinimap();
     SceneSP3::RenderHUD();
+
 	if (m_isStatic)
 	RenderMeshIn2D(meshList[GEO_STATIC], false, 80.0f, 240.0f,0,m_static);
 
@@ -356,13 +357,37 @@ void SceneGhastlyDepths::Render()
 void SceneGhastlyDepths::Update(double dt)
 {
 	SceneSP3::Update(dt);
-	if (frilledshark->isstunned == false)
+
+	if (SharedData::GetInstance()->SD_BossDead3)
+	return;
+
+	frilledshark->UpdateFrilledShark(dt,m_heightMap[3]);
+
+	if ((frilledshark->pos - playerpos).LengthSquared() < 200*200)
+	{
+		StaticLoop(dt);
+		m_isStatic = true;
+	}
+	else
+	m_isStatic = false;
+
+	static double collisionCD = 0;
+
+
+	collisionCD -= dt;
+	collisionCD = max(collisionCD, 0.);
+	if (collisionCD <= 0)
+	for (unsigned i = 0; i < 5; i++)
+	{
+		if (collision(frilledshark->m_FSbox[i], player_box))
 	{
 		frilledshark->UpdateFrilledShark(dt, m_heightMap[3]);
 		if ((frilledshark->pos - playerpos).LengthSquared() < 200 * 200)
 		{
-			StaticLoop(dt);
-			//m_isStatic = true;
+			//std::cout << "test" << std::endl;
+			if (frilledshark->m_state == FrilledShark::CHARGE && frilledshark->isstunned == false)
+			{
+				fishVel = ((frilledshark->m_FSbox[i].m_position - playerpos).Normalize() * -20);
 		}
 		else
 			m_isStatic = false;

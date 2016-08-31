@@ -100,7 +100,7 @@ void FrilledShark::UpdateFrilledShark(double dt, std::vector<unsigned char> hmap
 	case CHARGE:
 		Ljaw_rotate = 15;
 
-		vel.y = P_displacement.y * 4;
+		vel.y = 0;
 		speed = 120;
 		//std::cout << "CHARGE" << std::endl;
 		if (P_displacement.LengthSquared() > 500 * 500)

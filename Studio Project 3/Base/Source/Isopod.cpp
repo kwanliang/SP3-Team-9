@@ -32,7 +32,7 @@ Isopod::Isopod()
 	m_Lleg[3].roll = 0.8;
 	m_Lleg[4].roll = 0.5;
 	m_Lleg[5].roll = 0.2;
-
+	m_hitbox = hitbox::generatehitbox(Vector3(0, 0, 0), 110, 40, 110, NULL);
 	//m_Lwhisker = hitbox2::generatehitbox(Vector3(0, 0, 0), 20, 20, 20);
 	//m_Rwhisker = hitbox2::generatehitbox(Vector3(0, 0, 0), 20, 20, 20);
 
@@ -49,6 +49,15 @@ Isopod::Isopod(int m_health, BOSS_TYPE bossType,
 
 void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
 {
+
+	if (getHealth() <= 0)
+	{
+		SharedData::GetInstance()->SD_BossDead4 = true;
+		active = false;
+		m_SpawnIsopodDrone = false;
+		return;
+	}
+	
 	float speed = 25;
 	Vector3 P_pos = SharedData::GetInstance()->SD_PlayerPos;
 	Vector3 P_displacement = P_pos - pos;
@@ -58,11 +67,15 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
 	else if (pos.y > h)
 		pos.y -= dt * 10;
 
-	Vector3 displacement = m_targetnest->pos - pos;
+	hitbox::updatehitbox(m_hitbox, pos);
 
+	Vector3 displacement = m_targetnest->pos - pos;
 	vel = displacement.Normalized();
 	if (displacement.LengthSquared() < 100 * 100)
 	{
+		if (getHealth() < 800)
+			m_health += 200;
+
 		if (m_targetnest == &m_nest_A)
 			m_targetnest = &m_nest_B;
 		else
@@ -75,8 +88,9 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
     case IDLE:
     {  
 		m_SpawnIsopodDrone = false;
-		if (P_displacement.LengthSquared() < 400 * 400)
+		if (P_displacement.LengthSquared() < 400 * 400 || getHealth() < 1000)
 			m_state = AGGRO;
+
 
         
 
@@ -84,16 +98,7 @@ void Isopod::UpdateIsopod(double dt, std::vector<unsigned char> hmap)
     }
     case AGGRO:
     {
-		speed = 30;
-        /*	vel = displacement.Normalized();
-        if (displacement.LengthSquared() < 100 * 100)
-        {
-        if (m_targetnest == &m_nest_A)
-        m_targetnest = &m_nest_B;
-        else
-        m_targetnest = &m_nest_A;
-        }*/
-
+		speed = 40;
         m_SpawnBufferTime += dt;
         if (m_SpawnBufferTime > 1.0)
         {

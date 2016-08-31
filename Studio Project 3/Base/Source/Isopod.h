@@ -45,6 +45,7 @@ public:
     void setSpawnBufferTime(double m_SpawnBufferTime);
 
 	Istate m_state;
+	hitbox m_hitbox;
 	Leg m_Rleg[6];
 	Leg m_Lleg[6];
 	Nest m_nest_A;

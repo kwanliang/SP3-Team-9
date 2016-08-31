@@ -53,7 +53,7 @@ GiantCrab::GiantCrab()
 	m_leg[7].m_Lrotate = 34;
 
 	m_strafetime = 0;
-	grabArea = hitbox::generatehitbox(Vector3(0, 0, 0), 120, 35, 120, NULL);
+	grabArea = hitbox::generatehitbox(Vector3(0, 0, 0), 100, 20, 100, NULL);
 	m_hitbox = hitbox2::generatehitbox(Vector3(0, 0, 0), 120, 80, 120);
 
 }
@@ -124,15 +124,17 @@ void GiantCrab::UpdateGC(double dt, std::vector<unsigned char> hmap)
 		//need collision here
 		//if player enters grabbox, grab mode
 
-		/*if (P_displacement.Length() > 500)
+		if (P_displacement.Length() > 500 || P_displacement.y > 100)
 		{
 			state = VORTEX;
 		}
 
-		if (P_displacement.Length() < 50)
+		if (P_displacement.Length() < 100)
 		{
-			state = VORTEX;
-		}*/
+			state = STRAFE;
+		}
+
+
 
 		break;
 	case GRAB:
