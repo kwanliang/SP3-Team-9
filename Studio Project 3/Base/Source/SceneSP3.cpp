@@ -1475,17 +1475,12 @@ void SceneSP3::UpdateProjectile(double dt)
 							}
 							break;
 							}
-
-
-
-							}
 						}
 					}
-				
-
+				}
 				else if (po->projectileType == Projectile::INK)
 				{
-					po->pos += po->vel * dt * 50;
+					po->pos += po->vel * dt * 500;
 					if ((po->pos - playerpos).LengthSquared() < (po->scale.x * po->scale.x) + (skipper->scale.x * skipper->scale.x))
 					{
 						po->active = false;
@@ -1539,10 +1534,8 @@ void SceneSP3::UpdateCaptured(double dt)
 	{
 
 		SeaCreature *fo = (SeaCreature *)*it;
-		if (fo->getHealth() <= 0)
+        if (fo->getHealth() <= 0 && fo->active && fo->objectType == GameObject::CAPTURED)
 		{
-			fo->active = false;
-
             switch (fo->seaType)
             {
             case SeaCreature::MINNOW:
@@ -1556,6 +1549,8 @@ void SceneSP3::UpdateCaptured(double dt)
             case SeaCreature::CHIMERA:
                 g_countCapturedChimera--;
             }
+
+			fo->active = false;
 		}
 		if (fo->active)
 		{
@@ -1660,6 +1655,7 @@ void SceneSP3::Update(double dt)
 	UpdateKeys();
 	UpdatePauseFunction();
     UpdatePauseScreen(dt);
+    UpdateDeathScreen(dt);
 
     if (GetKeyState('1', KEY_STATUS_DOWN))
         glEnable(GL_CULL_FACE);
@@ -2117,6 +2113,7 @@ void SceneSP3::UpdatePauseScreen(double dt)
         }
         else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 1)
         {
+            isGamePaused = false;
             Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
             Application::sceneManager->SetMenuScene(new SceneMenu());
             Application::sceneManager->GetMenuScreen()->Init();
@@ -3577,6 +3574,37 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 30.f, 5.f, 0.f, 0.0f);
             RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
+            break;
+        }
+        case MENU:
+        {
+            RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -11.0f);
+            RenderMeshIn2D(meshList[GEO_TMENU], false, 30.f, 5.f, 0.f, -10.0f);
+            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
+            RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
+            break;
+        }
+        case QUIT:
+        {
+            RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -21.0f);
+            RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 5.f, 0.f, -20.0f);
+            RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
+            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
+            break;
+        }
+        }
+    }
+
+}
+
+void SceneSP3::UpdateDeathScreen(double dt)
+{
+    if (skipper->getIsDead())
+    {
+        switch (DeathSelect)
+        {
+        case RESPAWN:
+        {
             if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 isGamePaused = false;
@@ -3587,10 +3615,6 @@ void SceneSP3::RenderDeathScreen()
         }
         case MENU:
         {
-            RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -11.0f);
-            RenderMeshIn2D(meshList[GEO_TMENU], false, 30.f, 5.f, 0.f, -10.0f);
-            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
-            RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
             if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 isGamePaused = false;
@@ -3603,10 +3627,6 @@ void SceneSP3::RenderDeathScreen()
         }
         case QUIT:
         {
-            RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -21.0f);
-            RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 5.f, 0.f, -20.0f);
-            RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
-            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
             if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 SharedData::GetInstance()->SD_QuitGame = true;
@@ -3616,7 +3636,6 @@ void SceneSP3::RenderDeathScreen()
         }
         }
     }
-
 }
 
 void SceneSP3::RenderObjectiveHUD()
@@ -3699,7 +3718,7 @@ void SceneSP3::RenderHUD()
             {
             case Boss::GIANTSQUID:
             {
-                if ((bo->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid)
+                if ((bo->pos - playerpos).LengthSquared() < g_distFromGiantSquid * g_distFromGiantSquid && !SharedData::GetInstance()->SD_BossDead1)
                 {				
 					boss_name << "giant squid";
 					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
@@ -3713,7 +3732,7 @@ void SceneSP3::RenderHUD()
                 break;
 			case Boss::GIANTCRAB:
 			{
-				if ((bo->pos - playerpos).LengthSquared() < 600 * 600)
+                if ((bo->pos - playerpos).LengthSquared() < 600 * 600 && !SharedData::GetInstance()->SD_BossDead2)
 				{
 					boss_name << "spider crab";
 					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
@@ -3728,7 +3747,7 @@ void SceneSP3::RenderHUD()
 			break;
 			case Boss::FRILLEDSHARK:
 			{
-				if ((bo->pos - playerpos).LengthSquared() < 800 * 800)
+                if ((bo->pos - playerpos).LengthSquared() < 800 * 800 && !SharedData::GetInstance()->SD_BossDead3)
 				{
 					boss_name << "frilled shark";
 					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
@@ -3743,7 +3762,7 @@ void SceneSP3::RenderHUD()
 			break;
 			case Boss::ISOPOD:
 			{
-				if ((bo->pos - playerpos).LengthSquared() < 800 * 800)
+                if ((bo->pos - playerpos).LengthSquared() < 800 * 800 && !SharedData::GetInstance()->SD_BossDead4)
 				{
 					boss_name << "great isopod";
 					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);

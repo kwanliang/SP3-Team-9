@@ -124,7 +124,7 @@ void SceneCalmPlateu::InitGiantSquid()
 
 void SceneCalmPlateu::RenderGiantSquid()
 {
-    if (giantSquid->active)
+    if (giantSquid->active && !SharedData::GetInstance()->SD_BossDead1)
     {
         modelStack.PushMatrix();
         modelStack.Translate(giantSquid->pos.x, giantSquid->pos.y, giantSquid->pos.z);
@@ -526,7 +526,7 @@ void SceneCalmPlateu::Render()
 void SceneCalmPlateu::Update(double dt)
 {
     SceneSP3::Update(dt);
-    if (!isGamePaused && giantSquid->active && !giantSquid->isstunned)
+    if (!isGamePaused && giantSquid->active && !giantSquid->isstunned && !SharedData::GetInstance()->SD_BossDead1)
     {
         UpdateGiantSquid(dt);
 
