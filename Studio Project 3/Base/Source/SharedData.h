@@ -25,7 +25,7 @@ public:
 		A_NIGHTMARETRENCH
 	};
 
-	unsigned SD_CurrentArea = 3;
+	unsigned SD_CurrentArea = 0;
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
     int SD_PlayerHealth = 0;
@@ -39,11 +39,16 @@ public:
     bool SD_SceneLoaded = false;
 	float SD_Lrotate = 0;
     bool SD_PauseMenu = false;
+    bool SD_ContinueVictoryScreen = false;
+    bool SD_ContinueCreditsScreen = false;
+    bool SD_ToMenu = false;
+    bool SD_TurnFPSOn = false;
 
     //TUTORIAL & OBJECTIVES
     bool SD_DoneTutorial = false;
     bool SD_ContinueInstruction1 = false;
     bool SD_ContinueInstruction2 = false;
+    bool SD_ContinueInstruction3 = false;
     bool SD_ObjectiveTabOn = false;
 
 private:

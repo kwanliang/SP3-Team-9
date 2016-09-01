@@ -25,20 +25,10 @@ public:
 
 private:
 
-    // Shadow
-
-    // Light lights[2];
-
-    //bool bLightEnabled;
-
-    // float fps;
-
     float theta = 0; //crab jump
 
-    //Fish test
 
     Capture fishy;
-    //Fcrab* c;
 };
 
 #endif

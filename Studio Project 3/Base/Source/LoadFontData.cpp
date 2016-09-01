@@ -7,7 +7,7 @@
 
 using namespace::std;
 
-FontData& LoadFontData(const char *file_path)
+FontData LoadFontData(const char *file_path)
 {
 	FontData fd;
 

@@ -1,4 +1,5 @@
 #include "FontData.h"
+#include <iostream>
 
 FontData::FontData()
 {
@@ -16,8 +17,11 @@ FontData::~FontData()
 void FontData::LoadBaseWidth(const std::vector<int> &data)
 {
 	if (data.size() != charTotal) return;
-	for (unsigned i = 0; i < charTotal; ++i)
-		baseWidth[i] = data[i];
+    for (unsigned i = 0; i < charTotal; ++i)
+    {
+        baseWidth[i] = data[i];
+        //std::cout << "";
+    }
 }
 
 void FontData::LoadWidthOffset(const std::vector<int> &data)

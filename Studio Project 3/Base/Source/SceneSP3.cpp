@@ -139,40 +139,6 @@ void SceneSP3::Init()
     // Use our shader
     glUseProgram(m_programID);
 
-    //lights[0].type = Light::LIGHT_DIRECTIONAL;
-    //lights[0].position.Set(0, 100, 50);
-    //lights[0].color.Set(1, 1, 1);
-    //lights[0].power = 3.0f;
-    //lights[0].kC = 1.f;
-    //lights[0].kL = 0.01f;
-    //lights[0].kQ = 0.001f;
-    //lights[0].cosCutoff = cos(Math::DegreeToRadian(45));
-    //lights[0].cosInner = cos(Math::DegreeToRadian(30));
-    //lights[0].exponent = 3.f;
-
-    //lights[1].type = Light::LIGHT_DIRECTIONAL;
-    //lights[1].position.Set(0, 100, 50);
-    //lights[1].color.Set(1, 1, 1);
-    //lights[1].power = 1.0f;
-    //lights[1].kC = 1.f;
-    //lights[1].kL = 0.01f;
-    //lights[1].kQ = 0.001;
-    //lights[1].cosCutoff = cos(Math::DegreeToRadian(45));
-    //lights[1].cosInner = cos(Math::DegreeToRadian(30));
-    //lights[1].exponent = 3.f;
-
-    //lights[2].type = Light::LIGHT_SPOT;
-    //lights[2].position.Set(-80.f, 100.f, 0.f);
-    //lights[2].color.Set(1, 1, 1);
-    //lights[2].power = 30.f;
-    //lights[2].kC = 1.f;
-    //lights[2].kL = 0.01f;
-    //lights[2].kQ = 0.001f;
-    //lights[2].spotDirection.Set(0.f, 1.f, 0.f);
-    //lights[2].cosCutoff = cos(Math::DegreeToRadian(120));
-    //lights[2].cosInner = cos(Math::DegreeToRadian(0));
-    //lights[2].exponent = 3.f;
-
     glUniform1i(m_parameters[U_NUMLIGHTS], 1);
     glUniform1i(m_parameters[U_IS_GUI], 0);
 
@@ -217,29 +183,29 @@ void SceneSP3::Init()
 
 
     // camera.Init(Vector3(0, 70, 10), Vector3(0, 70, 0), Vector3(0, 1, 0));
-	walkCam.Init(
-		Vector3(-852, 544, -699),
-		Vector3(0, 0, -10),
-		Vector3(0, 1, 0),
-		100
-	);
-	currentCam = &walkCam;
-	m_travelzonedown = hitbox::generatehitbox(Vector3(52, 579, 1310), 600, 500, 600, 0);
+    walkCam.Init(
+        Vector3(-852, 544, -699),
+        Vector3(0, 0, -10),
+        Vector3(0, 1, 0),
+        100
+        );
+    currentCam = &walkCam;
+    m_travelzonedown = hitbox::generatehitbox(Vector3(52, 579, 1310), 600, 500, 600, 0);
     for (int i = 0; i < NUM_GEOMETRY; ++i)
     {
         meshList[i] = NULL;
     }
 
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1,1,1),1.f );
+    meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1, 1, 1), 1.f);
     meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference");//, 1000, 1000, 1000);
-	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateQuad("minimap", Color(0, 0, 0), 2);
-	meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//crosshair.tga");
+    meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateQuad("minimap", Color(0, 0, 0), 2);
+    meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//crosshair.tga");
     meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_TEXT]->textureID = LoadTGA("Image//sfont2.tga");
     meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
 
-	meshList[GEO_MINIMAP] = MeshBuilder::GenerateQuad("minimap", Color(1, 1, 1), 2);
-	meshList[GEO_MINIMAP]->textureID = LoadTGA("Image//minimap.tga");
+    meshList[GEO_MINIMAP] = MeshBuilder::GenerateQuad("minimap", Color(1, 1, 1), 2);
+    meshList[GEO_MINIMAP]->textureID = LoadTGA("Image//minimap.tga");
 
 	meshList[GEO_MINIMAP_AVATAR] = MeshBuilder::GenerateQuad("minimap_avatar", Color(1, 1, 1), 2);
 	meshList[GEO_MINIMAP_AVATAR]->textureID = LoadTGA("Image//minimap_avatar.tga");
@@ -254,31 +220,15 @@ void SceneSP3::Init()
 	meshList[GEO_MINIMAP_ARROW_UP] = MeshBuilder::GenerateQuad("minimap_arrowup", Color(0, 1.f, 0), 3.5f);
 	meshList[GEO_MINIMAP_ARROW_UP]->textureID = LoadTGA("Image//minimap_arrow_u.tga");
 
- //   meshList[GEO_TERRAIN0] = MeshBuilder::GenerateTerrain("terrain", "Image//Area0.raw", m_heightMap[0]);
-
-	//meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("terrain", "Image//Area02.raw", m_heightMap[2]);
-	//meshList[GEO_TERRAIN3] = MeshBuilder::GenerateTerrain("terrain", "Image//Area03.raw", m_heightMap[3]);
-	//meshList[GEO_TERRAIN4] = MeshBuilder::GenerateTerrain("terrain", "Image//Area04.raw", m_heightMap[4]);
-    // meshList[GEO_TERRAIN]->textureArray[0] = LoadTGA("Image//rock.tga");
-	//meshList[GEO_TERRAIN1] = MeshBuilder::GenerateTerrain("terrain", "Image//Area01.raw", m_heightMap[1]);
-	//meshList[GEO_TERRAIN1]->textureArray[0] = LoadTGA("Image//rock.tga");
-	//meshList[GEO_TERRAIN2] = MeshBuilder::GenerateTerrain("terrain", "Image//Area02.raw", m_heightMap[2]);
-	//meshList[GEO_TERRAIN2]->textureArray[0] = LoadTGA("Image//rock.tga");
-	//meshList[GEO_TERRAIN3] = MeshBuilder::GenerateTerrain("terrain", "Image//Area03.raw", m_heightMap[3]);
-	//meshList[GEO_TERRAIN3]->textureArray[0] = LoadTGA("Image//rock.tga");
-	//meshList[GEO_TERRAIN4] = MeshBuilder::GenerateTerrain("terrain", "Image//Area04.raw", m_heightMap[4]);
-	//meshList[GEO_TERRAIN4]->textureArray[0] = LoadTGA("Image//rock.tga");
-
-    //meshList[GEO_TERRAIN]->textureArray[1] = LoadTGA("Image//ForestMurky.tga");
-
-	meshList[GEO_FISHMODEL] = MeshBuilder::GenerateOBJ("fishModel", "Models//OBJ//rcfish.obj");
-	meshList[GEO_FISHMODEL]->textureArray[0] = LoadTGA("Image//RCfish.tga");
-	meshList[GEO_FISHTAIL] = MeshBuilder::GenerateOBJ("fishModel", "Models//OBJ//rctail.obj");
+    meshList[GEO_FISHMODEL] = MeshBuilder::GenerateOBJ("fishModel", "Models//OBJ//rcfish.obj");
+    meshList[GEO_FISHMODEL]->textureArray[0] = LoadTGA("Image//RCfish.tga");
+    meshList[GEO_FISHTAIL] = MeshBuilder::GenerateOBJ("fishModel", "Models//OBJ//rctail.obj");
 
     meshList[GEO_MINNOW] = MeshBuilder::GenerateOBJ("minnow", "Models//OBJ//minnow.obj");
-	meshList[GEO_MINNOW]->textureArray[0] = LoadTGA("Image//minnow.tga");
+    meshList[GEO_MINNOW]->textureArray[0] = LoadTGA("Image//minnow.tga");
 
-	meshList[GEO_LASER] = MeshBuilder::GenerateOBJ("beam", "Models//OBJ//laser.obj");
+    meshList[GEO_LASER] = MeshBuilder::GenerateOBJ("beam", "Models//OBJ//laser.obj");
+    meshList[GEO_LASER]->textureArray[0] = LoadTGA("Image//laser.tga");
 
     meshList[GEO_CORAL] = MeshBuilder::GenerateOBJ("coral health", "Models//OBJ//coral_1.obj");
     meshList[GEO_CORAL]->textureArray[0] = LoadTGA("Image//coral_1.tga");
@@ -316,10 +266,6 @@ void SceneSP3::Init()
     meshList[GEO_BALL] = MeshBuilder::GenerateSphere("ball", Color(0, 0, 0), 16, 16, 1.f);
     meshList[GEO_BALL2] = MeshBuilder::GenerateSphere("ball", Color(1, 0, 0), 16, 16, 1.f);
 
-    // Object
-    //meshList[OBJ_NAME] = MeshBuilder::GenerateOBJ("", "OBJ//.obj");
-    //meshList[OBJ_NAME]->textureArray[0] = LoadTGA("Image//.tga");
-
     // Particles
     meshList[GEO_BUBBLE] = MeshBuilder::GenerateQuad("bubble", Color(1, 0, 0), 1.f);
     meshList[GEO_BUBBLE]->textureArray[0] = LoadTGA("Image//bubble.tga");
@@ -334,10 +280,12 @@ void SceneSP3::Init()
     meshList[GEO_HUD_BOSSHEALTH]->textureID = LoadTGA("Image//boss_hp_front.tga");
 
     meshList[GEO_PLAYERHEALTH] = MeshBuilder::GenerateLine("player health", Color(1.f, 0.7f, 0.7f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
-	meshList[GEO_PLAYERSTAMINA] = MeshBuilder::GenerateLine("player Stamina", Color(0.7f, 0.7f, 1.f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
+    meshList[GEO_PLAYERSTAMINA] = MeshBuilder::GenerateLine("player Stamina", Color(0.7f, 0.7f, 1.f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
 
-    //meshList[GEO_PLAYERHEALTH] = MeshBuilder::GenerateLine("player health", Color(1.f, 0.7f, 0.7f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
-    //meshList[GEO_PLAYERSTAMINA] = MeshBuilder::GenerateLine("player Stamina", Color(0.7f, 0.7f, 1.f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
+    meshList[GEO_TVICTORY] = MeshBuilder::GenerateQuad("hud victory", Color(1, 0, 0), 2.f);
+    meshList[GEO_TVICTORY]->textureID = LoadTGA("Image//victory.tga");
+    meshList[GEO_TCREDITS] = MeshBuilder::GenerateQuad("hud credits", Color(1, 0, 0), 2.f);
+    meshList[GEO_TCREDITS]->textureID = LoadTGA("Image//credits.tga");
 
     // Death Screen
     meshList[GEO_TBORDER] = MeshBuilder::GenerateQuad("border", Color(1, 0, 0), 2);
@@ -363,8 +311,13 @@ void SceneSP3::Init()
     meshList[GEO_CHIMERA_HUD]->textureID = LoadTGA("Image//chimera_icon.tga");
     meshList[GEO_PUFFER_HUD] = MeshBuilder::GenerateQuad("hud puffer", Color(1, 0, 0), 2);
     meshList[GEO_PUFFER_HUD]->textureID = LoadTGA("Image//puffer_icon.tga");
-    
-	fontData = LoadFontData("Image//FontData.csv");
+
+    meshList[GEO_CORAL_HUD] = MeshBuilder::GenerateQuad("hud coral", Color(1, 0, 0), 2);
+    meshList[GEO_CORAL_HUD]->textureID = LoadTGA("Image//heal_icon.tga");
+    meshList[GEO_CORAL2_HUD] = MeshBuilder::GenerateQuad("hud coral 2", Color(1, 0, 0), 2);
+    meshList[GEO_CORAL2_HUD]->textureID = LoadTGA("Image//boost_icon.tga");
+
+    fontData = LoadFontData("Image//FontData.csv");
 
     // Instruction Screen
     meshList[GEO_INSTRUCTION] = MeshBuilder::GenerateQuad("instructions", Color(1, 0, 0), 2.f);
@@ -378,19 +331,6 @@ void SceneSP3::Init()
     meshList[GEO_TRESUME] = MeshBuilder::GenerateQuad("resume", Color(1, 0, 0), 2.f);
     meshList[GEO_TRESUME]->textureID = LoadTGA("Image//resume.tga");
 
-    // Shadow
-    //meshList[GEO_LIGHT_DEPTH_QUAD] = MeshBuilder::GenerateQuad("Shadow Test", 1, 1);
-    //meshList[GEO_LIGHT_DEPTH_QUAD]->textureArray[0] = m_lightDepthFBO.GetTexture();
-
-    // Sprite
-    //meshList[SPRITE_NAME] = MeshBuilder::GenerateSpriteAnimation("", 1, 5);
-    //meshList[SPRITE_NAME]->textureArray[0] = LoadTGA("");
-
-    //SPRITENAME = dynamic_cast<SpriteAnimation*>(meshList[SPRITE_NAME]);
-
-
-	//SharedData::GetInstance()->SD_CurrentArea = 0;
-
     // Hitbox generation
 	playerpos = Vector3(0, 0, 0);
 	player_box = hitbox2::generatehitbox(playerpos, 10, 10, 10);
@@ -399,19 +339,6 @@ void SceneSP3::Init()
 	m_spCount = 0;
 	m_fireRate = 0;
 	vrotate = 0;
-    //if (SPRITENAME)
-    //{
-    //    SPRITENAME->m_anim = new Animation();
-    //    SPRITENAME->m_anim->Set(0, 4, 0, 1.f, true);
-    //    SPRITENAME->SpritePos = Vector3(-80.f, 15.f + 350.f * ReadHeightMap(m_heightMap, -80.f / 3000.f, 0.f / 3000.f), 0.f);
-    //    SPRITENAME->m_anim->moveable = true;
-    //}
-
-    // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 1000 units
-    //Mtx44 perspective;
-    //perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
-    //perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
-    // projectionStack.LoadMatrix(perspective);
 
     sliderTranslate = -100.f;
     fogThickness = 0.f;
@@ -421,17 +348,6 @@ void SceneSP3::Init()
 
     m_particleCount = 0;
     m_gravity.Set(0, -9.8f, 0);
-
-	//init Minnow for test
-	//Minnow *fo = FetchFO();
-	//fo->active = true;
-	//fo->objectType = GameObject::SEACREATURE;
-	//fo->seaType = SeaCreature::MINNOW;
-	//fo->state = Minnow::FLOCK;
-	//fo->scale.Set(1, 1, 5);
-	//fo->pos.Set(0,600,0);
-	//fo->vel.Set(0,0,0);
-	//fo->setHealth(50);
 	
 	walkCam.yOffset = 100;
 
@@ -447,44 +363,12 @@ void SceneSP3::Init()
 	skipper->setTarget(skipper);
     skipper->setTimerReceieveDamage(0.0);
     skipper->setIsDead(false);
-    skipper->setHealthPackCount(3);
-    skipper->setStaminaPackCount(3);
+    skipper->setHealthPackCount(0);
+    skipper->setStaminaPackCount(0);
     if (SharedData::GetInstance()->SD_PlayerHealth != 0)
         skipper->setHealth(SharedData::GetInstance()->SD_PlayerHealth);
     seaList.push_back(skipper);
     SharedData::GetInstance()->SD_IsImmobile = false;
-
-    //skipper->collision = hitbox2::generatehitbox(minnowLeader->pos, 10, 10, 10);
-
- //   minnowLeader = new Minnow();
- //   minnowLeader->active = true;
- //   minnowLeader->objectType = GameObject::SEACREATURE;
- //   minnowLeader->seaType = SeaCreature::MINNOW;
- //   minnowLeader->state = Minnow::FLOCK;
- //   minnowLeader->setHealth(50);
- //   minnowLeader->setisLeader(true);
- //   minnowLeader->scale.Set(1, 1, 1);
- //   minnowLeader->pos.Set(Math::RandFloatMinMax(-100, 100), Math::RandFloatMinMax(400, 600), Math::RandFloatMinMax(-100, 100));
- //   minnowLeader->vel.Set(Math::RandFloatMinMax(-10, 10), 0, Math::RandFloatMinMax(-10, 10));
- //   minnowLeader->collision = hitbox2::generatehitbox(minnowLeader->pos, 10, 10, 10);
- //   g_MinnowLeaderCount++;
- //   m_goList.push_back(minnowLeader);
-
- //   for (int i = 0; i < 10; i++)
- //   {
- //       Minnow *fo = FetchMinnow();
- //       fo->active = true;
- //       fo->objectType = GameObject::SEACREATURE;
- //       fo->seaType = SeaCreature::MINNOW;
- //       fo->state = Minnow::FLOCK;
- //       fo->setisLeader(false);
- //       fo->scale.Set(1, 1, 1);
- //       fo->pos.Set(Math::RandFloatMinMax(-200, -100), Math::RandFloatMinMax(400, 600), Math::RandFloatMinMax(-100, 100));
- //       fo->vel.Set(Math::RandFloatMinMax(-10, 10), 0, Math::RandFloatMinMax(-10, 10));
- //       fo->collision = hitbox2::generatehitbox(fo->pos, 10, 10, 10);
- //       fo->setHealth(10);
- //       g_MinnowCount++;
- //   }
 
     t_stuckPrevention = 0.0;
 
@@ -969,17 +853,6 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 							text->setIsEnemy(false);
 						}
 					}
-
-
-					/*if (I_displacement.LengthSquared() > 500 * 500)
-					{
-						d->vel = I_displacement.Normalized() * 5;
-						d->m_state = Drone::STRAFE;
-					}
-
-					if (sc->getHealth() <= 0)
-						sc->active = false;
-			*/
 					break;
 				}
 					
@@ -1005,41 +878,38 @@ void SceneSP3::UpdateSeaCreatures(double dt)
                             fishVel *= -1.f;
                             walkCam.Move(fishVel * (float)dt);
 
-								//skipper->setHealth(skipper->getHealth() - 10);
-								UpdateCapturedPuff(10);
+							UpdateCapturedPuff(10);
 
-								puffer->scale = Vector3(10, 10, 10);
-								puffer->pstate = Pufferfish::ENRAGED;
-							}
-
-							puffer->pos += puffer->vel * dt;
-
-							break;
+							puffer->scale = Vector3(10, 10, 10);
+							puffer->pstate = Pufferfish::ENRAGED;
 						}
-						case Pufferfish::ENRAGED:
-						{
-							if (displacement.LengthSquared() > 400 * 400)
-							{
-								puffer->vel *= -1.f;
-								puffer->scale = Vector3(5, 5, 5);
-								puffer->pstate = Pufferfish::IDLE;
-							}
+						puffer->pos += puffer->vel * dt;
 
-							if (collision(puffer->collision, player_box) && skipper->getTimerReceieveDamage() > 1.0)
-							{
-								skipper->setTimerReceieveDamage(0.0);
+					break;
+					}
+					case Pufferfish::ENRAGED:
+					{
+						if (displacement.LengthSquared() > 400 * 400)
+						{
+							puffer->vel *= -1.f;
+							puffer->scale = Vector3(5, 5, 5);
+							puffer->pstate = Pufferfish::IDLE;
+						}
+
+						if (collision(puffer->collision, player_box) && skipper->getTimerReceieveDamage() > 1.0)
+						{
+							skipper->setTimerReceieveDamage(0.0);
 
                             puffer->setMoveCoolDown(0.0);
                             puffer->vel *= -1.f;
 
-								if (fishVel.Length() < 3)
-									fishVel = Vector3(5, 5, 5);
+						    if (fishVel.Length() < 3)
+							    fishVel = Vector3(5, 5, 5);
 
                             fishVel *= -1.f;
                             walkCam.Move(fishVel * (float)dt);
 
-								//skipper->setHealth(skipper->getHealth() - 20);
-								UpdateCapturedPuff(20);
+						    UpdateCapturedPuff(20);
 
                         }
 
@@ -1064,9 +934,9 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 							puffer->setMoveCoolDown(puffer->getMoveCoolDown() + dt);
 							puffer->pos += puffer->vel * dt;
 
-							break;
-						}
-						}
+					    break;
+					}
+					}
 
                     // terrain collision
                     if (terraincollision(puffer->collision, m_heightMap[SharedData::GetInstance()->SD_CurrentArea]))
@@ -1169,7 +1039,6 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
                         	fishVel *= -1.f;
 
-							//skipper->setHealth(skipper->getHealth() - 20);
 							UpdateCapturedPuff(20);
 
     
@@ -1217,13 +1086,9 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
                         	fishVel *= -1.f;
 
-                        //skipper->setHealth(skipper->getHealth() - 20);
-						UpdateCapturedPuff(20);
-
-                    }
-
+						    UpdateCapturedPuff(20);
+                        }
 						chimera->UpdateChimera(dt);
-
 						break;
 					}
 					}
@@ -1684,27 +1549,8 @@ void SceneSP3::Update(double dt)
     UpdatePauseScreen(dt);
     UpdateDeathScreen(dt);
 
-    if (GetKeyState('1', KEY_STATUS_DOWN))
-        glEnable(GL_CULL_FACE);
-    if (GetKeyState('2', KEY_STATUS_DOWN))
-        glDisable(GL_CULL_FACE);
-    if (GetKeyState('3', KEY_STATUS_DOWN))
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    if (GetKeyState('4', KEY_STATUS_CUR))
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    //if (GetKeyState('I', KEY_STATUS_DOWN))
-    //    lights[0].position.z -= (float)(100.f * dt);
-    //if (GetKeyState('K', KEY_STATUS_DOWN))
-    //    lights[0].position.z += (float)(100.f * dt);
-    //if (GetKeyState('J', KEY_STATUS_DOWN))
-    //    lights[0].position.x -= (float)(100.f * dt);
-    //if (GetKeyState('L', KEY_STATUS_DOWN))
-    //    lights[0].position.x += (float)(100.f * dt);
-    //if (GetKeyState('O', KEY_STATUS_DOWN))
-    //    lights[0].position.y -= (float)(100.f * dt);
-    //if (GetKeyState('P', KEY_STATUS_DOWN))
-    //    lights[0].position.y += (float)(100.f * dt);
+    if (GetKeyState(VK_NUMPAD9, KEY_STATUS_DOWN))
+        SharedData::GetInstance()->SD_TurnFPSOn = !SharedData::GetInstance()->SD_TurnFPSOn;
 
     if (GetKeyState(VK_NUMPAD1, KEY_STATUS_DOWN))
         giantSquid->setHealth(0);
@@ -1725,6 +1571,8 @@ void SceneSP3::Update(double dt)
 
     if (Application::IsMousePressed(0) && m_fireRate > 0.25f)
     {
+        Application::ShootSound = Application::SoundEngine->play2D("audio//shoot.wav", false, true);
+
         Projectile *po = FetchPO();
 
         static const float focusLength = 300.f;
@@ -1739,8 +1587,6 @@ void SceneSP3::Update(double dt)
         po->scale.Set(10, 10, 10);
         po->pos = playerpos;
 
-        //po->vel = (focusPoint - playerpos).Normalized();
-        //po->vel += fishVel;
         po->setLifetime(3.0);
         Vector3 bulletDirection = focusPoint - playerpos;
         bulletDirection.Normalize();
@@ -1748,7 +1594,6 @@ void SceneSP3::Update(double dt)
         m_fireRate = 0.f;
     }
     
-    //camera.Update(dt);
 	m_fireRate += dt;
     Vector3 temp = walkCam.GetPos();
     Vector3 right = walkCam.GetDir().Cross(walkCam.GetUp());
@@ -1924,40 +1769,9 @@ void SceneSP3::Update(double dt)
             SharedData::GetInstance()->SD_IsImmobile = true;
         }
 
-        if (GetKeyState('H', KEY_STATUS_DOWN))
+        if (GetKeyState(VK_NUMPAD8, KEY_STATUS_DOWN))
             skipper->setHealth(0);
     }
-
- //   // Fog & Blending
-	//if (blendFactor < 1.0f)
-	//	blendFactor = 1.f;
-	//else
- //       blendFactor = 0;
-
-    //glUniform1f(m_parameters[U_TEXTURE_BLEND_FACTOR], blendFactor);
-
-    //    fogThickness += (1.f / 100.f);
-
-    //glUniform1f(m_parameters[U_FOG_THICKNESS], fogThickness);
-    //fogThickness = 0;
-
-    // Sprite
-    //SPRITENAME = dynamic_cast<SpriteAnimation*>(meshList[SPRITE_NAME]);
-
-    //SPRITENAME->Update(dt);
-    //SPRITENAME->m_anim->animActive = true;
-
-    //for (auto it : m_goList)
-    //{
-    //    GameObject* go = (GameObject*)it;
-    //    if (go->active)
-    //    {
-    //        if ((go->pos - playerpos).LengthSquared() < 500000)
-    //            go->inRange = true;
-    //        else
-    //            go->inRange = false;
-    //    }
-    //}
 
 	for (std::vector<GameObject *>::iterator it = seaList.begin(); it != seaList.end(); ++it)
 	{
@@ -2113,6 +1927,15 @@ void SceneSP3::Update(double dt)
 	{
 		skipper->setTarget(skipper);
 	}
+
+    if (SharedData::GetInstance()->SD_ToMenu)
+    {
+        Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
+        Application::sceneManager->SetMenuScene(new SceneMenu());
+        Application::sceneManager->GetMenuScreen()->Init();
+        Application::sceneManager->SetCurrentScene(Application::sceneManager->GetMenuScreen());
+        SharedData::GetInstance()->SD_ToMenu = false;
+    }
 }
 
 void SceneSP3::UpdateKeys()
@@ -2133,7 +1956,7 @@ void SceneSP3::UpdatePauseFunction()
 {
     if (GetKeyState(VK_ESCAPE, KEY_STATUS_DOWN) && !skipper->getIsDead() && SharedData::GetInstance()->SD_ContinueInstruction1 && SharedData::GetInstance()->SD_ContinueInstruction2)
     {
-        SharedData::GetInstance()->SD_PauseMenu = !SharedData::GetInstance()->SD_PauseMenu;
+        SharedData::GetInstance()->SD_PauseMenu = true;
 		pauseChoice = 0;
 	}
 }
@@ -2375,7 +2198,7 @@ void SceneSP3::UpdateSpawner(double dt)
                 c->pos.Set(tv.x, tv.y, tv.z);
                 c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
                 c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10, NULL);
-                c->setHealth(50);
+                c->setHealth(200);
                 g_ChimeraCount++;
             }
         }
@@ -2408,278 +2231,328 @@ void SceneSP3::UpdateSpawner(double dt)
 
 void SceneSP3::UpdateSquadFire(double dt)
 {
-	for (std::vector<GameObject *>::iterator it = SharedData::GetInstance()->SD_CapturedList.begin(); it != SharedData::GetInstance()->SD_CapturedList.end(); ++it)
-	{
-		GameObject *go = (GameObject *)*it;
-		if (go->active)
-		{
-			if (go->objectType == GameObject::CAPTURED)
-			{
-				SeaCreature *other = (SeaCreature *)*it;
-				if (skipper->getTarget()->objectType != GameObject::PLAYER && skipper->getTarget()->active == true)
-				{
+    for (std::vector<GameObject *>::iterator it = SharedData::GetInstance()->SD_CapturedList.begin(); it != SharedData::GetInstance()->SD_CapturedList.end(); ++it)
+    {
+        GameObject *go = (GameObject *)*it;
+        if (go->active)
+        {
+            if (go->objectType == GameObject::CAPTURED)
+            {
+                SeaCreature *other = (SeaCreature *)*it;
+                if (skipper->getTarget()->objectType != GameObject::PLAYER && skipper->getTarget()->active == true)
+                {
 
-					if (other->getDebounceTimer() > 3 && (other->seaType == SeaCreature::MINNOW || other->seaType == SeaCreature::CUTTLE))
-					{
-						for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
-						{
-							GameObject *go2 = (GameObject *)*it2;
-							if (go2 == skipper->getTarget())
-							{
-								Projectile *po = FetchPO();
-								po->setLifetime(10);
-								po->objectType = GameObject::PROJECTILE;
-								po->projectileType = Projectile::SBULLET;
-								po->active = true;
-								po->scale.Set(1, 1, 1);
-								po->pos.Set(other->pos.x, other->pos.y, other->pos.z);
-								Vector3 view = (skipper->getTarget()->pos - other->pos).Normalized();
-								if (go2->objectType == GameObject::BOSS)
-								{
-									Boss *boss = (Boss *)*it2;
+                    if (other->getDebounceTimer() > 3 && (other->seaType == SeaCreature::MINNOW || other->seaType == SeaCreature::CUTTLE))
+                    {
+                        for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+                        {
+                            GameObject *go2 = (GameObject *)*it2;
+                            if (go2 == skipper->getTarget())
+                            {
+                                Projectile *po = FetchPO();
+                                po->setLifetime(10);
+                                po->objectType = GameObject::PROJECTILE;
+                                po->projectileType = Projectile::SBULLET;
+                                po->active = true;
+                                po->scale.Set(1, 1, 1);
+                                po->pos.Set(other->pos.x, other->pos.y, other->pos.z);
+                                Vector3 view = (skipper->getTarget()->pos - other->pos).Normalized();
+                                if (go2->objectType == GameObject::BOSS)
+                                {
+                                    Boss *boss = (Boss *)*it2;
 
-									switch (boss->bossType)
-									{
-									case Boss::FRILLEDSHARK:
-									{
-										FrilledShark *fs = (FrilledShark *)*it2;
-										view = (fs->pos - other->pos).Normalized();
-									}break;
-									case Boss::GIANTCRAB:
-									{
-										GiantCrab *fs = (GiantCrab *)*it2;
-										view = (fs->m_hitbox.m_position - other->pos).Normalized();
-									}break;
-									case Boss::ISOPOD:
-									{
-										Isopod *fs = (Isopod *)*it2;
-										view = (fs->m_hitbox.m_position - other->pos).Normalized();
-									}break;
-									case Boss::GIANTSQUID:
-									{
-										Boss *another = (Boss *)*it2;
-										view = (another->collision.m_position - other->pos).Normalized();
-									}break;
-									}
-								}
-								else
-								{
-									view = (go2->pos - other->pos).Normalized();
+                                    switch (boss->bossType)
+                                    {
+                                    case Boss::FRILLEDSHARK:
+                                    {
+                                        FrilledShark *fs = (FrilledShark *)*it2;
+                                        view = (fs->pos - other->pos).Normalized();
+                                    }break;
+                                    case Boss::GIANTCRAB:
+                                    {
+                                        GiantCrab *fs = (GiantCrab *)*it2;
+                                        view = (fs->m_hitbox.m_position - other->pos).Normalized();
+                                    }break;
+                                    case Boss::ISOPOD:
+                                    {
+                                        Isopod *fs = (Isopod *)*it2;
+                                        view = (fs->m_hitbox.m_position - other->pos).Normalized();
+                                    }break;
+                                    case Boss::GIANTSQUID:
+                                    {
+                                        Boss *another = (Boss *)*it2;
+                                        view = (another->collision.m_position - other->pos).Normalized();
+                                    }break;
+                                    }
+                                }
+                                else
+                                {
+                                    view = (go2->pos - other->pos).Normalized();
 
-								}
-
-
-								po->vel.Set(view.x * 10, view.y * 10, view.z * 10);
-								other->setDebounceTimer(0);
-							}
-						}
-
-					}
-					else
-					{
-						other->setDebounceTimer(other->getDebounceTimer() + dt);
-					}
-
-					if (other->seaType == SeaCreature::FCRAB)
-					{
-						Minnow* other2 = (Minnow*)*it;
-						
-							if (skipper->getTarget()->objectType == GameObject::BOSS)
-							{
-								for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
-								{
-									GameObject* another = (GameObject*)*it2;
-									if (another->objectType == GameObject::BOSS)
-									{
-										Boss* another = (Boss*)*it2;
-										if (!(another->collision.m_position - other->pos).IsZero())
-										{
-											Vector3 Dir = (another->collision.m_position - other->pos).Normalized();
-											other->vel += other->cohesion(another->collision.m_position, Dir) + other->alignment(0);
-										}
-									}
-								}
-							}
-							else if (skipper->getTarget()->objectType == GameObject::SEACREATURE)
-							{
-								if (!(skipper->getTarget()->pos - other->pos).IsZero())
-								{
-									Vector3 Dir = (skipper->getTarget()->pos - other->pos).Normalized();
-									other->vel += other->cohesion(skipper->getTarget()->pos, Dir) + other->alignment(0);
-								}
-							}					
-						else
-						{
-							float dist = (skipper->getTarget()->pos - other->pos).LengthSquared();
-							if (!(skipper->getTarget()->pos - other->pos).IsZero() && dist > 1000)
-							{
-								Vector3 Dir(0, 0, 0);
-								if (!(skipper->getTarget()->pos - other->pos).IsZero())
-									Dir = (skipper->getTarget()->pos - other->pos).Normalize();
-								other->vel += other->cohesion(skipper->getTarget()->pos, Dir) + other->alignment(0);
-							}
-							else
-							{
-								Vector3 Dir(0, 0, 0);
-								if (!(skipper->getTarget()->pos - other->pos).IsZero())
-									Dir = (skipper->getTarget()->pos - other->pos).Normalize();
-								other->vel = Dir * 30;
-
-							}
-						}
-
-						if (other->getDebounceTimer() > 3)//&& (collision(another->collision, go->pos)))
-						{
-							if (skipper->getTarget()->objectType == GameObject::BOSS)
-							{
-								for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
-								{
-									Boss* another = (Boss*)*it2;
-									if (another->objectType == GameObject::BOSS && collision(another->collision, other->pos))
-									{
-										if (another->bossType == Boss::GIANTCRAB)
-										{
-											GiantCrab* gcrab = (GiantCrab*)*it2;
-
-											if (gcrab->GetState() == GiantCrab::GRAB)
-												gcrab->SetState(GiantCrab::STRAFE);
-
-										}
-										another->setHealth(another->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-
-										DamageText* text = FetchTO();
-										text->setActive(true);
-										text->setLastHitPos(another->pos);
-										text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-										text->setScaleText(Vector3(0, 0, 0));
-										cout << skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()) << endl;
-										other->setDebounceTimer(0);
-
-										int random = 0;
-										random = rand() % 10 + 1;
-										if (random <= 2)
-										{
-											another->isstunned = true;
-											another->StunDuration = 1.5f;
-										}
-									}
-								}
-							}
-							else if (skipper->getTarget()->objectType == GameObject::SEACREATURE)//(other->pos - skipper->getTarget()->pos).LengthSquared() <= 50)
-							{
-								for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
-								{
-									GameObject*go2 = (GameObject*)* it2;
-									if (go2 == skipper->getTarget())
-									{
-										SeaCreature *another = (SeaCreature*)*it2;
-										if (another->objectType == GameObject::SEACREATURE && (other->pos - skipper->getTarget()->pos).LengthSquared() <= 1000)
-										{
-											another->setHealth(another->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-
-											DamageText* text = FetchTO();
-											text->setActive(true);
-											text->setLastHitPos(another->pos);
-											text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-											text->setScaleText(Vector3(0, 0, 0));
-											cout << skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()) << endl;
-											other->setDebounceTimer(0);
-
-											int random = 0;
-											random = rand() % 10 + 1;
-											if (random <= 5)
-											{
-												another->isstunned = true;
-												another->StunDuration = 1.5f;
-											}
-										}
-									}
-								}								
-							}
-
-							else
-							{
-								other->setDebounceTimer(other->getDebounceTimer() + dt);
-							}
-						}
-					}
-				}
-
-				if (other->seaType == SeaCreature::CUTTLE && ((other->getDebounceTimer() == 0 || other->getDebounceTimer() >= 3)))
-				{
-					for (std::vector<GameObject *>::iterator it2 = SharedData::GetInstance()->SD_CapturedList.begin(); it2 != SharedData::GetInstance()->SD_CapturedList.end(); ++it2)
-					{
-						SeaCreature* another = (SeaCreature*)* it2;
-						if (another->seaType != SeaCreature::CUTTLE)
-						{
-							if (another->getHealth() <= 90)
-							{
-								another->setHealth(another->getHealth() + 10);
-								cout << another->getHealth() << endl;
-
-								DamageText* text = FetchTO();
-								text->setActive(true);
-								text->setLastHitPos(another->pos + Vector3(0, 3.f, 0));
-								text->setLastDamage(10);
-								text->setScaleText(Vector3(0, 0, 0));
-								text->setIsEnemy(false);
-								text->setIsHeal(true);
-								text->setIsStamina(false);
-							}
-							else
-							{
-								another->setHealth(100);
-							}
-						}
-					}
-					if (skipper->getHealth() <= 500)
-					{
-						skipper->setHealth(skipper->getHealth() + 10);
-						
-						DamageText* text = FetchTO();
-						text->setActive(true);
-						text->setLastHitPos(playerpos + fishVel + Vector3(0, 3.f, 0));
-						text->setLastDamage(10);
-						text->setScaleText(Vector3(0, 0, 0));
-						text->setIsEnemy(false);
-						text->setIsHeal(true);
-						text->setIsStamina(false);
-					}
-					else
-					{
-						skipper->setHealth(500);
-					}
-					other->setDebounceTimer(0.001);
-				}
-				else if (other->seaType == SeaCreature::CUTTLE)
-				{
-					other->setDebounceTimer(other->getDebounceTimer() + dt);
-				}
+                                }
 
 
-				if (other->seaType == SeaCreature::CHIMERA)
-				{
-					Chimera *c = (Chimera *)*it;
+                                po->vel.Set(view.x * 10, view.y * 10, view.z * 10);
+                                other->setDebounceTimer(0);
+                            }
+                        }
 
-					for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
-					{
-						GameObject *go2 = (GameObject *)*it2;
-						if (go2 == skipper->getTarget())
-						{
-							Vector3 displacement = go2->pos - other->pos;
+                    }
+                    else
+                    {
+                        other->setDebounceTimer(other->getDebounceTimer() + dt);
+                    }
 
-							c->rotate = -(Math::RadianToDegree(atan2(displacement.x, displacement.z)));
-							Vector3 direction = Vector3(Math::RadianToDegree(cos(Math::DegreeToRadian(c->rotate + 90))), displacement.y * 4, Math::RadianToDegree(sin(Math::DegreeToRadian(c->rotate + 90))));
-							c->vel = direction.Normalized() * 110;
-						}
-					}
-				}
-				
+                    if (other->seaType == SeaCreature::FCRAB)
+                    {
+                        Minnow* other2 = (Minnow*)*it;
 
+                        if (skipper->getTarget()->objectType == GameObject::BOSS)
+                        {
+                            for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+                            {
+                                GameObject* another = (GameObject*)*it2;
+                                if (another->objectType == GameObject::BOSS)
+                                {
+                                    Boss* another = (Boss*)*it2;
+                                    if (!(another->collision.m_position - other->pos).IsZero())
+                                    {
+                                        Vector3 Dir = (another->collision.m_position - other->pos).Normalized();
+                                        other->vel += other->cohesion(another->collision.m_position, Dir) + other->alignment(0);
+                                    }
+                                }
+                            }
+                        }
+                        else if (skipper->getTarget()->objectType == GameObject::SEACREATURE)
+                        {
+                            if (!(skipper->getTarget()->pos - other->pos).IsZero())
+                            {
+                                Vector3 Dir = (skipper->getTarget()->pos - other->pos).Normalized();
+                                other->vel += other->cohesion(skipper->getTarget()->pos, Dir) + other->alignment(0);
+                            }
+                        }
+                        else
+                        {
+                            float dist = (skipper->getTarget()->pos - other->pos).LengthSquared();
+                            if (!(skipper->getTarget()->pos - other->pos).IsZero() && dist > 1000)
+                            {
+                                Vector3 Dir(0, 0, 0);
+                                if (!(skipper->getTarget()->pos - other->pos).IsZero())
+                                    Dir = (skipper->getTarget()->pos - other->pos).Normalize();
+                                other->vel += other->cohesion(skipper->getTarget()->pos, Dir) + other->alignment(0);
+                            }
+                            else
+                            {
+                                Vector3 Dir(0, 0, 0);
+                                if (!(skipper->getTarget()->pos - other->pos).IsZero())
+                                    Dir = (skipper->getTarget()->pos - other->pos).Normalize();
+                                other->vel = Dir * 30;
 
-			}
-		}
-	}
+                            }
+                        }
+
+                        if (other->getDebounceTimer() > 3)//&& (collision(another->collision, go->pos)))
+                        {
+                            if (skipper->getTarget()->objectType == GameObject::BOSS)
+                            {
+                                for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+                                {
+                                    Boss* another = (Boss*)*it2;
+                                    if (another->objectType == GameObject::BOSS && collision(another->collision, other->pos))
+                                    {
+                                        if (another->bossType == Boss::GIANTCRAB)
+                                        {
+                                            GiantCrab* gcrab = (GiantCrab*)*it2;
+
+                                            if (gcrab->GetState() == GiantCrab::GRAB)
+                                                gcrab->SetState(GiantCrab::STRAFE);
+
+                                        }
+                                        another->setHealth(another->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+                                        DamageText* text = FetchTO();
+                                        text->setActive(true);
+                                        text->setLastHitPos(another->pos);
+                                        text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                                        text->setScaleText(Vector3(0, 0, 0));
+                                        other->setDebounceTimer(0);
+
+                                        int random = 0;
+                                        random = rand() % 10 + 1;
+                                        if (random <= 2)
+                                        {
+                                            another->isstunned = true;
+                                            another->StunDuration = 1.5f;
+                                        }
+                                    }
+                                }
+                            }
+                            else if (skipper->getTarget()->objectType == GameObject::SEACREATURE)//(other->pos - skipper->getTarget()->pos).LengthSquared() <= 50)
+                            {
+                                for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+                                {
+                                    GameObject*go2 = (GameObject*)* it2;
+                                    if (go2 == skipper->getTarget())
+                                    {
+                                        SeaCreature *another = (SeaCreature*)*it2;
+                                        if (another->objectType == GameObject::SEACREATURE && (other->pos - skipper->getTarget()->pos).LengthSquared() <= 1000)
+                                        {
+                                            another->setHealth(another->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+                                            DamageText* text = FetchTO();
+                                            text->setActive(true);
+                                            text->setLastHitPos(another->pos);
+                                            text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                                            text->setScaleText(Vector3(0, 0, 0));
+                                            other->setDebounceTimer(0);
+
+                                            int random = 0;
+                                            random = rand() % 10 + 1;
+                                            if (random <= 5)
+                                            {
+                                                another->isstunned = true;
+                                                another->StunDuration = 1.5f;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            else
+                            {
+                                other->setDebounceTimer(other->getDebounceTimer() + dt);
+                            }
+                        }
+                    }
+                    if (other->seaType == SeaCreature::CHIMERA)
+                    {
+                        Chimera *c = (Chimera *)*it;
+
+                        for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+                        {
+                            GameObject *go2 = (GameObject *)*it2;
+                            if (go2 == skipper->getTarget())
+                            {
+                                Vector3 displacement = go2->pos - other->pos;
+
+                                c->rotate = -(Math::RadianToDegree(atan2(displacement.x, displacement.z)));
+                                Vector3 direction = Vector3(Math::RadianToDegree(cos(Math::DegreeToRadian(c->rotate + 90))), displacement.y * 4, Math::RadianToDegree(sin(Math::DegreeToRadian(c->rotate + 90))));
+                                c->vel = direction.Normalized() * 110;
+                                if (other->getDebounceTimer() > 3)
+                                {
+                                    if (skipper->getTarget()->objectType == GameObject::BOSS)
+                                    {
+                                        for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+                                        {
+                                            Boss* another = (Boss*)*it2;
+                                            if (another->objectType == GameObject::BOSS && (another->pos-other->pos).LengthSquared() < 1000)
+                                            {
+                                                if (another->bossType == Boss::GIANTCRAB)
+                                                {
+                                                    GiantCrab* gcrab = (GiantCrab*)*it2;
+
+                                                    if (gcrab->GetState() == GiantCrab::GRAB)
+                                                        gcrab->SetState(GiantCrab::STRAFE);
+
+                                                }
+                                                another->setHealth(another->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+                                                DamageText* text = FetchTO();
+                                                text->setActive(true);
+                                                text->setLastHitPos(another->pos);
+                                                text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                                                text->setScaleText(Vector3(0, 0, 0));
+                                                other->setDebounceTimer(0);
+                                            }
+                                        }
+                                    }
+                                    else if (skipper->getTarget()->objectType == GameObject::SEACREATURE)//(other->pos - skipper->getTarget()->pos).LengthSquared() <= 50)
+                                    {
+                                        for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+                                        {
+                                            GameObject*go2 = (GameObject*)* it2;
+                                            if (go2 == skipper->getTarget())
+                                            {
+                                                SeaCreature *another = (SeaCreature*)*it2;
+                                                if (another->objectType == GameObject::SEACREATURE && (other->pos - skipper->getTarget()->pos).LengthSquared() <= 1000)
+                                                {
+                                                    another->setHealth(another->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+                                                    DamageText* text = FetchTO();
+                                                    text->setActive(true);
+                                                    text->setLastHitPos(another->pos);
+                                                    text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                                                    text->setScaleText(Vector3(0, 0, 0));
+                                                    other->setDebounceTimer(0);
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                else
+                                {
+                                    other->setDebounceTimer(other->getDebounceTimer() + dt);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (other->seaType == SeaCreature::CUTTLE && ((other->getDebounceTimer() == 0 || other->getDebounceTimer() >= 3)))
+                {
+                    for (std::vector<GameObject *>::iterator it2 = SharedData::GetInstance()->SD_CapturedList.begin(); it2 != SharedData::GetInstance()->SD_CapturedList.end(); ++it2)
+                    {
+                        SeaCreature* another = (SeaCreature*)* it2;
+                        if (another->seaType != SeaCreature::CUTTLE)
+                        {
+                            if (another->getHealth() <= 90)
+                            {
+                                another->setHealth(another->getHealth() + 10);
+                                cout << another->getHealth() << endl;
+
+                                DamageText* text = FetchTO();
+                                text->setActive(true);
+                                text->setLastHitPos(another->pos + Vector3(0, 3.f, 0));
+                                text->setLastDamage(10);
+                                text->setScaleText(Vector3(0, 0, 0));
+                                text->setIsEnemy(false);
+                                text->setIsHeal(true);
+                                text->setIsStamina(false);
+                            }
+                            else
+                            {
+                                another->setHealth(100);
+                            }
+                        }
+                    }
+                    if (skipper->getHealth() <= 500)
+                    {
+                        skipper->setHealth(skipper->getHealth() + 10);
+
+                        DamageText* text = FetchTO();
+                        text->setActive(true);
+                        text->setLastHitPos(playerpos + fishVel + Vector3(0, 3.f, 0));
+                        text->setLastDamage(10);
+                        text->setScaleText(Vector3(0, 0, 0));
+                        text->setIsEnemy(false);
+                        text->setIsHeal(true);
+                        text->setIsStamina(false);
+                    }
+                    else
+                    {
+                        skipper->setHealth(500);
+                    }
+                    other->setDebounceTimer(0.001);
+                }
+                else if (other->seaType == SeaCreature::CUTTLE)
+                {
+                    other->setDebounceTimer(other->getDebounceTimer() + dt);
+                }
+            }
+        }
+    }
 }
 
 void SceneSP3::UpdateStunned(double dt)
@@ -2836,7 +2709,6 @@ void SceneSP3::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, flo
 		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
 		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
-		//cout << text[i] << endl;
 		mesh->Render((unsigned)text[i] * 6, 6);
 
 		currentOffset += fd.GetBWRatio((unsigned)text[i]);
@@ -3142,7 +3014,6 @@ void SceneSP3::RenderParticles()
             case PARTICLEOBJECT_TYPE::P_PARTICLE:
                 modelStack.PushMatrix();
                 modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
-                //modelStack.Rotate(particle->rotation, 0, 1, 0);
                 modelStack.Scale(0.2, 0.2, 0.2);
                 RenderMesh(meshList[GEO_CUBE], false);
                 modelStack.PopMatrix();
@@ -3531,7 +3402,7 @@ void SceneSP3::RenderCoral(Coral *co)
 
 void SceneSP3::RenderPO(Projectile *po)
 {
-    if (po->projectileType == Projectile::PBULLET)
+    if (po->projectileType == Projectile::PBULLET || po->projectileType == Projectile::SBULLET)
     {
         modelStack.PushMatrix();
         modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
@@ -3552,14 +3423,6 @@ void SceneSP3::RenderPO(Projectile *po)
         modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
         modelStack.Scale(po->scale.x, po->scale.y, po->scale.z);
         RenderMesh(meshList[GEO_BALL], false);
-        modelStack.PopMatrix();
-    }
-    else if (po->projectileType == Projectile::SBULLET)
-    {
-        modelStack.PushMatrix();
-        modelStack.Translate(po->pos.x, po->pos.y, po->pos.z);
-        modelStack.Scale(po->scale.x, po->scale.y, po->scale.z);
-        RenderMesh(meshList[GEO_BALL2], false);
         modelStack.PopMatrix();
     }
 }
@@ -3706,7 +3569,7 @@ void SceneSP3::RenderDeathScreen()
         case RESPAWN:
         {
             RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, 1.0f);
-            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 35.f, 6.f, 0.f, 0.0f);
+            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 50.f, 6.f, 0.f, 0.0f);
 			RenderMeshIn2D(meshList[GEO_TMENU], false, 20.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
             break;
@@ -3715,7 +3578,7 @@ void SceneSP3::RenderDeathScreen()
         {
             RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -11.0f);
             RenderMeshIn2D(meshList[GEO_TMENU], false, 30.f, 5.f, 0.f, -10.0f);
-            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
+            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 40.f, 5.f, 0.f, 0.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
             break;
         }
@@ -3724,7 +3587,7 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -21.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 5.f, 0.f, -20.0f);
             RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
-            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 25.f, 5.f, 0.f, 0.0f);
+            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 40.f, 5.f, 0.f, 0.0f);
             break;
         }
         }
@@ -3810,8 +3673,15 @@ void SceneSP3::RenderObjectiveHUD()
 
 void SceneSP3::RenderCoralHUD()
 {
-    RenderMeshIn2D(meshList[GEO_MINNOW_HUD], false, 5, 5, 35, -50);
-    RenderMeshIn2D(meshList[GEO_MINNOW_HUD], false, 5, 5, 40, -55);
+    RenderMeshIn2D(meshList[GEO_CORAL_HUD], false, 5, 5, 35, -44);
+    std::ostringstream ss; 
+    ss << skipper->getHealthPackCount();
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 59, 5);
+
+    RenderMeshIn2D(meshList[GEO_CORAL2_HUD], false, 5, 5, 40, -54);
+    ss.str("");
+    ss << skipper->getStaminaPackCount();
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 61.5f, 0);
 }
 
 void SceneSP3::RenderSquadHUD()
@@ -3819,34 +3689,52 @@ void SceneSP3::RenderSquadHUD()
     RenderMeshIn2D(meshList[GEO_MINNOW_HUD], false, 5, 5, 75, 30);
     std::ostringstream ss;
     ss << g_countCapturedMinnow;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 44);
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 42);
 
     RenderMeshIn2D(meshList[GEO_PUFFER_HUD], false, 5, 5, 75, 20);
     ss.str("");
     ss << g_countCapturedPuffer;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 39);
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 37);
 
     RenderMeshIn2D(meshList[GEO_CRAB_HUD], false, 5, 5, 75, 10);
     ss.str("");
     ss << g_countCapturedCrab;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 34);
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 32);
 
     RenderMeshIn2D(meshList[GEO_CUTTLE_HUD], false, 5, 5, 75, 0);
     ss.str("");
     ss << g_countCapturedCuttle;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 29);
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 27);
 
     RenderMeshIn2D(meshList[GEO_CHIMERA_HUD], false, 5, 5, 75, -10);
     ss.str("");
     ss << g_countCapturedChimera;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 24);
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 22);
+}
+
+void SceneSP3::RenderVictoryScreen()
+{
+    RenderMeshIn2D(meshList[GEO_TVICTORY], false, 80, 60);
+}
+
+void SceneSP3::RenderCreditsScreen()
+{
+    RenderMeshIn2D(meshList[GEO_TCREDITS], false, 80, 60);
 }
 
 void SceneSP3::RenderHUD()
 {
-    float barscale = 50.f;
 	glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 
+    if (GetKeyState(VK_NUMPAD5, KEY_STATUS_DOWN))
+    {
+        SharedData::GetInstance()->SD_BossDead1 = true;
+        SharedData::GetInstance()->SD_BossDead2 = true;
+        SharedData::GetInstance()->SD_BossDead3 = true;
+        SharedData::GetInstance()->SD_BossDead4 = true;
+    }
+
+    float barscale = 50.f;
     for (std::vector<GameObject *>::iterator it = seaList.begin(); it != seaList.end(); ++it)
     {
         GameObject* go = (GameObject*)*it;
@@ -3908,7 +3796,7 @@ void SceneSP3::RenderHUD()
                 if ((bo->pos - playerpos).LengthSquared() < 800 * 800 && !SharedData::GetInstance()->SD_BossDead4)
 				{
 					boss_name << "great isopod";
-					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49);
+					RenderTextOnScreen(meshList[GEO_TEXT], boss_name.str(), Color(0.7, 0.7, 0.7), 5, 34, 49, fontData);
 
 					float percentage = (100.f / 1000.f) * (float)bo->getHealth();
 					float healthscale = (barscale / 100) * percentage;
@@ -3923,10 +3811,28 @@ void SceneSP3::RenderHUD()
         }
     }
 
+    RenderObjectiveHUD();
+
+    if (SharedData::GetInstance()->SD_TurnFPSOn)
+    {
+        std::ostringstream ss;
+        ss.precision(3);
+        ss << "FPS: " << fps;
+        RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
+    }
+
+    if (SharedData::GetInstance()->SD_PauseMenu)
+    {
+        RenderPauseScreen();
+        isGamePaused = true;
+    }
+
+    RenderDeathScreen();
+
     if (!SharedData::GetInstance()->SD_DoneTutorial)
     {
         isGamePaused = true;
-        //cout << isGamePaused << endl;
+
         if (SharedData::GetInstance()->SD_SceneLoaded && SharedData::GetInstance()->SD_ContinueInstruction1 && SharedData::GetInstance()->SD_ContinueInstruction2)
         {
             SharedData::GetInstance()->SD_DoneTutorial = true;
@@ -3951,27 +3857,47 @@ void SceneSP3::RenderHUD()
 
         if (SharedData::GetInstance()->SD_ContinueInstruction1 && !SharedData::GetInstance()->SD_ContinueInstruction2)
             RenderMeshIn2D(meshList[GEO_INSTRUCTION2], false, 45, 50);
-
     }
 
+    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
     RenderSquadHUD();
-    RenderObjectiveHUD();
+    RenderMinimap();
     RenderCoralHUD();
 
-    RenderMinimap();
-
-    std::ostringstream ss;
-    ss.precision(3);
-    ss << "FPS: " << fps;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
-
-    if (SharedData::GetInstance()->SD_PauseMenu)
+    // Victory & Credits Screen
+    if (SharedData::GetInstance()->SD_BossDead1 &&
+        SharedData::GetInstance()->SD_BossDead2 &&
+        SharedData::GetInstance()->SD_BossDead3 &&
+        SharedData::GetInstance()->SD_BossDead4)
     {
-        RenderPauseScreen();
         isGamePaused = true;
-    }
 
-    RenderDeathScreen();
+        if (SharedData::GetInstance()->SD_ContinueVictoryScreen)
+            RenderCreditsScreen();
+
+        if (!SharedData::GetInstance()->SD_ContinueVictoryScreen)
+            RenderVictoryScreen();
+
+        if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && !SharedData::GetInstance()->SD_ContinueVictoryScreen)
+            SharedData::GetInstance()->SD_ContinueVictoryScreen = true;
+        else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && SharedData::GetInstance()->SD_ContinueVictoryScreen && !SharedData::GetInstance()->SD_ContinueCreditsScreen)
+            SharedData::GetInstance()->SD_ContinueCreditsScreen = true;
+
+        if (SharedData::GetInstance()->SD_BossDead1 &&
+            SharedData::GetInstance()->SD_BossDead2 &&
+            SharedData::GetInstance()->SD_BossDead3 &&
+            SharedData::GetInstance()->SD_BossDead4 &&
+            SharedData::GetInstance()->SD_ContinueVictoryScreen &&
+            SharedData::GetInstance()->SD_ContinueCreditsScreen)
+        {
+            isGamePaused = false;
+            SharedData::GetInstance()->SD_BossDead1 = false;
+            SharedData::GetInstance()->SD_BossDead2 = false;
+            SharedData::GetInstance()->SD_BossDead3 = false;
+            SharedData::GetInstance()->SD_BossDead4 = false;
+            SharedData::GetInstance()->SD_ToMenu = true;
+        }
+    }
 
 	glUniform1i(m_parameters[U_FOG_ENABLE], 1);
 }

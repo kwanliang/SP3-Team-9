@@ -28,8 +28,6 @@ public:
 	void RenderPassMain();
 	void RenderWorld();
 	void RenderTerrain();
-    void RenderDescription();
-    void RenderControls();
     
 
 private:

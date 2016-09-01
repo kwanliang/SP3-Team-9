@@ -36,24 +36,6 @@ void SceneTutorial::Init()
 	
 }
 
-void SceneTutorial::RenderDescription()
-{
-    glBlendFunc(GL_ONE, GL_ONE);
-    RenderMeshIn2D(meshList[GEO_TLAYER], false, 20, 20);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-}
-
-void SceneTutorial::RenderControls()
-{
-    glBlendFunc(GL_ONE, GL_ONE);
-    RenderMeshIn2D(meshList[GEO_TLAYER], false, 20, 20);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-}
-
 void SceneTutorial::RenderTerrain()
 {
     modelStack.PushMatrix();
@@ -65,6 +47,9 @@ void SceneTutorial::RenderTerrain()
 void SceneTutorial::RenderWorld()
 {
     RenderTerrain();
+
+    SceneSP3::RenderLoop();
+
     modelStack.PushMatrix();
     modelStack.Translate(playerpos.x, playerpos.y + 5, playerpos.z);
     modelStack.Rotate(90 + fishRot.y, 0, 1, 0);
@@ -94,15 +79,6 @@ void SceneTutorial::RenderPassGPass()
 
     glUseProgram(m_gPassShaderID);
     RenderWorld();
-    //these matrices define shadows from light position/direction
-    //if (lights[0].type == Light::LIGHT_DIRECTIONAL)
-    //	m_lightDepthProj.SetToOrtho(-1000, 1000, -1000, 1000, -8000, 8000);
-    //else
-    //	m_lightDepthProj.SetToPerspective(90, 1.f, 0.1, 20);
-
-    //m_lightDepthView.SetToLookAt(lights[0].position.x, lights[0].position.y, lights[0].position.z, 0, 0, 0, 0, 1, 0);
-
-
 }
 
 void SceneTutorial::RenderPassMain()
@@ -123,95 +99,19 @@ void SceneTutorial::RenderPassMain()
 
     glUniform1i(m_parameters[U_SHADOW_MAP], 8);
     glUniform1i(m_parameters[U_FOG_ENABLE], 1);
-    //Mtx44 perspective;
-    //perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
-    ////perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
-    //projectionStack.LoadMatrix(perspective);
 
-    // Camera matrix
-    /*viewStack.LoadIdentity();
-    viewStack.LookAt(
-    camera.position.x, camera.position.y, camera.position.z,
-    camera.target.x, camera.target.y, camera.target.z,
-    camera.up.x, camera.up.y, camera.up.z
-    );*/
     projectionStack.LoadMatrix(currentCam->GetProjection());
     viewStack.LoadMatrix(currentCam->GetView());
     // Model matrix : an identity matrix (model will be at the origin)
     modelStack.LoadIdentity();
     RenderWorld();
-    /*if (lights[0].type == Light::LIGHT_DIRECTIONAL)
-    {
-    Vector3 lightDir(lights[0].position.x, lights[0].position.y, lights[0].position.z);
-    Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-    glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-    }
-    else if (lights[0].type == Light::LIGHT_SPOT)
-    {
-    Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
-    glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-    Vector3 spotDirection_cameraspace = viewStack.Top() * lights[0].spotDirection;
-    glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-    }
-    else
-    {
-    Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
-    glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-    }
-
-    if (lights[1].type == Light::LIGHT_DIRECTIONAL)
-    {
-    Vector3 lightDir(lights[1].position.x, lights[1].position.y, lights[1].position.z);
-    Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-    glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
-    }
-
-
-    if (lights[2].type == Light::LIGHT_SPOT)
-    {
-    Position lightPosition_cameraspace = viewStack.Top() * lights[2].position;
-    glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightPosition_cameraspace.x);
-    Vector3 spotDirection_cameraspace = viewStack.Top() * lights[2].spotDirection;
-    glUniform3fv(m_parameters[U_LIGHT2_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-    }
-    */
-    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-
-    //modelStack.PushMatrix();
-    //modelStack.Translate(0, 300, 0);
-    //modelStack.Rotate(Math::RadianToDegree(sin(rotater)), 0, 1, 0);
-    //modelStack.Scale(50, 50, 50);
-    //RenderMesh(meshList[GEO_CUBE], false);
-    //modelStack.PopMatrix();
-
+   
     // Render the crosshair
-    SceneSP3::RenderLoop();
+
     SceneSP3::RenderParticles();
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 
-    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
-
-    RenderMesh(meshList[GEO_AXES], false);
-
-    SceneSP3::RenderMinimap();
     SceneSP3::RenderHUD();
-
-    modelStack.PushMatrix();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-    modelStack.Translate(m_travelzonedown.m_position.x, m_travelzonedown.m_position.y, m_travelzonedown.m_position.z);
-    modelStack.Scale(m_travelzonedown.m_width, m_travelzonedown.m_height, m_travelzonedown.m_length);
-    RenderMesh(meshList[GEO_CUBE], false);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-    modelStack.PopMatrix();
-
-
-    modelStack.PushMatrix();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-    modelStack.Translate(m_travelzoneup.m_position.x, m_travelzoneup.m_position.y, m_travelzoneup.m_position.z);
-    modelStack.Scale(m_travelzoneup.m_width, m_travelzoneup.m_height, m_travelzoneup.m_length);
-    RenderMesh(meshList[GEO_CUBE], false);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-    modelStack.PopMatrix();
 
     for (std::vector<DamageText *>::iterator it = m_textList.begin(); it != m_textList.end(); ++it)
     {
@@ -219,11 +119,6 @@ void SceneTutorial::RenderPassMain()
         if (to->getActive())
             RenderTO(to);
     }
-
-    std::ostringstream ss;
-    ss.precision(3);
-    ss << "FPS: " << fps;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
 }
 
 

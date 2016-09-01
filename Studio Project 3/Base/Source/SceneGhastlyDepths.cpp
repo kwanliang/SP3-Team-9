@@ -18,9 +18,6 @@ SceneGhastlyDepths::~SceneGhastlyDepths()
 void SceneGhastlyDepths::Init()
 {
 	SceneSP3::Init();
-    //glClearColor(0.1f, 0.2f, 0.2f, 0.0f);
-    //Color fogColor(0.1f, 0.2f, 0.2f);
-    //glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
 	glClearColor(0.3f, 0.1f, 0.9f, 0.f);
 	Color fogColor(0.3f, 0.1f, 0.9f);
 	glUniform3fv(m_parameters[U_FOG_COLOR], 1, &fogColor.r);
@@ -72,24 +69,9 @@ void SceneGhastlyDepths::Init()
 
 	m_travelzonedown = hitbox::generatehitbox(Vector3(327, 188, 1750), 150, 500, 700, NULL);
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1084, 557, -1199), 500, 700, 500, NULL);
-	//m_travelzonedown = hitbox::generatehitbox(Vector3(52,579,1310),600,500,600,0);
 
 	frilledshark = new FrilledShark();
 	seaList.push_back(frilledshark);
-	//frilledshark->active = true;
-
-	/*for (unsigned i = 0; i <= 20; i++)
-	{
-		Cuttlefish* c = FetchCuttle();
-		c->pos = Vector3(Math::RandFloatMinMax(-300, 300), Math::RandFloatMinMax(200, 600), Math::RandFloatMinMax(-300, 300));
-		c->objectType = GameObject::SEACREATURE;
-		c->seaType = SeaCreature::CUTTLE;
-		c->ctstate = Cuttlefish::IDLE;
-		c->scale.Set(4, 4, 4);
-		c->setHealth(10);
-	}*/
-
-
 }
 
 void SceneGhastlyDepths::RenderBoss()
@@ -122,8 +104,6 @@ void SceneGhastlyDepths::RenderBoss()
         modelStack.PopMatrix();
 
     }
-
-
 }
 
 void SceneGhastlyDepths::RenderTerrain()
@@ -199,132 +179,23 @@ void SceneGhastlyDepths::RenderPassMain()
 	glUniform1i(m_parameters[U_SHADOW_MAP], 8);
 	glUniform1i(m_parameters[U_FOG_ENABLE], 1);//fog
 
-
-
-	//Mtx44 perspective;
-	//perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
-	////perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
-	//projectionStack.LoadMatrix(perspective);
-
-	// Camera matrix
-	/*viewStack.LoadIdentity();
-	viewStack.LookAt(
-	camera.position.x, camera.position.y, camera.position.z,
-	camera.target.x, camera.target.y, camera.target.z,
-	camera.up.x, camera.up.y, camera.up.z
-	);*/
 	projectionStack.LoadMatrix(currentCam->GetProjection());
 	viewStack.LoadMatrix(currentCam->GetView());
 	// Model matrix : an identity matrix (model will be at the origin)
 	modelStack.LoadIdentity();
 	RenderWorld();
 
-	/*if (lights[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(lights[0].position.x, lights[0].position.y, lights[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (lights[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * lights[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	if (lights[1].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(lights[1].position.x, lights[1].position.y, lights[1].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-
-
-	if (lights[2].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * lights[2].position;
-		glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * lights[2].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT2_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-*/
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-	//RenderWorld();
 
-    for (unsigned i = 0; i < 5; i++)
-    {
-
-        modelStack.PushMatrix();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-        modelStack.Translate(frilledshark->m_FSbox[i].m_position.x, frilledshark->m_FSbox[i].m_position.y, frilledshark->m_FSbox[i].m_position.z);
-        modelStack.Scale(frilledshark->m_FSbox[i].m_width, frilledshark->m_FSbox[i].m_height, frilledshark->m_FSbox[i].m_length);
-        RenderMesh(meshList[GEO_CUBE], false);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-        modelStack.PopMatrix();
-
-    }
 
     SceneSP3::RenderParticles();
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 
-    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
-	
-    RenderMesh(meshList[GEO_AXES], false);
-
-    SceneSP3::RenderMinimap();
     SceneSP3::RenderHUD();
 
 	if (m_isStatic && !SharedData::GetInstance()->SD_BossDead3)
 	RenderMeshIn2D(meshList[GEO_STATIC], false, 80.0f, 240.0f,0,m_static);
 
-	modelStack.PushMatrix();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-	modelStack.Translate(m_travelzonedown.m_position.x, m_travelzonedown.m_position.y, m_travelzonedown.m_position.z);
-	modelStack.Scale(m_travelzonedown.m_width, m_travelzonedown.m_height, m_travelzonedown.m_length);
-	RenderMesh(meshList[GEO_CUBE], false);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-	modelStack.PopMatrix();
-
-
-	//modelStack.PushMatrix();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-	//modelStack.Translate(m_travelzoneup.m_position.x, m_travelzoneup.m_position.y, m_travelzoneup.m_position.z);
-	//modelStack.Scale(m_travelzoneup.m_width, m_travelzoneup.m_height, m_travelzoneup.m_length);
-	//RenderMesh(meshList[GEO_CUBE], false);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-	//modelStack.PopMatrix();
-
-	//modelStack.PushMatrix();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-	//modelStack.Translate(frilledshark->m_Rwhisker.m_position.x, frilledshark->m_Rwhisker.m_position.y, frilledshark->m_Rwhisker.m_position.z);
-	//modelStack.Scale(frilledshark->m_Rwhisker.m_width, frilledshark->m_Rwhisker.m_height, frilledshark->m_Rwhisker.m_length);
-	//RenderMesh(meshList[GEO_CUBE], false);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-	//modelStack.PopMatrix();
-
-
-	//modelStack.PushMatrix();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-	//modelStack.Translate(m_travelzonedown.m_position.x,m_travelzonedown.m_position.y,m_travelzonedown.m_position.z);
-	//modelStack.Scale(m_travelzonedown.m_width,m_travelzonedown.m_height,m_travelzonedown.m_length);
-	//RenderMesh(meshList[GEO_CUBE], false);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-	//modelStack.PopMatrix();
-
-
-	//modelStack.PushMatrix();
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-	//modelStack.Translate(m_travelzoneup.m_position.x, m_travelzoneup.m_position.y, m_travelzoneup.m_position.z);
-	//modelStack.Scale(m_travelzoneup.m_width, m_travelzoneup.m_height, m_travelzoneup.m_length);
-	//RenderMesh(meshList[GEO_CUBE], false);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-	//modelStack.PopMatrix();
 
     for (std::vector<DamageText *>::iterator it = m_textList.begin(); it != m_textList.end(); ++it)
     {
@@ -373,7 +244,6 @@ void SceneGhastlyDepths::Update(double dt)
 		{
 			if (collision(frilledshark->m_FSbox[i], player_box))
 			{
-				//std::cout << "test" << std::endl;
 				if (frilledshark->m_state == FrilledShark::CHARGE)
 				{
 					fishVel = ((frilledshark->m_FSbox[i].m_position - playerpos).Normalize() * -20);
@@ -402,14 +272,10 @@ void SceneGhastlyDepths::Update(double dt)
 
 void SceneGhastlyDepths::StaticLoop(double dt)
 {
-	//179
 	if (m_static < 179)
 		m_static += 1000 * dt;
 	else
 		m_static = -179;
-
-
-
 }
 
 void SceneGhastlyDepths::Exit()

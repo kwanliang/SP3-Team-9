@@ -66,6 +66,8 @@ public:
 	void RenderSquadHUD();
     void RenderObjectiveHUD();
     void RenderCoralHUD(); 
+    void RenderVictoryScreen();
+    void RenderCreditsScreen();
 
 	void UpdateTravel();
     void UpdateSeaCreatures(double dt);
@@ -334,6 +336,7 @@ protected:
         GEO_TSTART,
         GEO_TQUIT,
         GEO_TLOADING,
+        GEO_TLOADINGNAME,
         GEO_MFISH,
 
         GEO_TBORDER,
@@ -341,6 +344,9 @@ protected:
         GEO_TDIED,
         GEO_TRESPAWN,
         GEO_TTOMENU,
+
+        GEO_TVICTORY,
+        GEO_TCREDITS,
 
         GEO_TPAUSE,
         GEO_TRESUME,
@@ -353,6 +359,9 @@ protected:
         GEO_CRAB_HUD,
         GEO_CHIMERA_HUD,
         GEO_PUFFER_HUD,
+
+        GEO_CORAL_HUD,
+        GEO_CORAL2_HUD,
 
 		NUM_GEOMETRY,
 	};

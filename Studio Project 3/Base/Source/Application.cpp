@@ -21,6 +21,9 @@ double Application::camera_yaw = 0.0, Application::camera_pitch = 0.0;
 int Application::m_window_width = 800;
 int Application::m_window_height = 600;
 
+ISoundEngine *Application::SoundEngine = NULL;
+ISound *Application::ShootSound = NULL;
+
 //Define an error callback
 static void error_callback(int error, const char* description)
 {
@@ -164,6 +167,31 @@ void Application::Init()
     sceneManager->GetMenuScreen()->Init();
     sceneManager->SetLoadingScene(new SceneLoading());
     sceneManager->GetLoadingScreen()->Init();
+
+    SoundEngine = createIrrKlangDevice();
+
+    //BGM1 = NULL;
+    //BGM2 = NULL;
+    //BGM3 = NULL;
+    //BGM4 = NULL;
+    //MenuSound = NULL;
+    //BoostSound = NULL;
+    //FCrabSound = NULL;
+    //DroneBiteSound = NULL;
+    //FrilledSharkSound1 = NULL;
+    //FrilledSharkSound2 = NULL;
+    //ChimeraSound = NULL;
+    //GiantCrabSound = NULL;
+    //GiantCrabSoundAggro = NULL;
+    //GiantCrabSoundVortex = NULL;
+    //GiantSquid = NULL;
+    //HitSound = NULL;
+    //InkSound = NULL;
+    //IsopodSound = NULL;
+    //MoveSound = NULL;
+    ShootSound = NULL;
+    //VacuumSound = NULL;
+    //PopSound = NULL;
 }
 
 void Application::Run()
@@ -190,7 +218,7 @@ void Application::Run()
 		glfwPollEvents();
 		m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
 	}
-	std::cout << SharedData::GetInstance()->SD_QuitGame << std::endl;
+    SoundEngine->drop();
 	//Check if the ESC key had been pressed or if the window had been closed
 	while (SharedData::GetInstance()->SD_CapturedList.size() > 0)
 	{

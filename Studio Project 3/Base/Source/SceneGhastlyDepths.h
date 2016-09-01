@@ -27,25 +27,12 @@ public:
 
 private:
 
-    // Shadow
-	
-   // Light lights[2];
-
-    //bool bLightEnabled;
-
-   // float fps;
-
-    //Terrain
-    //std::vector<unsigned char> m_heightMap;
-
     FrilledShark* frilledshark;
 
 	//Fish test
 	Capture fishy;
 	float m_static;
 	bool m_isStatic;
-
-	//Cuttlefish* c;
 
 };
 

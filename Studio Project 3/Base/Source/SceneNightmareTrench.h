@@ -26,17 +26,6 @@ public:
 
 private:
 
-    // Shadow
-	
-   // Light lights[2];
-
-    //bool bLightEnabled;
-
-   // float fps;
-
-    //Terrain
-    //std::vector<unsigned char> m_heightMap;
-
 
 	//Fish test
 	Capture fishy;

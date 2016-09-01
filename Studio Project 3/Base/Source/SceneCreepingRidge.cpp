@@ -69,36 +69,9 @@ void SceneCreepingRidge::Init()
 
     }
 
-	//walkCam.Init(
-	//	Vector3(-146, 371, 663),
-	//	Vector3(1, 0, 0.3),
-	//	Vector3(0, 1, 0),
-	//	60);
-
 
     m_travelzoneup = hitbox::generatehitbox(Vector3(-1233, 409, -1263), 600, 500, 600, 0);
     m_travelzonedown = hitbox::generatehitbox(Vector3(-1093, 131, 151), 500, 500, 500, 0);
-
-    //for (int i = 0; i < 20; i++)
-    //{
-    //    Fcrab *c = FetchFCrab();
-    //    c->active = true;
-    //    c->objectType = GameObject::SEACREATURE;
-    //    c->seaType = SeaCreature::FCRAB;
-    //    //c->Cstate = Pufferfish::IDLE;
-    //    c->scale.Set(5, 5, 5);
-    //    float x = Math::RandFloatMinMax(-300, 0);
-    //    float z = Math::RandFloatMinMax(-1000, -800);
-    //    float y = 350.f * ReadHeightMap(m_heightMap[2], x / 3000.f, z / 3000.f) + 4;
-    //    c->pos.Set(x, y, z);
-    //    c->vel.Set(Math::RandFloatMinMax(0, 4), 0, Math::RandFloatMinMax(3, 6));
-    //    c->FCstate = Fcrab::IDLE;
-    //    c->aabb = hitbox::generatehitbox(c->pos, 8, 8, 8, NULL);
-    //    //p->setHealth(200);
-    //    g_FCrabCount++;
-    //}
-
-	//SceneSP3::ReinitCaptured();
     
     giantCrab = new GiantCrab();
     giantCrab->active = true;
@@ -108,7 +81,6 @@ void SceneCreepingRidge::Init()
     giantCrab->scale.Set(30, 30, 30);
     giantCrab->vel.Set(0, 0, 0);
     giantCrab->pos.Set(-445, giantCrab->pos.y = 350.f * ReadHeightMap(m_heightMap[2], giantCrab->pos.x / 3000.f, giantCrab->pos.z / 3000.f) + 170, 904);
-    //giantCrab->direction.Set(1, 0, 0);
     seaList.push_back(giantCrab);
 }
 
@@ -154,35 +126,6 @@ void SceneCreepingRidge::RenderGiantCrab()
     }
     modelStack.PopMatrix();
 
-
-    //modelStack.PushMatrix();//right arm
-    //{
-    //	modelStack.Translate(0.5f, -0.06f, -0.31f);
-    //	modelStack.Rotate(30, 0, 1, 0);
-    //	modelStack.Translate(-0.01f, -0.01f, 0);
-    //	modelStack.Rotate(0 + 50, 0, 0, 1);
-    //	modelStack.Rotate(-20, 1, 0, 0);
-    //	modelStack.Translate(0.01f, 0.01f, 0);
-    //	modelStack.PushMatrix();
-    //	{
-    //		modelStack.Translate(3.1f, 0, 0.4f);
-    //		modelStack.Rotate(70, 0, 0, -1);
-    //		RenderMesh(meshList[GEO_CRAB_ARM_MID], false);
-
-    //		modelStack.PushMatrix();
-    //		{
-    //			modelStack.Translate(0.83f, 0.1, -0.35);
-    //			modelStack.Translate(-0.05f, 0, 0);
-    //			modelStack.Rotate(50, 0, 0, -1);
-    //			modelStack.Translate(0.05f, 0, 0);
-    //			RenderMesh(meshList[GEO_CRAB_ARM_LOWER], false);
-    //		}
-    //		modelStack.PopMatrix();
-    //	}
-    //	modelStack.PopMatrix();
-    //	RenderMesh(meshList[GEO_CRAB_ARM_UPPER], false);
-    //}
-    //modelStack.PopMatrix();
     modelStack.PushMatrix();//right arm 	
     modelStack.Translate(giantCrab->m_Rarm.m_Upos.x, giantCrab->m_Rarm.m_Upos.y, giantCrab->m_Rarm.m_Upos.z);
     modelStack.Rotate(giantCrab->m_Rarm.y_upper + giantCrab->m_rotate, 0, 1, 0);//y axis rot, upper arm
@@ -191,7 +134,6 @@ void SceneCreepingRidge::RenderGiantCrab()
     RenderMesh(meshList[GEO_CRAB_ARM_UPPER], false);
     modelStack.PushMatrix();
     modelStack.Translate(2.8, 0, 0.4);
-    //modelStack.Rotate(0, 0, 0, -1);
     RenderMesh(meshList[GEO_CRAB_ARM_MID], false);
     modelStack.PopMatrix();
 
@@ -211,7 +153,6 @@ void SceneCreepingRidge::RenderGiantCrab()
     RenderMesh(meshList[GEO_CRAB_ARM_UPPER], false);
     modelStack.PushMatrix();
     modelStack.Translate(2.8, 0, 0.4);
-    //modelStack.Rotate(0, 0, 0, -1);
     RenderMesh(meshList[GEO_CRAB_ARM_MID], false);
     modelStack.PopMatrix();
 
@@ -222,34 +163,6 @@ void SceneCreepingRidge::RenderGiantCrab()
     RenderMesh(meshList[GEO_CRAB_ARM_LOWER], false);
     modelStack.PopMatrix();
     modelStack.PopMatrix();
-    //	modelStack.Rotate(-20, 1, 0, 0);
-    //	modelStack.Translate(0.01f, 0.01f, 0);
-    //	modelStack.PushMatrix();
-    //	{
-    //		modelStack.Translate(3.1f, 0, 0.4f);
-    //		modelStack.Rotate(0, 0, 0, -1);
-    //		
-    //		RenderMesh(meshList[GEO_CRAB_ARM_MID], false);
-
-    //		modelStack.PushMatrix();
-    //		{
-    //			modelStack.Translate(0.83f, 0.1, -0.35);
-    //			modelStack.Translate(-0.05f, 0, 0);
-    //			modelStack.Rotate(giantCrab->m_Larm.x_lower, 0, 0, -1);//x axis rot,lower arm
-    //			modelStack.Translate(0.05f, 0, 0);
-    //			
-    //		}
-    //		modelStack.PopMatrix();
-    //	}
-    //	modelStack.PopMatrix();
-    //	RenderMesh(meshList[GEO_CRAB_ARM_UPPER], false);
-    //}
-    //modelStack.PopMatrix();
-
-
-
-
-
 }
 
 void SceneCreepingRidge::RenderTerrain()
@@ -264,6 +177,8 @@ void SceneCreepingRidge::RenderTerrain()
 void SceneCreepingRidge::RenderWorld()
 {
     RenderTerrain();
+
+    SceneSP3::RenderLoop();
 
     modelStack.PushMatrix();
     modelStack.Translate(playerpos.x, playerpos.y + 5, playerpos.z);
@@ -296,15 +211,6 @@ void SceneCreepingRidge::RenderPassGPass()
 
     glUseProgram(m_gPassShaderID);
     RenderWorld();
-    //these matrices define shadows from light position/direction
-    //if (lights[0].type == Light::LIGHT_DIRECTIONAL)
-    //	m_lightDepthProj.SetToOrtho(-1000, 1000, -1000, 1000, -8000, 8000);
-    //else
-    //	m_lightDepthProj.SetToPerspective(90, 1.f, 0.1, 20);
-
-    //m_lightDepthView.SetToLookAt(lights[0].position.x, lights[0].position.y, lights[0].position.z, 0, 0, 0, 0, 1, 0);
-
-    //RenderWorld();
 }
 
 void SceneCreepingRidge::RenderPassMain()
@@ -325,102 +231,19 @@ void SceneCreepingRidge::RenderPassMain()
 
     glUniform1i(m_parameters[U_SHADOW_MAP], 8);
     glUniform1i(m_parameters[U_FOG_ENABLE], 1);
-    //Mtx44 perspective;
-    //perspective.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 10000.0f);
-    ////perspective.SetToOrtho(-80, 80, -60, 60, -1000, 1000);
-    //projectionStack.LoadMatrix(perspective);
 
-    // Camera matrix
-    /*viewStack.LoadIdentity();
-    viewStack.LookAt(
-    camera.position.x, camera.position.y, camera.position.z,
-    camera.target.x, camera.target.y, camera.target.z,
-    camera.up.x, camera.up.y, camera.up.z
-    );*/
     projectionStack.LoadMatrix(currentCam->GetProjection());
     viewStack.LoadMatrix(currentCam->GetView());
     // Model matrix : an identity matrix (model will be at the origin)
     modelStack.LoadIdentity();
     RenderWorld();
-    /*if (lights[0].type == Light::LIGHT_DIRECTIONAL)
-    {
-    Vector3 lightDir(lights[0].position.x, lights[0].position.y, lights[0].position.z);
-    Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-    glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-    }
-    else if (lights[0].type == Light::LIGHT_SPOT)
-    {
-    Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
-    glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-    Vector3 spotDirection_cameraspace = viewStack.Top() * lights[0].spotDirection;
-    glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-    }
-    else
-    {
-    Position lightPosition_cameraspace = viewStack.Top() * lights[0].position;
-    glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-    }
 
-    if (lights[1].type == Light::LIGHT_DIRECTIONAL)
-    {
-    Vector3 lightDir(lights[1].position.x, lights[1].position.y, lights[1].position.z);
-    Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-    glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightDirection_cameraspace.x);
-    }
-
-
-    if (lights[2].type == Light::LIGHT_SPOT)
-    {
-    Position lightPosition_cameraspace = viewStack.Top() * lights[2].position;
-    glUniform3fv(m_parameters[U_LIGHT2_POSITION], 1, &lightPosition_cameraspace.x);
-    Vector3 spotDirection_cameraspace = viewStack.Top() * lights[2].spotDirection;
-    glUniform3fv(m_parameters[U_LIGHT2_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-    }
-    */
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-    //RenderWorld();
 
-    SceneSP3::RenderLoop();
     SceneSP3::RenderParticles();
     glUniform1i(m_parameters[U_FOG_ENABLE], 0);
 
-    RenderMeshIn2D(meshList[GEO_CROSSHAIR], false, 10.0f, 10.0f);
-
-    RenderMesh(meshList[GEO_AXES], false);
-
-    SceneSP3::RenderMinimap();
     SceneSP3::RenderHUD();
-
-
-    std::ostringstream ss;
-    ss.precision(3);
-    ss << "FPS: " << fps;
-    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
-
-    modelStack.PushMatrix();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-	modelStack.Translate(giantCrab->grabArea.m_position.x, giantCrab->grabArea.m_position.y, giantCrab->grabArea.m_position.z);
-	modelStack.Scale(giantCrab->grabArea.m_width, giantCrab->grabArea.m_height, giantCrab->grabArea.m_length);
-    RenderMesh(meshList[GEO_CUBE], false);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-    modelStack.PopMatrix();
-
-
-
-	modelStack.PushMatrix();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-	modelStack.Translate(giantCrab->m_hitbox.m_position.x, giantCrab->m_hitbox.m_position.y, giantCrab->m_hitbox.m_position.z);
-	modelStack.Scale(giantCrab->m_hitbox.m_width, giantCrab->m_hitbox.m_height, giantCrab->m_hitbox.m_length);
-	RenderMesh(meshList[GEO_CUBE], false);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-	modelStack.PopMatrix();
-    //modelStack.PushMatrix();
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	//set to line
-    //modelStack.Translate(m_travelzoneup.m_position.x, m_travelzoneup.m_position.y, m_travelzoneup.m_position.z);
-    //modelStack.Scale(m_travelzoneup.m_width, m_travelzoneup.m_height, m_travelzoneup.m_length);
-    //RenderMesh(meshList[GEO_CUBE], false);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	//set back to fill
-    //modelStack.PopMatrix();
 
     for (std::vector<DamageText *>::iterator it = m_textList.begin(); it != m_textList.end(); ++it)
     {
@@ -444,11 +267,6 @@ void SceneCreepingRidge::Update(double dt)
 {
     SceneSP3::Update(dt);
 
-    //giantCrab->m_rotate = val;
-    //
-
-    //giantCrab->pos.y = 350.f * ReadHeightMap(m_heightMap[2], giantCrab->pos.x / 3000.f, giantCrab->pos.z / 3000.f) + 170;
-    //giantCrab->updateGC(dt);
     if (!SharedData::GetInstance()->SD_BossDead2 && !giantCrab->isstunned && !isGamePaused)
     {
         giantCrab->UpdateGC(dt, m_heightMap[2]);

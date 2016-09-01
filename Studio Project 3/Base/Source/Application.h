@@ -4,6 +4,9 @@
 
 #include "timer.h"
 #include "SceneManager.h"
+#include "irrKlang.h"
+
+using namespace irrklang;
 
 class Application
 {
@@ -30,7 +33,30 @@ public:
 	static double GetAspectRatio();
 
 	static SceneManager *sceneManager;
-    //static SceneSP3* LoadingScreen;
+
+    static ISoundEngine *SoundEngine;
+    //static ISound *BGM1;
+    //static ISound *BGM2;
+    //static ISound *BGM3;
+    //static ISound *BGM4;
+    //static ISound *MenuSound;
+    //static ISound *BoostSound;
+    //static ISound *FCrabSound;
+    //static ISound *DroneBiteSound;
+    //static ISound *FrilledSharkSound1;
+    //static ISound *FrilledSharkSound2;
+    //static ISound *ChimeraSound;
+    //static ISound *GiantCrabSound;
+    //static ISound *GiantCrabSoundAggro;
+    //static ISound *GiantCrabSoundVortex;
+    //static ISound *GiantSquid;
+    //static ISound *HitSound;
+    //static ISound *InkSound;
+    //static ISound *IsopodSound;
+    //static ISound *MoveSound;
+    static ISound *ShootSound;
+    //static ISound *VacuumSound;
+    //static ISound *PopSound;
 
 private:
 	Application();

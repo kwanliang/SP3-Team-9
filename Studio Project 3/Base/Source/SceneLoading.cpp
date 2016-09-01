@@ -65,15 +65,15 @@ void SceneLoading::Init()
     meshList[GEO_TLOADING] = MeshBuilder::GenerateQuad("loading screen", Color(0, 0, 0), 2);
 	meshList[GEO_TLOADING]->textureID = LoadTGA("Image//long_title.tga");
 
-	//meshList[GEO_VACUUM] = MeshBuilder::GenerateQuad("vacuum", Color(1, 0, 0), 1.f);
-	//meshList[GEO_VACUUM]->textureID = LoadTGA("Image//vacuum.tga");
+    meshList[GEO_TLOADINGNAME] = MeshBuilder::GenerateQuad("loading screen name", Color(0, 0, 0), 2);
+    meshList[GEO_TLOADINGNAME]->textureID = LoadTGA("Image//loading.tga");
 }
 
 void SceneLoading::Render()
 {
 	glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 	RenderMeshIn2D(meshList[GEO_TLOADING], false, 250, 75);
-	//RenderMeshIn2D(meshList[GEO_VACUUM], false, 10.0f, 10.0f, 0, 0, 0 );
+    RenderMeshIn2D(meshList[GEO_TLOADINGNAME], false, 10.0f, 10.0f);
 }
 
 void SceneLoading::Update(double dt)
@@ -84,6 +84,7 @@ void SceneLoading::Update(double dt)
 void SceneLoading::Exit()
 {
     delete meshList[GEO_TLOADING];
+    delete meshList[GEO_TLOADINGNAME];
 
     glDeleteProgram(m_programID);
     glDeleteVertexArrays(1, &m_vertexArrayID);
