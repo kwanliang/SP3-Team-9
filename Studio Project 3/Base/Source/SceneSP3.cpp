@@ -249,6 +249,10 @@ void SceneSP3::Init()
 	meshList[GEO_MINIMAP_GHOSTSHARK] = MeshBuilder::GenerateSphere("minimap_ghostshark", Color(0.1, 0.9f, 0.4f), 16, 16, 1.2f);
 	meshList[GEO_MINIMAP_PUFFER] = MeshBuilder::GenerateSphere("minimap_puffer", Color(0.9f, 0.9f, 0.2f), 16, 16);
 	meshList[GEO_MINIMAP_BOSS] = MeshBuilder::GenerateSphere("minimap_boss", Color(1, 0.25f, 0.25f), 16, 16);
+	meshList[GEO_MINIMAP_ARROW_DOWN] = MeshBuilder::GenerateQuad("minimap_arrowdown", Color(0, 0.5f, 0), 3.5f);
+	meshList[GEO_MINIMAP_ARROW_DOWN]->textureID = LoadTGA("Image//minimap_arrow_d.tga");
+	meshList[GEO_MINIMAP_ARROW_UP] = MeshBuilder::GenerateQuad("minimap_arrowup", Color(0, 1.f, 0), 3.5f);
+	meshList[GEO_MINIMAP_ARROW_UP]->textureID = LoadTGA("Image//minimap_arrow_u.tga");
 
  //   meshList[GEO_TERRAIN0] = MeshBuilder::GenerateTerrain("terrain", "Image//Area0.raw", m_heightMap[0]);
 
@@ -2106,21 +2110,27 @@ void SceneSP3::UpdatePauseScreen(double dt)
 	    if (GetKeyState(VK_UP, KEY_STATUS_DOWN))
 		    --pauseChoice;
 
-        if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 0)
-        {
-            SharedData::GetInstance()->SD_PauseMenu = false;
-            isGamePaused = false;
-        }
-        else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 1)
-        {
-            isGamePaused = false;
-            Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
-            Application::sceneManager->SetMenuScene(new SceneMenu());
-            Application::sceneManager->GetMenuScreen()->Init();
-            Application::sceneManager->SetCurrentScene(Application::sceneManager->GetMenuScreen());
-        }
-        else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 2)
-            SharedData::GetInstance()->SD_QuitGame = true;
+		if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN))
+		{
+			switch (pauseChoice)
+			{
+			case 0:
+				SharedData::GetInstance()->SD_PauseMenu = false;
+				isGamePaused = false;
+				break;
+			case 1:
+				Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
+				Application::sceneManager->SetMenuScene(new SceneMenu());
+				Application::sceneManager->GetMenuScreen()->Init();
+				Application::sceneManager->SetCurrentScene(Application::sceneManager->GetMenuScreen());
+				isGamePaused = false;
+				break;
+			case 2:
+				SharedData::GetInstance()->SD_QuitGame = true;
+				isGamePaused = false;
+				break;
+			}
+		}
 
         pauseChoice = min(max(pauseChoice, 0), 2);
     }
@@ -3946,6 +3956,54 @@ void SceneSP3::RenderMinimap()
 
 		//More ObjectTypes goes below here.
 
+		}
+	}
+
+	{
+		Vector3 p1;
+
+		if (SharedData::GetInstance()->SD_CurrentArea != (unsigned)SharedData::A_TUTORIAL)
+		{
+			p1 = m_travelzoneup.m_position - playerpos;
+			{
+				Mtx44 rot;
+				rot.SetToRotation(angle, 0, 1, 0);
+				p1 = rot * p1;
+			}
+
+			Vector2 p2;
+			p2.Set(p1.x * scale, -p1.z * scale);
+
+			const float range = 14.5f;
+
+			if (p2.LengthSquared() > range * range)
+				p2.Normalize() *= range;
+
+			Vector2 r = mPos + p2;
+
+			RenderMeshIn2D(meshList[GEO_MINIMAP_ARROW_UP], false, 1.f, 1.f, r.x, r.y);
+		}
+
+		if (SharedData::GetInstance()->SD_CurrentArea != (unsigned)SharedData::A_NIGHTMARETRENCH)
+		{
+			p1 = m_travelzonedown.m_position - playerpos;
+			{
+				Mtx44 rot;
+				rot.SetToRotation(angle, 0, 1, 0);
+				p1 = rot * p1;
+			}
+
+			Vector2 p2;
+			p2.Set(p1.x * scale, -p1.z * scale);
+
+			const float range = 14.5f;
+
+			if (p2.LengthSquared() > range * range)
+				p2.Normalize() *= range;
+
+			Vector2 r = mPos + p2;
+
+			RenderMeshIn2D(meshList[GEO_MINIMAP_ARROW_DOWN], false, 1.f, 1.f, r.x, r.y);
 		}
 	}
 
