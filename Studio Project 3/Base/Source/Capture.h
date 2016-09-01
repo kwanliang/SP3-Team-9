@@ -15,7 +15,7 @@ public:
 	~Capture();
 
 	static Vector3 Vacuum(SeaCreature creature, Vector3 playerpos, bool check);
-	static GameObject::OBJECT_TYPE AddSquad(SeaCreature creature, Vector3 playerpos, bool check);
+	static GameObject::OBJECT_TYPE AddSquad(SeaCreature creature, hitbox2 playerbox, bool check);
 	static bool rangeCheckXZ(WalkCamera camera, SeaCreature creature, Vector3 playerpos);
 	static bool rangeCheckY(WalkCamera camera, SeaCreature creature, Vector3 playerpos);
 	

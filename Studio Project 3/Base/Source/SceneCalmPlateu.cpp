@@ -608,16 +608,9 @@ void SceneCalmPlateu::UpdateGiantSquid(double dt)
         {
             fishVel = (playerpos - giantSquid->pos);
             walkCam.Move(fishVel * (float)dt);
-            skipper->setHealth(skipper->getHealth() - 100);
-
-            DamageText* text = FetchTO();
-            text->setActive(true);
-            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 10 + Vector3(0, 3.f, 0));
-            text->setLastDamage(100);
-            text->setScaleText(Vector3(0, 0, 0));
-            text->setIsEnemy(false);
-            text->setIsHeal(false);
-            text->setIsStamina(false);
+            playerpos = walkCam.GetPos() + Vector3(0, 80, 0);
+            //skipper->setHealth(skipper->getHealth() - 50);
+			UpdateCapturedPuff(50);
             isPlayerHit = true;
         }
         break;

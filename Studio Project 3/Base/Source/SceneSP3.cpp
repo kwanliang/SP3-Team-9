@@ -943,9 +943,10 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 						d->m_state = Drone::RETREAT;
 						if (skipper->getTimerReceieveDamage() > 1.0)
 						{
+							
 							skipper->setTimerReceieveDamage(0.0);
 
-							skipper->setHealth(skipper->getHealth() - 20);
+							UpdateCapturedPuff(20);
 
 							DamageText* text = FetchTO();
 							text->setActive(true);
@@ -994,15 +995,6 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 								//skipper->setHealth(skipper->getHealth() - 10);
 								UpdateCapturedPuff(10);
 
-                            DamageText* text = FetchTO();
-                            text->setActive(true);
-                            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
-                            text->setLastDamage(10);
-                            text->setScaleText(Vector3(0, 0, 0));
-                            text->setIsEnemy(false);
-                            text->setIsHeal(false);
-                            text->setIsStamina(false);
-
 								puffer->scale = Vector3(10, 10, 10);
 								puffer->pstate = Pufferfish::ENRAGED;
 							}
@@ -1036,14 +1028,6 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 								//skipper->setHealth(skipper->getHealth() - 20);
 								UpdateCapturedPuff(20);
 
-                            DamageText* text = FetchTO();
-                            text->setActive(true);
-                            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 10 + Vector3(0, 10, 0));
-                            text->setLastDamage(20);
-                            text->setScaleText(Vector3(0, 0, 0));
-                            text->setIsEnemy(false);
-                            text->setIsHeal(false);
-                            text->setIsStamina(false);
                         }
 
 							if (puffer->getMoveCoolDown() > 0.5)
@@ -1090,6 +1074,8 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 					case SeaCreature::FCRAB:
 					{
 						Fcrab* crab = (Fcrab*)it;
+						
+						hitbox2::updatehitbox(crab->collision, crab->pos);
 
 						crab->pos += crab->vel*dt;
 						float h = 350.f * ReadHeightMap(m_heightMap[2], crab->pos.x / 3000.f, crab->pos.z / 3000.f) + 4;//get height
@@ -1135,14 +1121,6 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 								//skipper->setHealth(skipper->getHealth() - 20);
 								UpdateCapturedPuff(20);
 
-                            DamageText* text = FetchTO();
-                            text->setActive(true);
-                            text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
-                            text->setLastDamage(20);
-                            text->setScaleText(Vector3(0, 0, 0));
-                            text->setIsEnemy(false);
-                            text->setIsHeal(false);
-                            text->setIsStamina(false);
                         }
 
 							if (crab->pos.y <= h)
@@ -1164,6 +1142,8 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 					{
 						Cuttlefish* cuttle = (Cuttlefish*)it;
 
+						hitbox2::updatehitbox(cuttle->collision, cuttle->pos);
+
 						if (terraincollision(cuttle->collision, m_heightMap[3]))//collision with terrain
 						{
 							cuttle->pos.y += 2;
@@ -1179,14 +1159,7 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 							//skipper->setHealth(skipper->getHealth() - 20);
 							UpdateCapturedPuff(20);
 
-                        DamageText* text = FetchTO();
-                        text->setActive(true);
-                        text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
-                        text->setLastDamage(20);
-                        text->setScaleText(Vector3(0, 0, 0));
-                        text->setIsEnemy(false);
-                        text->setIsHeal(false);
-                        text->setIsStamina(false);
+    
                     }
 
 						if (cuttle->ctstate == Cuttlefish::ATTACKING)
@@ -1218,6 +1191,8 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 					{
 						Chimera* chimera = (Chimera*)it;
 
+						hitbox2::updatehitbox(chimera->collision, chimera->pos);
+
 						if (collision(chimera->aabb, player_box))
 							chimera->chstate = Chimera::FLEEING;
 
@@ -1229,16 +1204,9 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 
                         	fishVel *= -1.f;
 
-                        skipper->setHealth(skipper->getHealth() - 20);
+                        //skipper->setHealth(skipper->getHealth() - 20);
+						UpdateCapturedPuff(20);
 
-                        DamageText* text = FetchTO();
-                        text->setActive(true);
-                        text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
-                        text->setLastDamage(20);
-                        text->setScaleText(Vector3(0, 0, 0));
-                        text->setIsEnemy(false);
-                        text->setIsHeal(false);
-                        text->setIsStamina(false);
                     }
 
 						chimera->UpdateChimera(dt);
@@ -1404,31 +1372,35 @@ void SceneSP3::UpdateProjectile(double dt)
 										text->setIsEnemy(true);
 										text->setIsHeal(false);
 										text->setIsStamina(false);
+
 									}
 								}
 							}
                                 break;
-							case Boss::GIANTCRAB:
-							{
-								GiantCrab *crab = (GiantCrab *)it2;
-								// Squid head
-								if (collision(crab->m_hitbox, po->pos))
-								{
-									std::cout << "fuck" << std::endl;
+                         
+                            case Boss::GIANTCRAB:
+                            {
+                                GiantCrab *crab = (GiantCrab *)it2;
+                                // Squid head
+                                if (collision(crab->m_hitbox, po->pos))
+                                {
 
-									po->active = false;
-									crab->setHealth(crab->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-									DamageText* text = FetchTO();
-									text->setActive(true);
-									text->setLastHitPos(po->pos);
-									text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-									text->setScaleText(Vector3(0, 0, 0));
-									text->setIsEnemy(true);
-									text->setIsHeal(false);
-									text->setIsStamina(false);
-								}
-							}
-							break;
+                                    po->active = false;
+                                    crab->setHealth(crab->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+
+                                    DamageText* text = FetchTO();
+                                    text->setActive(true);
+                                    text->setLastHitPos(po->pos);
+                                    text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+                                    text->setScaleText(Vector3(0, 0, 0));
+                                    text->setIsEnemy(true);
+									if (po->projectileType == Projectile::PBULLET)
+									{
+										skipper->setTarget(boss);
+									}
+                                }
+                            }
+                            break;
 
 							case Boss::FRILLEDSHARK:
 							{
@@ -1448,6 +1420,10 @@ void SceneSP3::UpdateProjectile(double dt)
 										text->setIsHeal(false);
 										text->setIsStamina(false);
 										text->setIsEnemy(true);
+										if (po->projectileType == Projectile::PBULLET)
+										{
+											skipper->setTarget(boss);
+										}
 									}
 								}
 							}
@@ -1470,6 +1446,10 @@ void SceneSP3::UpdateProjectile(double dt)
 									text->setIsHeal(false);
 									text->setIsStamina(false);
 									text->setIsEnemy(true);
+									if (po->projectileType == Projectile::PBULLET)
+									{
+										skipper->setTarget(boss);
+									}
 								}
 
 							}
@@ -1488,20 +1468,11 @@ void SceneSP3::UpdateProjectile(double dt)
 						skipper->setHealth(skipper->getHealth() - 20);
 						UpdateCapturedPuff(20);
 
-						DamageText* text = FetchTO();
-						text->setActive(true);
-						text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() + Vector3(0, 10, 0));
-						text->setLastDamage(20);
-						text->setScaleText(Vector3(0, 0, 0));
-						text->setIsEnemy(false);
-						text->setIsHeal(false);
-						text->setIsStamina(false);
-					}
-				}
-			}
-		}
-
-	}
+                    }
+                }
+            }
+        }
+    }
 }
 void SceneSP3::UpdateCapturedPuff(int hp)
 {
@@ -1514,8 +1485,15 @@ void SceneSP3::UpdateCapturedPuff(int hp)
 			if (go->objectType == GameObject::CAPTURED && go->seaType == SeaCreature::PUFFER)
 			{
 				go->setHealth(go->getHealth() - hp);
-				cout <<"Puffer HP: "<< go->getHealth() << endl;
 				temp = true;
+				DamageText* text = FetchTO();
+				text->setActive(true);
+				text->setLastHitPos(go->pos + Vector3(0, 10, 0));
+				text->setLastDamage(hp);
+				text->setScaleText(Vector3(0, 0, 0));
+				text->setIsEnemy(false);
+				text->setIsHeal(false);
+				text->setIsStamina(false);
 				break;
 			}
 		}
@@ -1523,7 +1501,16 @@ void SceneSP3::UpdateCapturedPuff(int hp)
 	if (temp == false)
 	{
 		skipper->setHealth(skipper->getHealth() - hp);
-		cout << skipper->getHealth() << endl;
+		
+		DamageText* text = FetchTO();
+		text->setActive(true);
+		text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
+		text->setLastDamage(hp);
+		text->setScaleText(Vector3(0, 0, 0));
+		text->setIsEnemy(false);
+		text->setIsHeal(false);
+		text->setIsStamina(false);
+
 	}
 
 }
@@ -1580,13 +1567,18 @@ void SceneSP3::UpdateCaptured(double dt)
 								other->vel += other->seperation(tempRepelVector);
 							}
 						}
+						if ((fo->pos - other->pos).LengthSquared() < g_distFromSeperation)
+						{
+							tempRepelVector = other->pos - fo->pos;
+							other->vel += other->seperation(tempRepelVector);
+						}
 					}
-					if (fo->seaType==SeaCreature::MINNOW || skipper->getTarget()->objectType == GameObject::PLAYER)
+					if (fo->seaType==SeaCreature::MINNOW || fo->seaType==SeaCreature::CUTTLE || fo->seaType==SeaCreature::PUFFER || skipper->getTarget()->objectType == GameObject::PLAYER)
 					{
 						fo->vel += fo->cohesion(playerpos, walkCam.GetDir()) + fo->alignment(tempForceVector);
 
 					}
-
+					
 					// Cap velocity
 					if (fo->vel.x > 20)
 						fo->vel.x = 20;
@@ -1932,14 +1924,7 @@ void SceneSP3::Update(double dt)
     //    }
     //}
 
-    UpdateParticles(dt);
-	UpdateTravel();
-	UpdateSeaCreatures(dt);
-    UpdateProjectile(dt);
-	UpdateCaptured(dt);
-	UpdateSquadFire(dt);
-    UpdateSpawner(dt);
-	UpdateStunned(dt);
+   
 
 
 	if (Application::IsMousePressed(1))
@@ -1954,9 +1939,13 @@ void SceneSP3::Update(double dt)
 					go->pos.Set(Capture::Vacuum(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos)).x,
 								Capture::Vacuum(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos)).y,
 								Capture::Vacuum(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos)).z);
-					go->objectType = Capture::AddSquad(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos));
+					go->objectType = Capture::AddSquad(*go, player_box, Capture::rangeCheckXZ(walkCam, *go, playerpos));
                     if (go->objectType == GameObject::CAPTURED)
 					{
+						if (skipper->getTarget() == go)
+						{
+							skipper->setTarget(skipper);
+						}
 						SharedData::GetInstance()->SD_CapturedList.push_back(go);
 
                         switch (go->seaType)
@@ -2014,7 +2003,18 @@ void SceneSP3::Update(double dt)
 				}
 			}
 		}
-	}		
+		}	
+
+        
+	UpdateParticles(dt);
+	UpdateTravel();
+	UpdateSeaCreatures(dt);
+	UpdateProjectile(dt);
+	UpdateCaptured(dt);
+	UpdateSquadFire(dt);
+	UpdateSpawner(dt);
+	UpdateStunned(dt);
+	
 
     if (GetKeyState('1', KEY_STATUS_DOWN))
     {
@@ -2322,7 +2322,7 @@ void SceneSP3::UpdateSpawner(double dt)
                 c->pos.Set(tv.x, tv.y, tv.z);
                 c->vel.Set(0, Math::RandFloatMinMax(-20, 20), 0);
                 c->aabb = hitbox::generatehitbox(c->pos, 10, 10, 10, NULL);
-                c->setHealth(200);
+                c->setHealth(50);
                 g_ChimeraCount++;
             }
         }
@@ -2363,7 +2363,7 @@ void SceneSP3::UpdateSquadFire(double dt)
 			if (go->objectType == GameObject::CAPTURED)
 			{
 				SeaCreature *other = (SeaCreature *)*it;
-				if (skipper->getTarget()->objectType != GameObject::PLAYER)
+				if (skipper->getTarget()->objectType != GameObject::PLAYER && skipper->getTarget()->active == true)
 				{
 
 					if (other->getDebounceTimer() > 3 && (other->seaType == SeaCreature::MINNOW || other->seaType == SeaCreature::CUTTLE))
@@ -2401,8 +2401,7 @@ void SceneSP3::UpdateSquadFire(double dt)
 					if (other->seaType == SeaCreature::FCRAB)
 					{
 						Minnow* other2 = (Minnow*)*it;
-						if (skipper->getTarget()->objectType == GameObject::BOSS)
-						{
+						
 							if (skipper->getTarget()->objectType == GameObject::BOSS)
 							{
 								for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
@@ -2419,22 +2418,14 @@ void SceneSP3::UpdateSquadFire(double dt)
 									}
 								}
 							}
-
-
-							/*for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+							else if (skipper->getTarget()->objectType == GameObject::SEACREATURE)
 							{
-							GameObject* another = (GameObject*)*it2;
-							if (another->objectType == GameObject::BOSS)
-							{
-							Boss* another = (Boss*)*it2;
-							if (!(another->collision.m_position - other->pos).IsZero())
-							{
-							Vector3 view = (another->collision.m_position - other->pos).Normalized();
-							other->vel.Set(view.x * 50, view.y * 50, view.z / 50);
-							}
-							}
-							}*/
-						}
+								if (!(skipper->getTarget()->pos - other->pos).IsZero())
+								{
+									Vector3 Dir = (skipper->getTarget()->pos - other->pos).Normalized();
+									other->vel += other->cohesion(skipper->getTarget()->pos, Dir) + other->alignment(0);
+								}
+							}					
 						else
 						{
 							float dist = (skipper->getTarget()->pos - other->pos).LengthSquared();
@@ -2468,7 +2459,7 @@ void SceneSP3::UpdateSquadFire(double dt)
 
 										DamageText* text = FetchTO();
 										text->setActive(true);
-										text->setLastHitPos(go->pos);
+										text->setLastHitPos(another->pos);
 										text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 										text->setScaleText(Vector3(0, 0, 0));
 										cout << skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()) << endl;
@@ -2476,7 +2467,7 @@ void SceneSP3::UpdateSquadFire(double dt)
 
 										int random = 0;
 										random = rand() % 10 + 1;
-										if (random <= 1)
+										if (random <= 2)
 										{
 											another->isstunned = true;
 											another->StunDuration = 1.5f;
@@ -2484,21 +2475,21 @@ void SceneSP3::UpdateSquadFire(double dt)
 									}
 								}
 							}
-							else if (other->pos == skipper->getTarget()->pos)
+							else if (skipper->getTarget()->objectType == GameObject::SEACREATURE)//(other->pos - skipper->getTarget()->pos).LengthSquared() <= 50)
 							{
-								if (skipper->getTarget()->objectType == GameObject::SEACREATURE)
+								for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
 								{
-									for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+									GameObject*go2 = (GameObject*)* it2;
+									if (go2 == skipper->getTarget())
 									{
-										float dist = (skipper->getTarget()->pos - other->pos).LengthSquared();
-										SeaCreature* another = (SeaCreature*)*it2;
-										if (another->objectType == GameObject::SEACREATURE && dist < 200)
+										SeaCreature *another = (SeaCreature*)*it2;
+										if (another->objectType == GameObject::SEACREATURE && (other->pos - skipper->getTarget()->pos).LengthSquared() <= 1000)
 										{
 											another->setHealth(another->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 
 											DamageText* text = FetchTO();
 											text->setActive(true);
-											text->setLastHitPos(go->pos);
+											text->setLastHitPos(another->pos);
 											text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 											text->setScaleText(Vector3(0, 0, 0));
 											cout << skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()) << endl;
@@ -2513,7 +2504,7 @@ void SceneSP3::UpdateSquadFire(double dt)
 											}
 										}
 									}
-								}
+								}								
 							}
 
 							else
@@ -2535,6 +2526,15 @@ void SceneSP3::UpdateSquadFire(double dt)
 							{
 								another->setHealth(another->getHealth() + 10);
 								cout << another->getHealth() << endl;
+
+								DamageText* text = FetchTO();
+								text->setActive(true);
+								text->setLastHitPos(another->pos + Vector3(0, 3.f, 0));
+								text->setLastDamage(10);
+								text->setScaleText(Vector3(0, 0, 0));
+								text->setIsEnemy(false);
+								text->setIsHeal(true);
+								text->setIsStamina(false);
 							}
 							else
 							{
@@ -2542,13 +2542,22 @@ void SceneSP3::UpdateSquadFire(double dt)
 							}
 						}
 					}
-					if (skipper->getHealth() <= 90)
+					if (skipper->getHealth() <= 500)
 					{
 						skipper->setHealth(skipper->getHealth() + 10);
+						
+						DamageText* text = FetchTO();
+						text->setActive(true);
+						text->setLastHitPos(playerpos + fishVel + Vector3(0, 3.f, 0));
+						text->setLastDamage(10);
+						text->setScaleText(Vector3(0, 0, 0));
+						text->setIsEnemy(false);
+						text->setIsHeal(true);
+						text->setIsStamina(false);
 					}
 					else
 					{
-						skipper->setHealth(100);
+						skipper->setHealth(500);
 					}
 					other->setDebounceTimer(0.001);
 				}
