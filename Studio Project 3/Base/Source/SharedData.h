@@ -28,6 +28,7 @@ public:
 	unsigned SD_CurrentArea = 1;
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
+    int SD_PlayerHealth = 0;
 	std::vector<GameObject*> SD_CapturedList;
     bool SD_QuitGame = false;
     bool SD_IsImmobile = false;
@@ -37,6 +38,7 @@ public:
     bool SD_BossDead4 = false;
     bool SD_SceneLoaded = false;
 	float SD_Lrotate = 0;
+    bool SD_PauseMenu = false;
 
     //TUTORIAL & OBJECTIVES
     bool SD_DoneTutorial = false;

@@ -149,10 +149,6 @@ void SceneMenu::Update(double dt)
 	if (mfish_x < -170)
 		mfish_x = 100;
 
-
-
-	std::cout << mfish_x << std::endl;
-
 }
 
 

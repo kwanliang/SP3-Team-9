@@ -38,7 +38,7 @@ private:
     //Terrain
     //std::vector<unsigned char> m_heightMap;
 
-	FrilledShark* frilledshark;
+    FrilledShark* frilledshark;
 
 	//Fish test
 	Capture fishy;

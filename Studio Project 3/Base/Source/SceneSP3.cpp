@@ -229,6 +229,7 @@ void SceneSP3::Init()
     {
         meshList[i] = NULL;
     }
+
 	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1,1,1),1.f );
     meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference");//, 1000, 1000, 1000);
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateQuad("minimap", Color(0, 0, 0), 2);
@@ -279,7 +280,8 @@ void SceneSP3::Init()
     meshList[GEO_CORAL]->textureArray[0] = LoadTGA("Image//coral_1.tga");
 
     meshList[GEO_CORAL2] = MeshBuilder::GenerateOBJ("coral stamina", "Models//OBJ//coral_2.obj");
-    //meshList[GEO_CORAL2]->textureArray[0] = LoadTGA("Image//coral_1.tga");
+    meshList[GEO_CORAL2]->textureArray[0] = LoadTGA("Image//coral_2.tga");
+
 	// Captured
 	meshList[GEO_CAP_MINNOW] = MeshBuilder::GenerateOBJ("minnow", "Models//OBJ//minnow.obj");
 	meshList[GEO_CAP_MINNOW]->textureArray[0] = LoadTGA("Image//minnow.tga");
@@ -328,6 +330,9 @@ void SceneSP3::Init()
     meshList[GEO_PLAYERHEALTH] = MeshBuilder::GenerateLine("player health", Color(1.f, 0.7f, 0.7f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
 	meshList[GEO_PLAYERSTAMINA] = MeshBuilder::GenerateLine("player Stamina", Color(0.7f, 0.7f, 1.f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
 
+    //meshList[GEO_PLAYERHEALTH] = MeshBuilder::GenerateLine("player health", Color(1.f, 0.7f, 0.7f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
+    //meshList[GEO_PLAYERSTAMINA] = MeshBuilder::GenerateLine("player Stamina", Color(0.7f, 0.7f, 1.f), Vector3(0.85f, 0, 0), Vector3(0.8f, 0, 0));
+
     // Death Screen
     meshList[GEO_TBORDER] = MeshBuilder::GenerateQuad("border", Color(1, 0, 0), 2);
     meshList[GEO_TBORDER]->textureID = LoadTGA("Image//border.tga");
@@ -342,6 +347,17 @@ void SceneSP3::Init()
     meshList[GEO_TQUIT] = MeshBuilder::GenerateQuad("quit select", Color(1, 0, 0), 2);
     meshList[GEO_TQUIT]->textureID = LoadTGA("Image//quit2.tga");
 
+    meshList[GEO_MINNOW_HUD] = MeshBuilder::GenerateQuad("hud minnow", Color(1, 0, 0), 2);
+    meshList[GEO_MINNOW_HUD]->textureID = LoadTGA("Image//minnow_icon.tga");
+    meshList[GEO_CUTTLE_HUD] = MeshBuilder::GenerateQuad("hud cuttle", Color(1, 0, 0), 2);
+    meshList[GEO_CUTTLE_HUD]->textureID = LoadTGA("Image//cuttle_icon.tga");
+    meshList[GEO_CRAB_HUD] = MeshBuilder::GenerateQuad("hud crab", Color(1, 0, 0), 2);
+    meshList[GEO_CRAB_HUD]->textureID = LoadTGA("Image//crab_icon.tga");
+    meshList[GEO_CHIMERA_HUD] = MeshBuilder::GenerateQuad("hud chimera", Color(1, 0, 0), 2);
+    meshList[GEO_CHIMERA_HUD]->textureID = LoadTGA("Image//chimera_icon.tga");
+    meshList[GEO_PUFFER_HUD] = MeshBuilder::GenerateQuad("hud puffer", Color(1, 0, 0), 2);
+    meshList[GEO_PUFFER_HUD]->textureID = LoadTGA("Image//puffer_icon.tga");
+    
 	fontData = LoadFontData("Image//FontData.csv");
 
     // Instruction Screen
@@ -426,6 +442,8 @@ void SceneSP3::Init()
     skipper->setIsDead(false);
     skipper->setHealthPackCount(3);
     skipper->setStaminaPackCount(3);
+    if (SharedData::GetInstance()->SD_PlayerHealth != 0)
+        skipper->setHealth(SharedData::GetInstance()->SD_PlayerHealth);
     seaList.push_back(skipper);
     SharedData::GetInstance()->SD_IsImmobile = false;
 
@@ -1524,12 +1542,26 @@ void SceneSP3::UpdateCaptured(double dt)
 		if (fo->getHealth() <= 0)
 		{
 			fo->active = false;
+
+            switch (fo->seaType)
+            {
+            case SeaCreature::MINNOW:
+                g_countCapturedMinnow--;
+            case SeaCreature::PUFFER:
+                g_countCapturedPuffer--;
+            case SeaCreature::FCRAB:
+                g_countCapturedCrab--;
+            case SeaCreature::CUTTLE:
+                g_countCapturedCuttle--;
+            case SeaCreature::CHIMERA:
+                g_countCapturedChimera--;
+            }
 		}
 		if (fo->active)
 		{
 			if (fo->objectType == GameObject::CAPTURED)
 			{			
-						fo->pos += fo->vel * dt;
+					fo->pos += fo->vel * dt;
 					// Collision
 					hitbox2::updatehitbox(fo->collision, fo->pos);
 
@@ -1586,14 +1618,12 @@ void SceneSP3::UpdateCaptured(double dt)
 
 void SceneSP3::UpdateTravel()
 {
-	//if (!SharedData::GetInstance()->SD_Travel)
-	//return;
-
 	if ( collision(m_travelzonedown, player_box.m_point[0]) || collision(m_travelzonedown, player_box.m_point[6]))//travel downward
 	{
 
 		if (static_cast<SharedData::AREA>(SharedData::GetInstance()->SD_CurrentArea) != SharedData::A_NIGHTMARETRENCH)
 		{
+            SharedData::GetInstance()->SD_PlayerHealth = skipper->getHealth();
             SharedData::GetInstance()->SD_SceneLoaded = false;
 			SharedData::GetInstance()->SD_Down = true;
 			SharedData::GetInstance()->SD_CurrentArea += 1;
@@ -1607,6 +1637,7 @@ void SceneSP3::UpdateTravel()
 	{
 		if (static_cast<SharedData::AREA>(SharedData::GetInstance()->SD_CurrentArea) != SharedData::A_TUTORIAL)
 		{
+            SharedData::GetInstance()->SD_PlayerHealth = skipper->getHealth();
             SharedData::GetInstance()->SD_SceneLoaded = false;
 			SharedData::GetInstance()->SD_Down = false;
 			SharedData::GetInstance()->SD_CurrentArea -= 1;
@@ -1651,6 +1682,16 @@ void SceneSP3::Update(double dt)
     //    lights[0].position.y -= (float)(100.f * dt);
     //if (GetKeyState('P', KEY_STATUS_DOWN))
     //    lights[0].position.y += (float)(100.f * dt);
+
+    if (GetKeyState(VK_NUMPAD1, KEY_STATUS_DOWN))
+        giantSquid->setHealth(0);
+    if (GetKeyState(VK_NUMPAD2, KEY_STATUS_DOWN))
+        giantCrab->setHealth(0);
+    //if (GetKeyState(VK_NUMPAD3, KEY_STATUS_DOWN))
+        //frilledshark->setHealth(0);
+    if (GetKeyState(VK_NUMPAD4, KEY_STATUS_DOWN))
+        isopod->setHealth(0);
+
     if (GetKeyState('C', KEY_STATUS_DOWN))
     {
         std::cout << playerpos << std::endl;
@@ -1922,13 +1963,27 @@ void SceneSP3::Update(double dt)
 					{
 						SharedData::GetInstance()->SD_CapturedList.push_back(go);
 
+                        switch (go->seaType)
+                        {
+                        case SeaCreature::MINNOW:
+                            g_countCapturedMinnow++;
+                        case SeaCreature::PUFFER:
+                            g_countCapturedPuffer++;
+                        case SeaCreature::FCRAB:
+                            g_countCapturedCrab++;
+                        case SeaCreature::CUTTLE:
+                            g_countCapturedCuttle++;
+                        case SeaCreature::CHIMERA:
+                            g_countCapturedChimera++;
+                        }
+
 						int index = std::distance(seaList.begin(), it);
 						seaList.erase(seaList.begin()+index);
 						break;
 					}
 				}
-				}
 			}
+		}
 		for (std::vector<GameObject *>::iterator it = coralList.begin(); it != coralList.end(); ++it)
 		{
 			Coral *go = (Coral *)*it;
@@ -2033,17 +2088,19 @@ void SceneSP3::UpdateKeys()
 
 void SceneSP3::UpdatePauseFunction()
 {
-	if (GetKeyState(VK_ESCAPE, KEY_STATUS_DOWN) && !skipper->getIsDead())
-	{
-		isGamePaused = !isGamePaused;
+    if (GetKeyState(VK_ESCAPE, KEY_STATUS_DOWN) && !skipper->getIsDead() && SharedData::GetInstance()->SD_ContinueInstruction1 && SharedData::GetInstance()->SD_ContinueInstruction2)
+    {
+        SharedData::GetInstance()->SD_PauseMenu = !SharedData::GetInstance()->SD_PauseMenu;
 		pauseChoice = 0;
 	}
 }
 
 void SceneSP3::UpdatePauseScreen(double dt)
 {
-    if (isGamePaused)
+    if (SharedData::GetInstance()->SD_PauseMenu && SharedData::GetInstance()->SD_ContinueInstruction1 && SharedData::GetInstance()->SD_ContinueInstruction2)
     {
+        isGamePaused = true;
+
 	    if (GetKeyState('S', KEY_STATUS_DOWN))
 		    ++pauseChoice;
 	    if (GetKeyState(VK_DOWN, KEY_STATUS_DOWN))
@@ -2054,7 +2111,10 @@ void SceneSP3::UpdatePauseScreen(double dt)
 		    --pauseChoice;
 
         if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 0)
-            isGamePaused = !isGamePaused;
+        {
+            SharedData::GetInstance()->SD_PauseMenu = false;
+            isGamePaused = false;
+        }
         else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && pauseChoice == 1)
         {
             Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
@@ -2818,7 +2878,7 @@ void SceneSP3::UpdateParticles(double dt)
         else
         {
             SeaCreature* sc = (SeaCreature*)*it;
-            if (sc->active && sc->getHealth() <= 50)
+            if (sc->active && sc->getHealth() <= 50 && sc->seaType != SeaCreature::DRONE)
             {
                 ParticleObject* P_Vacuum = GetParticle();
                 P_Vacuum->type = PARTICLEOBJECT_TYPE::P_VACUUM;
@@ -2937,7 +2997,7 @@ void SceneSP3::RenderParticles()
     for (auto it : particleList)
     {
         ParticleObject* particle = (ParticleObject*)it;
-		if (!particle->active && particle->type == PARTICLEOBJECT_TYPE::P_VACUUM)
+		if (!particle->active && particle->type == PARTICLEOBJECT_TYPE::P_VACUUM && (playerpos - particle->pos).LengthSquared() < 200 * 200)
         {
             modelStack.PushMatrix();
             modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
@@ -3476,6 +3536,8 @@ void SceneSP3::RenderDeathScreen()
 {
     if (skipper->getIsDead())
     {
+        isGamePaused = true;
+
         static bool b_DS_UPState = false;
         if (GetKeyState('W', KEY_STATUS_DOWN) ||
             GetKeyState(VK_UP, KEY_STATUS_DOWN))
@@ -3517,6 +3579,7 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
             if (GetKeyState(13, KEY_STATUS_DOWN))
             {
+                isGamePaused = false;
                 Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
                 Application::sceneManager->SetCurrentScene(Application::sceneManager->GetLoadingScreen());
             }
@@ -3530,6 +3593,7 @@ void SceneSP3::RenderDeathScreen()
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
             if (GetKeyState(13, KEY_STATUS_DOWN))
             {
+                isGamePaused = false;
                 Application::sceneManager->SetPreviousScene(Application::sceneManager->GetCurrentScene());
                 Application::sceneManager->SetMenuScene(new SceneMenu());
                 Application::sceneManager->GetMenuScreen()->Init();
@@ -3546,12 +3610,74 @@ void SceneSP3::RenderDeathScreen()
             if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 SharedData::GetInstance()->SD_QuitGame = true;
+                isGamePaused = false;
             }
             break;
         }
         }
     }
 
+}
+
+void SceneSP3::RenderObjectiveHUD()
+{
+    if (SharedData::GetInstance()->SD_ObjectiveTabOn)
+    {
+        if (sliderTranslate <= -65)
+            sliderTranslate += 5.f;
+    }
+    else
+    {
+        if (sliderTranslate >= -100)
+            sliderTranslate -= 5.f;
+    }
+
+    glBlendFunc(GL_ONE, GL_ONE);
+    RenderMeshIn2D(meshList[GEO_TLAYER], false, 20, 20, sliderTranslate);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    if (SharedData::GetInstance()->SD_BossDead1)
+        RenderMeshIn2D(meshList[GEO_TDIED], false, 20, 5, sliderTranslate, 15);
+    if (SharedData::GetInstance()->SD_BossDead2)
+        RenderMeshIn2D(meshList[GEO_TDIED], false, 20, 5, sliderTranslate, 5);
+    if (SharedData::GetInstance()->SD_BossDead3)
+        RenderMeshIn2D(meshList[GEO_TDIED], false, 20, 5, sliderTranslate, -5);
+    if (SharedData::GetInstance()->SD_BossDead4)
+        RenderMeshIn2D(meshList[GEO_TDIED], false, 20, 5, sliderTranslate, -15);
+}
+
+void SceneSP3::RenderCoralHUD()
+{
+    RenderMeshIn2D(meshList[GEO_MINNOW_HUD], false, 5, 5, 35, -50);
+    RenderMeshIn2D(meshList[GEO_MINNOW_HUD], false, 5, 5, 40, -55);
+}
+
+void SceneSP3::RenderSquadHUD()
+{
+    RenderMeshIn2D(meshList[GEO_MINNOW_HUD], false, 5, 5, 75, 30);
+    std::ostringstream ss;
+    ss << g_countCapturedMinnow;
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 44);
+
+    RenderMeshIn2D(meshList[GEO_PUFFER_HUD], false, 5, 5, 75, 20);
+    ss.str("");
+    ss << g_countCapturedPuffer;
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 39);
+
+    RenderMeshIn2D(meshList[GEO_CRAB_HUD], false, 5, 5, 75, 10);
+    ss.str("");
+    ss << g_countCapturedCrab;
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 34);
+
+    RenderMeshIn2D(meshList[GEO_CUTTLE_HUD], false, 5, 5, 75, 0);
+    ss.str("");
+    ss << g_countCapturedCuttle;
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 29);
+
+    RenderMeshIn2D(meshList[GEO_CHIMERA_HUD], false, 5, 5, 75, -10);
+    ss.str("");
+    ss << g_countCapturedChimera;
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0.7f, 0.7f, 0.7f), 4, 79, 24);
 }
 
 void SceneSP3::RenderHUD()
@@ -3635,26 +3761,14 @@ void SceneSP3::RenderHUD()
         }
     }
 
-    if (SharedData::GetInstance()->SD_ObjectiveTabOn)
-    {
-        if (sliderTranslate <= -65)
-            sliderTranslate += 1.f;
-    }
-    else
-    {
-        if (sliderTranslate >= -100)
-            sliderTranslate -= 1.f;
-    }
-
-    glBlendFunc(GL_ONE, GL_ONE);
-    RenderMeshIn2D(meshList[GEO_TLAYER], false, 20, 20, sliderTranslate);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     if (!SharedData::GetInstance()->SD_DoneTutorial)
     {
+        isGamePaused = true;
+        cout << isGamePaused << endl;
         if (SharedData::GetInstance()->SD_SceneLoaded && SharedData::GetInstance()->SD_ContinueInstruction1 && SharedData::GetInstance()->SD_ContinueInstruction2)
         {
             SharedData::GetInstance()->SD_DoneTutorial = true;
+            isGamePaused = false;
         }
         else
         {
@@ -3666,7 +3780,9 @@ void SceneSP3::RenderHUD()
         if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && !SharedData::GetInstance()->SD_ContinueInstruction1)
             SharedData::GetInstance()->SD_ContinueInstruction1 = true;
         else if (GetKeyState(VK_RETURN, KEY_STATUS_DOWN) && SharedData::GetInstance()->SD_ContinueInstruction1 && !SharedData::GetInstance()->SD_ContinueInstruction2)
+        {
             SharedData::GetInstance()->SD_ContinueInstruction2 = true;
+        }
 
         if (!SharedData::GetInstance()->SD_ContinueInstruction1)
             RenderMeshIn2D(meshList[GEO_INSTRUCTION], false, 45, 50);
@@ -3676,6 +3792,10 @@ void SceneSP3::RenderHUD()
 
     }
 
+    RenderSquadHUD();
+    RenderObjectiveHUD();
+    RenderCoralHUD();
+
     RenderMinimap();
 
     std::ostringstream ss;
@@ -3683,8 +3803,11 @@ void SceneSP3::RenderHUD()
     ss << "FPS: " << fps;
     RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 3, 2, 3);
 
-    if (isGamePaused && !skipper->getIsDead())
+    if (SharedData::GetInstance()->SD_PauseMenu)
+    {
         RenderPauseScreen();
+        isGamePaused = true;
+    }
 
     RenderDeathScreen();
 
@@ -3714,8 +3837,6 @@ void SceneSP3::RenderMinimap()
 	RenderMeshIn2D(meshList[GEO_MINIMAP], false, 20, 20,
 		mPos.x, mPos.y, angle);
 
-
-	std::cout << skipper->stamina << std::endl;
     for (auto it : seaList)
 	{
 		if (!it->active) continue;

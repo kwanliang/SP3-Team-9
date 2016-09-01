@@ -27,10 +27,15 @@
 #include "Drone.h"
 #include "FontData.h"
 
-
 #include "GiantSquid.h"
 #include "Isopod.h"
 #include "GiantCrab.h"
+
+static int g_countCapturedMinnow = 0;
+static int g_countCapturedPuffer = 0;
+static int g_countCapturedCrab = 0;
+static int g_countCapturedCuttle = 0;
+static int g_countCapturedChimera = 0;
 
 class SceneSP3 : public Scene
 {
@@ -57,8 +62,10 @@ public:
     virtual void RenderWorld() {};
 	virtual void RenderMinimap();
     virtual void RenderHUD();
-    virtual void RenderDeathScreen();
-	void RenderSquad();
+    void RenderDeathScreen();
+	void RenderSquadHUD();
+    void RenderObjectiveHUD();
+    void RenderCoralHUD(); 
 
 	void UpdateTravel();
     void UpdateSeaCreatures(double dt);
@@ -94,6 +101,7 @@ public:
     void RenderPO(Projectile *po);
     void RenderTO(DamageText *to);
     void RenderCoral(Coral *co);
+    void RenderSquad();
 
     void RenderLoop();
 
@@ -107,6 +115,7 @@ public:
 
     GiantSquid* giantSquid;
     GiantCrab* giantCrab;
+
     Isopod* isopod;
 
     enum DEATHSELECT
@@ -230,108 +239,116 @@ protected:
 		GEO_TEXT,
 		GEO_BALL,
 		GEO_BALL2,
+
+        // TERRAIN
 		GEO_TERRAIN0,
 		GEO_TERRAIN1,
 		GEO_TERRAIN2,
 		GEO_TERRAIN3,
 		GEO_TERRAIN4,
 
-		GEO_MINIMAP,
-		GEO_MINIMAP_AVATAR,
-		GEO_MINIMAP_MINNOW,
-		GEO_MINIMAP_CUTTLE,
-		GEO_MINIMAP_CRAB,
-		GEO_MINIMAP_GHOSTSHARK,
-		GEO_MINIMAP_PUFFER,
-		GEO_MINIMAP_BOSS,
+        // OBJECTS
+        GEO_FISHMODEL,
+        GEO_FISHTAIL,
+        GEO_LASER,
 
-		GEO_PAUSEMENU,
+        GEO_SQUIDBODY,
+        GEO_SQUIDTENTACLENODE,
+        GEO_SQUIDTENTACLEEND,
 
-		GEO_STATIC,
+        GEO_FSHARK_LJAW,
+        GEO_FSHARK_UJAW,
+        GEO_FSHARK_NODE,
+        GEO_FSHARK_TAIL,
 
-		GEO_FISHMODEL,
-		GEO_FISHTAIL,
-		GEO_LASER,
+        GEO_ISOPOD_BODY,
+        GEO_ISOPOD_LEG,
+        GEO_ISOPOD_CLAW,
 
-		GEO_SQUIDBODY,
-		GEO_SQUIDTENTACLENODE,
-		GEO_SQUIDTENTACLEEND,
+        GEO_ISOPOD_DRONE,
 
-		GEO_FSHARK_LJAW,
-		GEO_FSHARK_UJAW,
-		GEO_FSHARK_NODE,
-		GEO_FSHARK_TAIL,
+        GEO_CHIMERA_BODY,
+        GEO_CHIMERA_FFLIP,
+        GEO_CHIMERA_BFLIP,
 
-		GEO_ISOPOD_BODY,
-		GEO_ISOPOD_LEG,
-		GEO_ISOPOD_CLAW,
+        GEO_MINNOW,
+        GEO_PUFFER,
+        GEO_CUTTLE,
 
-		GEO_ISOPOD_DRONE,
+        GEO_FCRABBODY,
+        GEO_FCRABLEG,
+        GEO_FCRABCLAW,
 
-		GEO_CHIMERA_BODY,
-		GEO_CHIMERA_FFLIP,
-		GEO_CHIMERA_BFLIP,
+        GEO_CAP_CHIMERA_BODY,
+        GEO_CAP_CHIMERA_FFLIP,
+        GEO_CAP_CHIMERA_BFLIP,
 
-		GEO_MINNOW,
-		GEO_PUFFER,
-		GEO_CUTTLE,
+        GEO_CAP_MINNOW,
+        GEO_CAP_PUFFER,
+        GEO_CAP_CUTTLE,
 
-		GEO_FCRABBODY,
-		GEO_FCRABLEG,
-		GEO_FCRABCLAW,
+        GEO_CAP_FCRABBODY,
+        GEO_CAP_FCRABLEG,
+        GEO_CAP_FCRABCLAW,
 
-		GEO_CAP_CHIMERA_BODY,
-		GEO_CAP_CHIMERA_FFLIP,
-		GEO_CAP_CHIMERA_BFLIP,
-			
-		GEO_CAP_MINNOW,
-		GEO_CAP_PUFFER,
-		GEO_CAP_CUTTLE,
-
-		GEO_CAP_FCRABBODY,
-		GEO_CAP_FCRABLEG,
-		GEO_CAP_FCRABCLAW,
-
-		GEO_CRAB_BODY,
-		GEO_CRAB_ARM_UPPER,
-		GEO_CRAB_ARM_MID,
-		GEO_CRAB_ARM_LOWER,
-		GEO_CRAB_LEG_UPPER,
-		GEO_CRAB_LEG_LOWER,
-
-		GEO_BUBBLE,
-		GEO_VACUUM,
-
-		GEO_HUD_HEALTHBAR,
-		GEO_HUD_BOSSHEALTH,
-
-		GEO_TTITLE,
-		GEO_TMENU,
-		GEO_TSTART,
-		GEO_TQUIT,
-		GEO_TLOADING,
-		GEO_MFISH,
-
-		GEO_TBORDER,
-		GEO_TLAYER,
-		GEO_TDIED,
-		GEO_TRESPAWN,
-		GEO_TTOMENU,
-
-        GEO_TPAUSE,
-        GEO_TRESUME,
-        
-        GEO_INSTRUCTION,
-        GEO_INSTRUCTION2,
+        GEO_CRAB_BODY,
+        GEO_CRAB_ARM_UPPER,
+        GEO_CRAB_ARM_MID,
+        GEO_CRAB_ARM_LOWER,
+        GEO_CRAB_LEG_UPPER,
+        GEO_CRAB_LEG_LOWER,
 
         GEO_CORAL,
         GEO_CORAL2,
 
+        // HUD
         GEO_PLAYERHEALTH,
-		GEO_PLAYERSTAMINA,
+        GEO_PLAYERSTAMINA,
 
-        SPRITE_NAME,
-        GEO_LIGHT_DEPTH_QUAD,
+        GEO_MINIMAP,
+        GEO_MINIMAP_AVATAR,
+        GEO_MINIMAP_MINNOW,
+        GEO_MINIMAP_CUTTLE,
+        GEO_MINIMAP_CRAB,
+        GEO_MINIMAP_GHOSTSHARK,
+        GEO_MINIMAP_PUFFER,
+        GEO_MINIMAP_BOSS,
+
+        GEO_PAUSEMENU,
+
+        GEO_STATIC,
+
+        GEO_BUBBLE,
+        GEO_VACUUM,
+
+        GEO_HUD_HEALTHBAR,
+        GEO_HUD_BOSSHEALTH,
+
+        GEO_TTITLE,
+        GEO_TMENU,
+        GEO_TSTART,
+        GEO_TQUIT,
+        GEO_TLOADING,
+        GEO_MFISH,
+
+        GEO_TBORDER,
+        GEO_TLAYER,
+        GEO_TDIED,
+        GEO_TRESPAWN,
+        GEO_TTOMENU,
+
+        GEO_TPAUSE,
+        GEO_TRESUME,
+
+        GEO_INSTRUCTION,
+        GEO_INSTRUCTION2,
+
+        GEO_MINNOW_HUD,
+        GEO_CUTTLE_HUD,
+        GEO_CRAB_HUD,
+        GEO_CHIMERA_HUD,
+        GEO_PUFFER_HUD,
+
 		NUM_GEOMETRY,
 	};
 	enum RENDER_PASS
