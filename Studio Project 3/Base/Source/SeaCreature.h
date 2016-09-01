@@ -16,6 +16,7 @@ protected:
     int m_health;
     float m_DebounceTimer;
     bool m_canVacuum;
+	bool isVacuum;
 
 public:
     enum SEACREATURE_TYPE
@@ -41,10 +42,12 @@ public:
     float getDebounceTimer();
     bool getCanVacuum();
 	bool isstunned = false;
+	bool getisVacuum();
 
     void setHealth(int m_health);
     void setDebounceTimer(float timer);
     void setCanVacuum(bool m_canVacuum);
+	void setisVacuum(bool isVacuum);
 
     hitbox	aabb;
     hitbox2 collision;

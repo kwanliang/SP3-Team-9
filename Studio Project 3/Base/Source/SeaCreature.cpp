@@ -5,6 +5,8 @@ SeaCreature::SeaCreature()
     , seaType(MINNOW)
     , m_DebounceTimer(0)
     , m_canVacuum(false)
+	, isstunned(false)
+	, isVacuum(false)
     , GameObject()
 {
 
@@ -31,6 +33,11 @@ bool SeaCreature::getCanVacuum()
     return this->m_canVacuum;
 }
 
+bool SeaCreature::getisVacuum()
+{
+	return this->isVacuum;
+}
+
 void SeaCreature::setDebounceTimer(float timer)
 {
     this->m_DebounceTimer = timer;
@@ -44,6 +51,11 @@ void SeaCreature::setHealth(int m_health)
 void SeaCreature::setCanVacuum(bool m_canVacuum)
 {
     this->m_canVacuum = m_canVacuum;
+}
+
+void SeaCreature::setisVacuum(bool isVacuum)
+{
+	this->isVacuum = isVacuum;
 }
 
 

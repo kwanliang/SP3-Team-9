@@ -20,24 +20,25 @@ Vector3 Capture::Vacuum(SeaCreature creature, Vector3 playerpos, bool check)
 		Vector3 view = (creature.pos - playerpos).Normalized();
 		if (fabs(creature.pos.x - playerpos.x) >= 1 && distance >= 1)
 		{
-			creature.pos.Set((creature.pos.x - view.x  * 50 / distance), (creature.pos.y), (creature.pos.z));
+			creature.pos.Set((creature.pos.x - view.x  * 30 / distance), (creature.pos.y), (creature.pos.z));
 		}
 		if (fabs(creature.pos.y - playerpos.y) >= 1 && distance >= 1)
 		{
-			creature.pos.Set(creature.pos.x, (creature.pos.y - view.y  * 50 / distance), (creature.pos.z));
+			creature.pos.Set(creature.pos.x, (creature.pos.y - view.y * 30 / distance), (creature.pos.z));
 		}
 		if (fabs(creature.pos.z - playerpos.z) >= 1 && distance >= 1)
 		{
-			creature.pos.Set(creature.pos.x, (creature.pos.y), (creature.pos.z - view.z  * 50 / distance));
+			creature.pos.Set(creature.pos.x, (creature.pos.y), (creature.pos.z - view.z * 30 / distance));
 		}
 	}
 	return creature.pos;
 }
 
-GameObject::OBJECT_TYPE Capture::AddSquad(SeaCreature creature, hitbox2 playerbox, bool check)
+GameObject::OBJECT_TYPE Capture::AddSquad(SeaCreature creature, Vector3 playerpos, bool check)
 {
-	//float dist = fabs(playerpos.x - creature.pos.x) + fabs(playerpos.y - creature.pos.y) + fabs(playerpos.z - creature.pos.z);
-	if (collision(creature.collision, playerbox))
+	float dist = fabs(playerpos.x - creature.pos.x) + fabs(playerpos.y - creature.pos.y) + fabs(playerpos.z - creature.pos.z);
+	
+	if (dist<=10)
 	{
 		return GameObject::CAPTURED;
 	}
@@ -67,14 +68,14 @@ bool Capture::rangeCheckXZ(WalkCamera camera, SeaCreature creature, Vector3 play
 
 	if (fabs(range1 - range2)> 70)
 	{
-		if (dist <= 250 && (range1 < playertocreature && range2 < playertocreature) || (range1 > playertocreature && range2 > playertocreature))
+		if (dist <= 150 && (range1 < playertocreature && range2 < playertocreature) || (range1 > playertocreature && range2 > playertocreature))
 		{
 			return rangeCheckY(camera, creature, playerpos);
 		}
 	}
 	else
 	{
-		if (dist <= 250 && range1 > playertocreature && range2 < playertocreature)
+		if (dist <= 150 && range1 > playertocreature && range2 < playertocreature)
 		{
 			return rangeCheckY(camera, creature, playerpos);
 		}
@@ -103,14 +104,14 @@ bool Capture::rangeCheckY(WalkCamera camera, SeaCreature creature, Vector3 playe
 	
 	if (fabs(range1 - range2)> 70)
 	{
-		if (dist <= 250 && (range1 < playertocreature && range2 < playertocreature) || (range1 > playertocreature && range2 > playertocreature))
+		if (dist <= 150 && (range1 < playertocreature && range2 < playertocreature) || (range1 > playertocreature && range2 > playertocreature))
 		{
 			return true;
 		}
 	}
 	else
 	{
-		if (dist <= 250 && range1 > playertocreature && range2 < playertocreature)
+		if (dist <= 150 && range1 > playertocreature && range2 < playertocreature)
 		{
 			return true;
 		}

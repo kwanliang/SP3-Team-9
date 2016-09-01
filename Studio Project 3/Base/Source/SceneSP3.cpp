@@ -810,10 +810,16 @@ void SceneSP3::UpdateSeaCreatures(double dt)
             if (go->objectType == GameObject::SEACREATURE)
             {
                 SeaCreature* sc = (SeaCreature*)it;
-				if (sc->isstunned == false)
+				if (sc->isstunned == false && sc->getisVacuum() == false)
 				{
 					if (sc->getHealth() <= 0)
+					{
 						sc->active = false;
+						if (sc == skipper->getTarget())
+						{
+							skipper->setTarget(skipper);
+						}
+					}
 
 				if (sc->getHealth() <= 0)
 				{
@@ -1953,8 +1959,18 @@ void SceneSP3::Update(double dt)
     //    }
     //}
 
-   
+	for (std::vector<GameObject *>::iterator it = seaList.begin(); it != seaList.end(); ++it)
+	{
+		SeaCreature *go = (SeaCreature *)*it;
+		if (go->active)
+		{
+			if (go->objectType == GameObject::SEACREATURE)
+			{
+				go->setisVacuum(false);
 
+			}
+		}
+	}
 
 	if (Application::IsMousePressed(1))
 	{
@@ -1965,10 +1981,12 @@ void SceneSP3::Update(double dt)
 			{
 				if (go->objectType == GameObject::SEACREATURE)
 				{
+					
+					go->setisVacuum(Capture::rangeCheckXZ(walkCam, *go, playerpos) && go->getHealth() <= 50);
 					go->pos.Set(Capture::Vacuum(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos)).x,
-								Capture::Vacuum(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos)).y,
-								Capture::Vacuum(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos)).z);
-					go->objectType = Capture::AddSquad(*go, player_box, Capture::rangeCheckXZ(walkCam, *go, playerpos));
+					            Capture::Vacuum(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos)).y,
+					            Capture::Vacuum(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos)).z);
+					go->objectType = Capture::AddSquad(*go, playerpos, Capture::rangeCheckXZ(walkCam, *go, playerpos));
                     if (go->objectType == GameObject::CAPTURED)
 					{
 						if (skipper->getTarget() == go)
@@ -3908,7 +3926,7 @@ void SceneSP3::RenderHUD()
     if (!SharedData::GetInstance()->SD_DoneTutorial)
     {
         isGamePaused = true;
-        cout << isGamePaused << endl;
+        //cout << isGamePaused << endl;
         if (SharedData::GetInstance()->SD_SceneLoaded && SharedData::GetInstance()->SD_ContinueInstruction1 && SharedData::GetInstance()->SD_ContinueInstruction2)
         {
             SharedData::GetInstance()->SD_DoneTutorial = true;
