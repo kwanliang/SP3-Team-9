@@ -1338,6 +1338,10 @@ void SceneSP3::UpdateProjectile(double dt)
                         else if (go2->active && go != go2 && go2->objectType == GameObject::BOSS)
                         {
                             Boss* boss = (Boss*)it2;
+							if (po->projectileType == Projectile::PBULLET)
+							{
+								skipper->setTarget(boss);
+							}
                             switch (boss->bossType)
                             {
 							case Boss::GIANTSQUID:
@@ -1357,10 +1361,7 @@ void SceneSP3::UpdateProjectile(double dt)
 									text->setIsEnemy(true);
 									text->setIsHeal(false);
 									text->setIsStamina(false);
-									if (po->projectileType == Projectile::PBULLET)
-									{
-										skipper->setTarget(boss);
-									}
+
 
 								}
 								// Tentacle
@@ -1394,6 +1395,8 @@ void SceneSP3::UpdateProjectile(double dt)
 									if (crab->GetState() == GiantCrab::IDLE)
 										crab->SetState(GiantCrab::AGGRO);
 
+									if (crab->GetState() == GiantCrab::GRAB && po->projectileType == Projectile::SBULLET)
+										crab->SetState(GiantCrab::STRAFE);
 
 									po->active = false;
 									crab->setHealth(crab->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
@@ -1444,10 +1447,7 @@ void SceneSP3::UpdateProjectile(double dt)
 										text->setIsHeal(false);
 										text->setIsStamina(false);
 										text->setIsEnemy(true);
-										if (po->projectileType == Projectile::PBULLET)
-										{
-											skipper->setTarget(boss);
-										}
+
 									}
 								}
 							}
@@ -1472,10 +1472,7 @@ void SceneSP3::UpdateProjectile(double dt)
 									text->setIsHeal(false);
 									text->setIsStamina(false);
 									text->setIsEnemy(true);
-									if (po->projectileType == Projectile::PBULLET)
-									{
-										skipper->setTarget(boss);
-									}
+
 								}
 
 							}
@@ -2421,9 +2418,38 @@ void SceneSP3::UpdateSquadFire(double dt)
 								Vector3 view = (skipper->getTarget()->pos - other->pos).Normalized();
 								if (go2->objectType == GameObject::BOSS)
 								{
-									Boss *another = (Boss *)*it2;
-									view = (another->collision.m_position - other->pos).Normalized();
+									Boss *boss = (Boss *)*it2;
+
+									switch (boss->bossType)
+									{
+									case Boss::FRILLEDSHARK:
+									{
+										FrilledShark *fs = (FrilledShark *)*it2;
+										view = (fs->pos - other->pos).Normalized();
+									}break;
+									case Boss::GIANTCRAB:
+									{
+										GiantCrab *fs = (GiantCrab *)*it2;
+										view = (fs->m_hitbox.m_position - other->pos).Normalized();
+									}break;
+									case Boss::ISOPOD:
+									{
+										Isopod *fs = (Isopod *)*it2;
+										view = (fs->m_hitbox.m_position - other->pos).Normalized();
+									}break;
+									case Boss::GIANTSQUID:
+									{
+										Boss *another = (Boss *)*it2;
+										view = (another->collision.m_position - other->pos).Normalized();
+									}break;
+									}
 								}
+								else
+								{
+									view = (go2->pos - other->pos).Normalized();
+
+								}
+
 
 								po->vel.Set(view.x * 10, view.y * 10, view.z * 10);
 								other->setDebounceTimer(0);
@@ -2493,6 +2519,14 @@ void SceneSP3::UpdateSquadFire(double dt)
 									Boss* another = (Boss*)*it2;
 									if (another->objectType == GameObject::BOSS && collision(another->collision, other->pos))
 									{
+										if (another->bossType == Boss::GIANTCRAB)
+										{
+											GiantCrab* gcrab = (GiantCrab*)*it2;
+
+											if (gcrab->GetState() == GiantCrab::GRAB)
+												gcrab->SetState(GiantCrab::STRAFE);
+
+										}
 										another->setHealth(another->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 
 										DamageText* text = FetchTO();

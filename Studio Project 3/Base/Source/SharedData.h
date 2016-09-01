@@ -25,7 +25,7 @@ public:
 		A_NIGHTMARETRENCH
 	};
 
-	unsigned SD_CurrentArea = 0;
+	unsigned SD_CurrentArea = 3;
 	bool SD_Down = false;
 	Vector3 SD_PlayerPos;
     int SD_PlayerHealth = 0;

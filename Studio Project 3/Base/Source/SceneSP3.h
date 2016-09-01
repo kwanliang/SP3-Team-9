@@ -335,51 +335,10 @@ protected:
         GEO_TPAUSE,
         GEO_TRESUME,
         
-        GEO_SQUIDBODY,
-        GEO_SQUIDTENTACLENODE,
-        GEO_SQUIDTENTACLEEND,
 
-        GEO_FSHARK_LJAW,
-        GEO_FSHARK_UJAW,
-        GEO_FSHARK_NODE,
-        GEO_FSHARK_TAIL,
 
-        GEO_ISOPOD_BODY,
-        GEO_ISOPOD_LEG,
-        GEO_ISOPOD_CLAW,
 
-        GEO_ISOPOD_DRONE,
-
-        GEO_CHIMERA_BODY,
-        GEO_CHIMERA_FFLIP,
-        GEO_CHIMERA_BFLIP,
-
-        GEO_MINNOW,
-        GEO_PUFFER,
-        GEO_CUTTLE,
-
-        GEO_FCRABBODY,
-        GEO_FCRABLEG,
-        GEO_FCRABCLAW,
-
-        GEO_CAP_CHIMERA_BODY,
-        GEO_CAP_CHIMERA_FFLIP,
-        GEO_CAP_CHIMERA_BFLIP,
-
-        GEO_CAP_MINNOW,
-        GEO_CAP_PUFFER,
-        GEO_CAP_CUTTLE,
-
-        GEO_CAP_FCRABBODY,
-        GEO_CAP_FCRABLEG,
-        GEO_CAP_FCRABCLAW,
-
-        GEO_CRAB_BODY,
-        GEO_CRAB_ARM_UPPER,
-        GEO_CRAB_ARM_MID,
-        GEO_CRAB_ARM_LOWER,
-        GEO_CRAB_LEG_UPPER,
-        GEO_CRAB_LEG_LOWER,
+      
 
         GEO_CORAL,
         GEO_CORAL2,
@@ -388,42 +347,10 @@ protected:
         GEO_PLAYERHEALTH,
         GEO_PLAYERSTAMINA,
 
-        GEO_MINIMAP,
-        GEO_MINIMAP_AVATAR,
-        GEO_MINIMAP_MINNOW,
-        GEO_MINIMAP_CUTTLE,
-        GEO_MINIMAP_CRAB,
-        GEO_MINIMAP_GHOSTSHARK,
-        GEO_MINIMAP_PUFFER,
-        GEO_MINIMAP_BOSS,
-		GEO_MINIMAP_ARROW_DOWN,
-		GEO_MINIMAP_ARROW_UP,
 
-        GEO_PAUSEMENU,
 
-        GEO_STATIC,
 
-        GEO_BUBBLE,
-        GEO_VACUUM,
 
-        GEO_HUD_HEALTHBAR,
-        GEO_HUD_BOSSHEALTH,
-
-        GEO_TTITLE,
-        GEO_TMENU,
-        GEO_TSTART,
-        GEO_TQUIT,
-        GEO_TLOADING,
-        GEO_MFISH,
-
-        GEO_TBORDER,
-        GEO_TLAYER,
-        GEO_TDIED,
-        GEO_TRESPAWN,
-        GEO_TTOMENU,
-
-        GEO_TPAUSE,
-        GEO_TRESUME,
 
         GEO_INSTRUCTION,
         GEO_INSTRUCTION2,
@@ -433,6 +360,9 @@ protected:
         GEO_CRAB_HUD,
         GEO_CHIMERA_HUD,
         GEO_PUFFER_HUD,
+		GEO_MINIMAP_ARROW_DOWN,
+		GEO_MINIMAP_ARROW_UP,
+	
 
 		NUM_GEOMETRY,
 	};
