@@ -6,7 +6,7 @@ FrilledShark::FrilledShark()
 	m_health = 1000;
 	bossType = FRILLEDSHARK;
 	objectType = GameObject::BOSS;
-	pos = Vector3(0, 300, 0);
+	pos = Vector3(0, 270, 0);
 	vel.Set(0, 0, 0);
 	scale = Vector3(50, 50, 50);
 	active = true;

@@ -57,6 +57,7 @@ void SceneNightmareTrench::Init()
 		60);
 
 	m_travelzoneup = hitbox::generatehitbox(Vector3(1173,372,-1230),300,500,300,0);
+	m_travelzonedown = hitbox::generatehitbox(Vector3(0, -10000, 0), 1, 1, 1, 0);
 	//for (unsigned i = 0; i < 20; i++)
 	//{
 	//	Chimera*c = FetchChimera();

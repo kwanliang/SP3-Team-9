@@ -32,6 +32,7 @@ void SceneTutorial::Init()
         );
 
     m_travelzonedown = hitbox::generatehitbox(Vector3(52, 579, 1310), 600, 500, 600, 0);
+	m_travelzoneup = hitbox::generatehitbox(Vector3(0, -10000, 0), 1, 1, 1, 0);
 	
 }
 

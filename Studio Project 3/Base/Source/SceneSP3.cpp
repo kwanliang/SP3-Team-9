@@ -287,29 +287,31 @@ void SceneSP3::Init()
     meshList[GEO_CORAL2]->textureArray[0] = LoadTGA("Image//coral_2.tga");
 
 	// Captured
-	meshList[GEO_CAP_MINNOW] = MeshBuilder::GenerateOBJ("minnow", "Models//OBJ//minnow.obj");
-	meshList[GEO_CAP_MINNOW]->textureArray[0] = LoadTGA("Image//minnow.tga");
+	meshList[GEO_CAP_MINNOW] = MeshBuilder::GenerateOBJ("minnow", "Models//OBJ//r_minow.obj");
+	meshList[GEO_CAP_MINNOW]->textureArray[0] = LoadTGA("Image//rminnow.tga");
 
-	meshList[GEO_CAP_FCRABBODY] = MeshBuilder::GenerateOBJ("crabbody", "Models//OBJ//fcrab_body.obj");
-	meshList[GEO_CAP_FCRABBODY]->textureArray[0] = LoadTGA("Image//fcrab_body.tga");
-	meshList[GEO_CAP_FCRABLEG] = MeshBuilder::GenerateOBJ("crableg", "Models//OBJ//fcrab_leg.obj");
-	meshList[GEO_CAP_FCRABLEG]->textureArray[0] = LoadTGA("Image//fcrab_leg.tga");
-	meshList[GEO_CAP_FCRABCLAW] = MeshBuilder::GenerateOBJ("crabclaw", "Models//OBJ//fcrab_Lclaw.obj");
-	meshList[GEO_CAP_FCRABCLAW]->textureArray[0] = LoadTGA("Image//fcrab_claw.tga");
+	meshList[GEO_CAP_FCRABBODY] = MeshBuilder::GenerateOBJ("crabbody", "Models//OBJ//r_fcrab_body.obj");
+	meshList[GEO_CAP_FCRABBODY]->textureArray[0] = LoadTGA("Image//rfcrab.tga");
+	meshList[GEO_CAP_FCRABLEG] = MeshBuilder::GenerateOBJ("crableg", "Models//OBJ//r_fcrab_leg.obj");
+	meshList[GEO_CAP_FCRABLEG]->textureArray[0] = LoadTGA("Image//rfcrab.tga");
+	meshList[GEO_CAP_FCRABCLAW] = MeshBuilder::GenerateOBJ("crabclaw", "Models//OBJ//r_fcrab_Lclaw.obj");
+	meshList[GEO_CAP_FCRABCLAW]->textureArray[0] = LoadTGA("Image//rfcrab.tga");
 
-	meshList[GEO_CAP_PUFFER] = MeshBuilder::GenerateOBJ("puffer", "Models//OBJ//puffer.obj");
-	meshList[GEO_CAP_PUFFER]->textureArray[0] = LoadTGA("Image//puffer.tga");
+	meshList[GEO_CAP_PUFFER] = MeshBuilder::GenerateOBJ("puffer", "Models//OBJ//r_puffer.obj");
+	meshList[GEO_CAP_PUFFER]->textureArray[0] = LoadTGA("Image//rpuffer.tga");
 
-	meshList[GEO_CAP_CUTTLE] = MeshBuilder::GenerateOBJ("cuttle", "Models//OBJ//cuttlefish.obj");
-	meshList[GEO_CAP_CUTTLE]->textureArray[0] = LoadTGA("Image//cuttle.tga");
+	meshList[GEO_CAP_CUTTLE] = MeshBuilder::GenerateOBJ("cuttle", "Models//OBJ//r_cuttlefish.obj");
+	meshList[GEO_CAP_CUTTLE]->textureArray[0] = LoadTGA("Image//rcuttle.tga");
 
-	meshList[GEO_CAP_CHIMERA_BODY] = MeshBuilder::GenerateOBJ("chimera", "Models//OBJ//ghostshark_body.obj");
-	meshList[GEO_CAP_CHIMERA_BODY]->textureArray[0] = LoadTGA("Image//ghostshark.tga");
-	meshList[GEO_CAP_CHIMERA_FFLIP] = MeshBuilder::GenerateOBJ("chimera", "Models//OBJ//ghostshark_Fflipper.obj");
-	meshList[GEO_CAP_CHIMERA_FFLIP]->textureArray[0] = LoadTGA("Image//ghostshark.tga");
-	meshList[GEO_CAP_CHIMERA_BFLIP] = MeshBuilder::GenerateOBJ("chimera", "Models//OBJ//ghostshark_Bflipper.obj");
-	meshList[GEO_CAP_CHIMERA_BFLIP]->textureArray[0] = LoadTGA("Image//ghostshark.tga");
+	meshList[GEO_CAP_CHIMERA_BODY] = MeshBuilder::GenerateOBJ("chimera", "Models//OBJ//r_ghostshark_body.obj");
+	meshList[GEO_CAP_CHIMERA_BODY]->textureArray[0] = LoadTGA("Image//rghostshark.tga");
+	meshList[GEO_CAP_CHIMERA_FFLIP] = MeshBuilder::GenerateOBJ("chimera", "Models//OBJ//r_ghostshark_Fflipper.obj");
+	meshList[GEO_CAP_CHIMERA_FFLIP]->textureArray[0] = LoadTGA("Image//rghostshark.tga");
+	meshList[GEO_CAP_CHIMERA_BFLIP] = MeshBuilder::GenerateOBJ("chimera", "Models//OBJ//r_ghostshark_Bflipper.obj");
+	meshList[GEO_CAP_CHIMERA_BFLIP]->textureArray[0] = LoadTGA("Image//rghostshark.tga");
 
+
+	meshList[GEO_VORTEX] = MeshBuilder::GenerateOBJ("cuttle", "Models//OBJ//vortex.obj");
 
     meshList[GEO_BALL] = MeshBuilder::GenerateSphere("ball", Color(0, 0, 0), 16, 16, 1.f);
     meshList[GEO_BALL2] = MeshBuilder::GenerateSphere("ball", Color(1, 0, 0), 16, 16, 1.f);
@@ -396,6 +398,7 @@ void SceneSP3::Init()
 	fish_tailmax = false;
 	m_spCount = 0;
 	m_fireRate = 0;
+	vrotate = 0;
     //if (SPRITENAME)
     //{
     //    SPRITENAME->m_anim = new Animation();
@@ -1122,7 +1125,7 @@ void SceneSP3::UpdateSeaCreatures(double dt)
 								skipper->setTimerReceieveDamage(0.0);
                             	fishVel *= -1.f;
 
-								//skipper->setHealth(skipper->getHealth() - 20);
+								skipper->setHealth(skipper->getHealth() - 20);
 								UpdateCapturedPuff(20);
 
                         }
@@ -1381,30 +1384,43 @@ void SceneSP3::UpdateProjectile(double dt)
 								}
 							}
                                 break;
-                         
-                            case Boss::GIANTCRAB:
-                            {
-                                GiantCrab *crab = (GiantCrab *)it2;
-                                // Squid head
-                                if (collision(crab->m_hitbox, po->pos))
-                                {
+							case Boss::GIANTCRAB:
+							{
+								GiantCrab *crab = (GiantCrab *)it2;
+								// Squid head
+								if (collision(crab->m_hitbox, po->pos))
+								{
+									
+									if (crab->GetState() == GiantCrab::IDLE)
+										crab->SetState(GiantCrab::AGGRO);
 
-                                    po->active = false;
-                                    crab->setHealth(crab->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 
-                                    DamageText* text = FetchTO();
-                                    text->setActive(true);
-                                    text->setLastHitPos(po->pos);
-                                    text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
-                                    text->setScaleText(Vector3(0, 0, 0));
-                                    text->setIsEnemy(true);
-									if (po->projectileType == Projectile::PBULLET)
-									{
-										skipper->setTarget(boss);
-									}
-                                }
-                            }
-                            break;
+									po->active = false;
+									crab->setHealth(crab->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									DamageText* text = FetchTO();
+									text->setActive(true);
+									text->setLastHitPos(po->pos);
+									text->setLastDamage(skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
+									text->setScaleText(Vector3(0, 0, 0));
+									text->setIsEnemy(true);
+									text->setIsHeal(false);
+									text->setIsStamina(false);
+
+
+
+									skipper->setHealth(skipper->getHealth() - (skipper->getDamage(), skipper->getBaseDamage())/2 );
+									DamageText* text2 = FetchTO();
+									text2->setActive(true);
+									text2->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 10 + Vector3(0, 10, 0));
+									text2->setLastDamage((skipper->getDamage(), skipper->getBaseDamage())/2);
+									text2->setScaleText(Vector3(0, 0, 0));
+									text2->setIsEnemy(false);
+									text2->setIsHeal(false);
+									text2->setIsStamina(false);
+
+								}
+							}
+							break;
 
 							case Boss::FRILLEDSHARK:
 							{
@@ -1414,6 +1430,10 @@ void SceneSP3::UpdateProjectile(double dt)
 								{
 									if (collision(fshark->m_FSbox[i], po->pos))
 									{
+
+										if (fshark->m_state == FrilledShark::IDLE)
+											fshark->m_state = FrilledShark::AGGRO;
+
 										po->active = false;
 										fshark->setHealth(fshark->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
 										DamageText* text = FetchTO();
@@ -1439,6 +1459,8 @@ void SceneSP3::UpdateProjectile(double dt)
 
 								if (collision(ipod->m_hitbox, po->pos))
 								{
+									if (ipod->m_state == Isopod::IDLE)
+										ipod->m_state = Isopod::AGGRO;
 
 									po->active = false;
 									ipod->setHealth(ipod->getHealth() - skipper->randomDamage(skipper->getDamage(), skipper->getBaseDamage()));
@@ -1549,7 +1571,12 @@ void SceneSP3::UpdateCaptured(double dt)
 			{			
 					fo->pos += fo->vel * dt;
 					// Collision
+					if (fo->seaType == SeaCreature::CHIMERA || fo->seaType == SeaCreature::FCRAB)
+					hitbox::updatehitbox(fo->aabb, fo->pos);
+
+					else
 					hitbox2::updatehitbox(fo->collision, fo->pos);
+					
 
 					Vector3 tempCentreOfMass(0, 0, 0);
 					Vector3 tempRepelVector(0, 0, 0);
@@ -1647,6 +1674,7 @@ void SceneSP3::Update(double dt)
 	fps = 1.0f / (float)dt;
     const float acceleration = 50.f;
     const float speedLimit = 50.f;
+	vrotate += dt*100;
 
 	UpdateKeys();
 	UpdatePauseFunction();
@@ -1698,7 +1726,7 @@ void SceneSP3::Update(double dt)
 
         static const float focusLength = 300.f;
 
-        static const float projectileSpeed = 400.f;
+        static const float projectileSpeed = 600.f;
 
         Vector3 focusPoint = walkCam.GetPos() + Vector3(0, walkCam.yOffset, 0) + walkCam.GetDir() * (focusLength - walkCam.distance);
 
@@ -2576,6 +2604,27 @@ void SceneSP3::UpdateSquadFire(double dt)
 					other->setDebounceTimer(other->getDebounceTimer() + dt);
 				}
 
+
+				if (other->seaType == SeaCreature::CHIMERA)
+				{
+					Chimera *c = (Chimera *)*it;
+
+					for (std::vector<GameObject *>::iterator it2 = seaList.begin(); it2 != seaList.end(); ++it2)
+					{
+						GameObject *go2 = (GameObject *)*it2;
+						if (go2 == skipper->getTarget())
+						{
+							Vector3 displacement = go2->pos - other->pos;
+
+							c->rotate = -(Math::RadianToDegree(atan2(displacement.x, displacement.z)));
+							Vector3 direction = Vector3(Math::RadianToDegree(cos(Math::DegreeToRadian(c->rotate + 90))), displacement.y * 4, Math::RadianToDegree(sin(Math::DegreeToRadian(c->rotate + 90))));
+							c->vel = direction.Normalized() * 110;
+						}
+					}
+				}
+				
+
+
 			}
 		}
 	}
@@ -3050,6 +3099,21 @@ void SceneSP3::RenderParticles()
             }
         }
     }
+
+	modelStack.PushMatrix();
+	modelStack.Translate(m_travelzonedown.m_position.x, m_travelzonedown.m_position.y+100, m_travelzonedown.m_position.z);
+	modelStack.Rotate(vrotate, 0, 1, 0);
+	modelStack.Scale(50, 50, 50);
+	RenderMesh(meshList[GEO_VORTEX], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(m_travelzoneup.m_position.x, m_travelzoneup.m_position.y+100, m_travelzoneup.m_position.z);
+	modelStack.Rotate(vrotate, 0, 1, 0);
+	modelStack.Scale(50, 50, 50);
+	RenderMesh(meshList[GEO_VORTEX], false);
+	modelStack.PopMatrix();
+
 }
 
 void SceneSP3::RenderSquad()
@@ -3583,15 +3647,15 @@ void SceneSP3::RenderDeathScreen()
         RenderMeshIn2D(meshList[GEO_TLAYER], false, 35.f, 30.f);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-        RenderMeshIn2D(meshList[GEO_TDIED], false, 30.f, 5.f, 0.f, 20.0f);
+        RenderMeshIn2D(meshList[GEO_TDIED], false, 30.f, 12.f, 0.f, 20.0f);
 
         switch (DeathSelect)
         {
         case RESPAWN:
         {
             RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, 1.0f);
-            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 30.f, 5.f, 0.f, 0.0f);
-            RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
+            RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 35.f, 6.f, 0.f, 0.0f);
+			RenderMeshIn2D(meshList[GEO_TMENU], false, 20.f, 5.f, 0.f, -10.0f);
             RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
             break;
         }
@@ -3634,6 +3698,10 @@ void SceneSP3::UpdateDeathScreen(double dt)
         }
         case MENU:
         {
+            RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -11.0f);
+            RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
+			RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 30.f, 4.f, 0.f, 0.0f);
+			RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
             if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 isGamePaused = false;
@@ -3646,6 +3714,10 @@ void SceneSP3::UpdateDeathScreen(double dt)
         }
         case QUIT:
         {
+            RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -21.0f);
+            RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 5.f, 0.f, -20.0f);
+			RenderMeshIn2D(meshList[GEO_TMENU], false, 20.f, 5.f, 0.f, -10.0f);
+			RenderMeshIn2D(meshList[GEO_TRESPAWN], false, 30.f, 4.f, 0.f, 0.0f);
             if (GetKeyState(13, KEY_STATUS_DOWN))
             {
                 SharedData::GetInstance()->SD_QuitGame = true;
@@ -3874,7 +3946,7 @@ void SceneSP3::RenderMinimap()
 
 	RenderMeshIn2D(meshList[GEO_MINIMAP], false, 20, 20,
 		mPos.x, mPos.y, angle);
-
+	
     for (auto it : seaList)
 	{
 		if (!it->active) continue;
@@ -4016,7 +4088,7 @@ void SceneSP3::RenderPauseScreen()
     glBlendFunc(GL_ONE, GL_ONE);
     RenderMeshIn2D(meshList[GEO_TLAYER], false, 35.f, 30.f);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    RenderMeshIn2D(meshList[GEO_TPAUSE], false, 30.f, 5.f, 0.f, 20.0f);
+    RenderMeshIn2D(meshList[GEO_TPAUSE], false, 35.f, 20.f, 0.f, 20.0f);
 
     switch (pauseChoice)
     {
@@ -4024,23 +4096,23 @@ void SceneSP3::RenderPauseScreen()
     {
         RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, 1.0f);
         RenderMeshIn2D(meshList[GEO_TRESUME], false, 25.f, 4.f, 0.f, 1.0f);
-        RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
-        RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
+        RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 4.f, 0.f, -10.0f);
+        RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 4.f, 0.f, -20.0f);
         break;
     }
     case 1:
     {
         RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -11.0f);
-        RenderMeshIn2D(meshList[GEO_TMENU], false, 30.f, 5.f, 0.f, -10.0f);
+        RenderMeshIn2D(meshList[GEO_TMENU], false, 30.f, 4.f, 0.f, -10.0f);
         RenderMeshIn2D(meshList[GEO_TRESUME], false, 20.f, 4.f, 0.f, 1.0f);
-        RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 5.f, 0.f, -20.0f);
+        RenderMeshIn2D(meshList[GEO_TQUIT], false, 20.f, 4.f, 0.f, -20.0f);
         break;
     }
     case 2:
     {
         RenderMeshIn2D(meshList[GEO_TBORDER], false, 33.f, 5.f, 0.f, -21.0f);
-        RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 5.f, 0.f, -20.0f);
-        RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 5.f, 0.f, -10.0f);
+        RenderMeshIn2D(meshList[GEO_TQUIT], false, 25.f, 4.f, 0.f, -20.0f);
+        RenderMeshIn2D(meshList[GEO_TMENU], false, 25.f, 4.f, 0.f, -10.0f);
         RenderMeshIn2D(meshList[GEO_TRESUME], false, 20.f, 4.f, 0.f, 1.0f);
         break;
     }

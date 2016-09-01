@@ -280,7 +280,7 @@ void SceneGhastlyDepths::RenderPassMain()
     SceneSP3::RenderMinimap();
     SceneSP3::RenderHUD();
 
-	if (m_isStatic)
+	if (m_isStatic && !SharedData::GetInstance()->SD_BossDead3)
 	RenderMeshIn2D(meshList[GEO_STATIC], false, 80.0f, 240.0f,0,m_static);
 
 	modelStack.PushMatrix();
@@ -385,11 +385,11 @@ void SceneGhastlyDepths::Update(double dt)
 				if (skipper->getTimerReceieveDamage() > 1.0)
 				{
 					skipper->setTimerReceieveDamage(0.0);
-					skipper->setHealth(skipper->getHealth() - 60);
+					skipper->setHealth(skipper->getHealth() - 90);
 					DamageText* text = FetchTO();
 					text->setActive(true);
 					text->setLastHitPos(playerpos + walkCam.GetDir().Normalized() * 5 + Vector3(0, 10, 0));
-					text->setLastDamage(60);
+					text->setLastDamage(90);
 					text->setScaleText(Vector3(0, 0, 0));
 					text->setIsEnemy(false);
 				}
